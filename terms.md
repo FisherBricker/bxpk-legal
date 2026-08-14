@@ -4,7 +4,7 @@ title: Terms of Service
 
 # Terms of Service
 
-**Last updated: 13 August 2026**
+**Last updated: 14 August 2026**
 
 > This is a draft prepared from what the app actually does. Have a lawyer review it before you
 > rely on it.
@@ -39,9 +39,14 @@ Serious cases are removed immediately and permanently.
 
 ## Reporting and blocking
 
-Every post and comment can be reported. Reported content is reviewed and acted on, usually within
-24 hours. You can block anyone: you stop seeing each other's posts, comments and profiles, any
-friendship between you ends, and you are removed from each other's trips.
+Every post and comment can be reported. Reporting is not a unilateral delete button: enough
+reports takes content down from view immediately, but it is then reviewed by a person, usually
+within 24 hours, and restored if the report turns out to be wrong. See the [Privacy
+Policy](https://fisherbricker.github.io/bxpk-legal/privacy) for how long removed content is kept
+and what happens to it if you delete your account in the meantime.
+
+You can block anyone: you stop seeing each other's posts, comments and profiles, any friendship
+between you ends, and you are removed from each other's trips.
 
 ## Estimates are estimates
 

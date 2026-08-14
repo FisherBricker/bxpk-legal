@@ -4,7 +4,7 @@ title: Privacy Policy
 
 # Privacy Policy
 
-**Last updated: 13 August 2026**
+**Last updated: 14 August 2026**
 
 This policy explains what Backpack Weight Tracker collects, why, and what you can do about it.
 It is written to be read, not to be survived.
@@ -66,18 +66,33 @@ and at rest. The app is currently offered in the United States and Canada only.
 
 Until you delete it. Deleting an item deletes it. Deleting your account is covered below.
 
+**Content taken down after a report is the exception.** When a post or comment is removed because
+enough people reported it, we do not delete it immediately. It is held for review so a mistaken
+report can be corrected. While it is held:
+
+- **It is not visible to anyone** — not in feeds, forums, search, saved items, or on the profile
+  that posted it. Being reviewed and being visible are not the same thing.
+- **If review finds the report was wrong, it is restored** and becomes visible again exactly as it
+  was.
+- **If the report was right, it stays removed** and is kept for our records rather than deleted
+  outright, in case it is needed later — for a repeat-offense pattern, a legal request, or a
+  reporting obligation that applies to that kind of content.
+
 ## Deleting your account
 
 **Settings → Delete Account.** It is immediate and cannot be undone. It removes your profile,
 handle, photo, gear, trips, meal plans, itineraries, friendships, invitations, your posts, and the
 photos you uploaded.
 
-Two things deliberately survive, and neither identifies you:
+Three things deliberately survive, and none of them identifies you:
 
 - **A comment of yours that other people replied to** stays as "Deleted user" with the text
   removed, so the conversation underneath still makes sense to the people who took part in it.
 - **Gear you shared on someone else's trip** keeps its weight but loses its name and your identity,
   so their pack calculations do not silently change.
+- **A post or comment of yours taken down after a report** stays exactly as described above —
+  under review or on record — with your name and identity removed the same way. Deleting your
+  account is not a way to make reported content disappear before it has been looked at.
 
 Reports you filed about other people are kept, because they are records about those people rather
 than about you.
