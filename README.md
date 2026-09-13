@@ -9,6 +9,3 @@ App Store review team, without an account. It contains no application code.
 - [Privacy Policy](privacy.md)
 - [Terms of Service](terms.md)
 - [Support](support.md)
-
-Both the policy and the terms are drafts prepared from what the app actually does. They need review
-by a lawyer before being relied on.
