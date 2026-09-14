@@ -1,11 +1,10 @@
 # Backpack Weight Tracker: legal documents
 
-The privacy policy, terms of service and support page for the Backpack Weight Tracker iOS app,
-published at <https://fisherbricker.github.io/bxpk-legal/>.
+The site for the Backpack Weight Tracker iOS app, published at <https://fisherbricker.github.io/bxpk-legal/>.
+Built with Astro. The privacy policy, terms and support page are `src/content/legal/*.md`; see CONTENT.md
+for publishing release notes and posts.
 
-This repository is public because these documents have to be reachable by anyone, including the
-App Store review team, without an account. It contains no application code.
-
-- [Privacy Policy](privacy.md)
-- [Terms of Service](terms.md)
-- [Support](support.md)
+    npm install
+    npm run dev      # http://localhost:4321/bxpk-legal/
+    npm test         # unit tests
+    npm run test:e2e # browser tests
