@@ -293,7 +293,9 @@ const BarInner = memo(function BarInner({
           if (stacked && stackOffsets) {
             const offset = stackOffsets.get(i)?.get(dataKey) ?? 0;
             x = scale(offset) ?? 0;
-            barW = valuePos - x;
+            // bxpk: the registry measured a stacked segment from 0 to its own value
+            // (scale(value) - scale(offset)); a segment spans offset to offset + value.
+            barW = (scale(offset + value) ?? valuePos) - x;
             // Apply stack gap for horizontal: shift right and reduce width
             const gapOffset = seriesIndex * stackGap;
             x += gapOffset;

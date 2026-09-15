@@ -1,10 +1,11 @@
 import { Phone, ScreenBars, ScreenCard, ScreenRow, ScreenTabBar, ScreenTitle } from "@/components/phone";
+import { CATEGORIES, catTotal, DAYS, fmtInt, SEASONS } from "@/data/trip";
 
 export type ScreenId = "trip" | "itinerary" | "resupply" | "route" | "base";
 
 export const SCREEN_LABEL: Record<ScreenId, string> = {
   trip: "Trip, sample trip with base weight 4.62 kg",
-  itinerary: "Itinerary, days with miles, elevation gain and water",
+  itinerary: "Itinerary, seven days with miles, elevation gain and water",
   resupply: "Resupply at Muir Trail Ranch on day 3",
   route: "Route recording, a point every 15 s",
   base: "Base weight 4.62 kg against a 4.00 kg goal",
@@ -30,7 +31,12 @@ function Strip({ items }: { items: [string, string][] }) {
   );
 }
 
+function SectionLabel({ children }: { children: string }) {
+  return <div className="mt-4 mb-1.5 text-[12px] font-bold tracking-[0.08em] text-ink-muted uppercase">{children}</div>;
+}
+
 function TripScreen() {
+  const shown = CATEGORIES.slice(0, 3);
   return (
     <>
       <ScreenTitle sub="Trips" title="Sample trip" />
@@ -47,11 +53,17 @@ function TripScreen() {
           ["10.40 kg", "Skin-out"],
         ]}
       />
-      <ScreenCard className="mt-3">
-        <ScreenRow left="Tent" note="Shelter" right="862 g" />
-        <ScreenRow left="Quilt" note="Sleep system" right="652 g" />
-      </ScreenCard>
-      <ScreenBars rows={3} />
+      {shown.map((category) => (
+        <div key={category.id}>
+          <SectionLabel>{`${category.label}, ${fmtInt(catTotal(category))} g`}</SectionLabel>
+          <ScreenCard>
+            {category.items.map((item) => (
+              <ScreenRow key={item.name} left={item.name} right={`${fmtInt(item.g)} g`} />
+            ))}
+          </ScreenCard>
+        </div>
+      ))}
+      <ScreenBars />
       <ScreenTabBar active={0} />
     </>
   );
@@ -62,11 +74,21 @@ function ItineraryScreen() {
     <>
       <ScreenTitle sub="Sample trip" title="Itinerary" />
       <ScreenCard>
-        <ScreenRow left="Day 1" note="7.8 mi, 2,310 ft" right="2.5 L" />
-        <ScreenRow left="Day 2" note="9.6 mi, 2,940 ft" right="3.0 L" />
-        <ScreenRow left="Day 3" note="8.9 mi, 1,880 ft" right="2.5 L" />
+        {DAYS.map((day) => (
+          <ScreenRow
+            key={day.day}
+            left={`Day ${day.day}`}
+            note={`${day.miles.toFixed(1)} mi, ${fmtInt(day.gainFt)} ft`}
+            right={`${day.water.toFixed(1)} L`}
+          />
+        ))}
       </ScreenCard>
-      <ScreenBars rows={4} widths={[66, 74, 58, 70]} />
+      <SectionLabel>Forecast</SectionLabel>
+      <ScreenCard>
+        <ScreenRow left="Day 1, clear" note="wind W 8 mph" right="71°F / 39°F" />
+        <ScreenRow left="Day 2, partly cloudy" note="wind SW 12 mph" right="68°F / 41°F" />
+      </ScreenCard>
+      <ScreenBars />
       <ScreenTabBar active={0} />
     </>
   );
@@ -76,16 +98,25 @@ function ResupplyScreen() {
   return (
     <>
       <ScreenTitle sub="Resupply" title="Muir Trail Ranch, Day 3" />
-      <ScreenCard className="mb-3 px-4 py-3">
+      <ScreenCard className="mb-1 px-4 py-3">
         <div className="text-[13px] font-bold tracking-[0.06em] text-ink-muted uppercase">Picked up</div>
         <div className="font-display text-[34px] leading-none font-medium tnum">+4.73 kg</div>
-        <div className="mt-1 text-[13px] text-ink-muted">Bucket pickup, food for 5 days and one 230 g canister</div>
+        <div className="mt-1 text-[13px] text-ink-muted">Bucket pickup, mile 18.0</div>
       </ScreenCard>
+      <SectionLabel>In the bucket</SectionLabel>
+      <ScreenCard>
+        <ScreenRow left="Breakfasts" note="5 days" right="0.70 kg" />
+        <ScreenRow left="Lunches" note="5 days" right="0.95 kg" />
+        <ScreenRow left="Dinners" note="5 days" right="1.15 kg" />
+        <ScreenRow left="Snacks" note="5 days" right="1.70 kg" />
+        <ScreenRow left="Fuel canister" right="230 g" />
+      </ScreenCard>
+      <SectionLabel>Pack weight</SectionLabel>
       <ScreenCard>
         <ScreenRow left="Leaving day 2" right="8.76 kg" />
         <ScreenRow left="Leaving day 3" right="12.03 kg" />
       </ScreenCard>
-      <ScreenBars rows={3} widths={[60, 72, 52]} />
+      <ScreenBars />
       <ScreenTabBar active={0} />
     </>
   );
@@ -95,33 +126,27 @@ function RouteScreen() {
   return (
     <>
       <ScreenTitle sub="Recording" title="Route" />
-      <div className="relative overflow-hidden rounded-2xl border border-line bg-map" style={{ height: 300 }}>
-        <svg aria-hidden="true" className="absolute inset-0 h-full w-full" fill="none" viewBox="0 0 340 300">
+      <div className="relative shrink-0 overflow-hidden rounded-2xl border border-line bg-map" style={{ height: 270 }}>
+        <svg aria-hidden="true" className="absolute inset-0 h-full w-full" fill="none" viewBox="0 0 340 270">
           {[0, 1, 2, 3, 4, 5].map((i) => (
-            <ellipse
-              cx={90}
-              cy={220}
-              key={i}
-              rx={(i + 1) * 38}
-              ry={(i + 1) * 22}
-              stroke="rgba(95,112,64,0.22)"
-              strokeWidth="1"
-            />
+            <ellipse cx={90} cy={210} key={i} rx={(i + 1) * 38} ry={(i + 1) * 22} stroke="rgba(95,112,64,0.22)" strokeWidth="1" />
           ))}
-          <path
-            d="M40 268 C 96 250, 88 206, 130 190 S 196 168, 206 128 S 250 78, 300 52"
-            stroke="var(--amber)"
-            strokeLinecap="round"
-            strokeWidth="4"
-          />
-          <circle cx="40" cy="268" fill="var(--amber)" r="6" />
-          <circle cx="300" cy="52" fill="var(--paper)" r="7" stroke="var(--amber)" strokeWidth="4" />
+          <path d="M40 240 C 96 222, 88 186, 130 170 S 196 148, 206 112 S 250 70, 300 46" stroke="var(--amber)" strokeLinecap="round" strokeWidth="4" />
+          <circle cx="40" cy="240" fill="var(--amber)" r="6" />
+          <circle cx="300" cy="46" fill="var(--paper)" r="7" stroke="var(--amber)" strokeWidth="4" />
         </svg>
       </div>
       <div className="mt-3 flex items-center justify-between rounded-2xl border border-line bg-surface px-4 py-3 text-[15px]">
         <span className="font-bold">Every 15 s</span>
         <span className="text-[13px] text-ink-muted">GPS interval</span>
       </div>
+      <SectionLabel>Splits</SectionLabel>
+      <ScreenCard>
+        {DAYS.slice(0, 4).map((day) => (
+          <ScreenRow key={day.day} left={`Day ${day.day}`} note={`${fmtInt(day.gainFt)} ft`} right={`${day.miles.toFixed(1)} mi`} />
+        ))}
+      </ScreenCard>
+      <ScreenBars />
       <ScreenTabBar active={0} />
     </>
   );
@@ -135,23 +160,22 @@ function BaseWeightScreen() {
         <div className="font-display text-[46px] leading-none font-medium tnum">4.62 kg</div>
         <div className="mt-2 text-[14px] text-ink-muted">0.62 kg to your 4.00 kg goal</div>
       </ScreenCard>
-      <div aria-hidden="true" className="flex h-24 items-end gap-2">
-        {[100, 92, 87, 83, 79].map((h, i) => (
+      <div aria-hidden="true" className="flex h-24 shrink-0 items-end gap-2">
+        {SEASONS.map((season, i) => (
           <span
             className="flex-1 rounded-t-sm"
-            key={h}
-            style={{ height: `${h}%`, background: "var(--moss)", opacity: i === 4 ? 1 : 0.45 }}
+            key={season.label}
+            style={{ height: `${(season.kg / 5.88) * 100}%`, background: "var(--moss)", opacity: i === 4 ? 1 : 0.45 }}
           />
         ))}
       </div>
-      <div aria-hidden="true" className="mt-2 flex gap-2 text-center text-[11px] text-ink-muted tnum">
-        {["5.88", "5.41", "5.10", "4.87", "4.62"].map((kg) => (
-          <span className="flex-1" key={kg}>
-            {kg} kg
-          </span>
+      <SectionLabel>Seasons</SectionLabel>
+      <ScreenCard>
+        {[...SEASONS].reverse().map((season) => (
+          <ScreenRow key={season.label} left={season.label} right={`${season.kg.toFixed(2)} kg`} />
         ))}
-      </div>
-      <ScreenBars rows={2} widths={[68, 54]} />
+      </ScreenCard>
+      <ScreenBars />
       <ScreenTabBar active={3} />
     </>
   );

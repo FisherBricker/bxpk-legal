@@ -5,8 +5,8 @@ import { createPointerTracker } from "@/lib/topo/pointer";
 import { useReduced } from "@/lib/hooks";
 
 interface TopoFieldProps {
-  /** Rectangle (relative to the field) whose particles stay quiet so text keeps its ground. */
-  quietRef?: React.RefObject<HTMLElement | null>;
+  /** Elements whose particles stay quiet so text and the profile keep their ground. */
+  quietRefs?: React.RefObject<HTMLElement | null>[];
   className?: string;
   seed?: number;
 }
@@ -20,7 +20,7 @@ const DOT_LIVE = "rgba(95,112,64,0.95)";
  * dots at rest, pushed away from the pointer harder the faster it moves.
  * Uses the app's tested topo physics (contours.ts, physics.ts, pointer.ts).
  */
-export function TopoField({ quietRef, className = "", seed = 20260915 }: TopoFieldProps) {
+export function TopoField({ quietRefs, className = "", seed = 20260915 }: TopoFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const reduced = useReduced();
 
@@ -57,9 +57,10 @@ export function TopoField({ quietRef, className = "", seed = 20260915 }: TopoFie
       layout = buildContours({ width, height, seed, spacing: width < 600 ? 6.5 : 7.5, ringStep: 18, maxParticles: 6000 });
       state = createState(layout);
       quiet = new Uint8Array(layout.count);
-      const quietEl = quietRef?.current;
-      if (quietEl) {
-        const hostRect = host!.getBoundingClientRect();
+      const hostRect = host!.getBoundingClientRect();
+      for (const ref of quietRefs ?? []) {
+        const quietEl = ref.current;
+        if (!quietEl) continue;
         const q = quietEl.getBoundingClientRect();
         const x0 = q.left - hostRect.left - 28;
         const x1 = q.right - hostRect.left + 28;
@@ -68,7 +69,7 @@ export function TopoField({ quietRef, className = "", seed = 20260915 }: TopoFie
         for (let i = 0; i < layout.count; i++) {
           const x = layout.homeX[i];
           const y = layout.homeY[i];
-          quiet[i] = x > x0 && x < x1 && y > y0 && y < y1 ? 1 : 0;
+          if (x > x0 && x < x1 && y > y0 && y < y1) quiet[i] = 1;
         }
       }
       canvas!.dataset.particles = String(layout.count);
@@ -221,7 +222,7 @@ export function TopoField({ quietRef, className = "", seed = 20260915 }: TopoFie
       host.removeEventListener("pointerleave", onLeave);
       host.removeEventListener("pointercancel", onLeave);
     };
-  }, [quietRef, reduced, seed]);
+  }, [quietRefs, reduced, seed]);
 
   return <canvas aria-hidden="true" className={`absolute inset-0 h-full w-full ${className}`} data-topo-field="" ref={canvasRef} />;
 }

@@ -80,7 +80,7 @@ export function Phone({ children, width = 300, className = "", caption = true, l
                   className="absolute top-3 left-1/2 h-[37px] w-[125px] -translate-x-1/2 rounded-full"
                   style={{ background: "var(--night)" }}
                 />
-                <div className="flex-1 overflow-hidden px-5 pt-8 pb-6">{children}</div>
+                <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-5 pt-8 pb-6">{children}</div>
               </div>
             </div>
           </div>
@@ -122,16 +122,18 @@ export function ScreenCard({ children, className = "" }: { children: ReactNode; 
   return <div className={`rounded-2xl border border-line bg-surface ${className}`}>{children}</div>;
 }
 
-/** Quiet placeholder bars for the rows a preview does not spell out. */
-export function ScreenBars({ rows = 3, widths = [72, 58, 64] }: { rows?: number; widths?: number[] }) {
+/** Quiet placeholder rows that fill whatever height is left above the tab bar, so no screen ends in an empty band. */
+export function ScreenBars({ widths = [72, 58, 64, 49, 67, 55] }: { widths?: number[] }) {
   return (
-    <div aria-hidden="true" className="mt-4 space-y-3">
-      {Array.from({ length: rows }, (_, i) => (
-        <div className="flex items-center gap-3" key={i}>
-          <div className="h-2.5 rounded-full bg-line" style={{ width: `${widths[i % widths.length]}%` }} />
-          <div className="h-2.5 w-10 rounded-full bg-line" />
-        </div>
-      ))}
+    <div aria-hidden="true" className="mt-4 min-h-0 flex-1 overflow-hidden">
+      <div className="overflow-hidden rounded-2xl border border-line bg-surface">
+        {Array.from({ length: 16 }, (_, i) => (
+          <div className="flex items-center gap-3 border-b border-line px-4 py-3.5 last:border-b-0" key={i}>
+            <div className="h-2.5 rounded-full bg-line" style={{ width: `${widths[i % widths.length]}%` }} />
+            <div className="ml-auto h-2.5 w-12 rounded-full bg-line" />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -34,7 +34,7 @@ for (const [label, options] of runs) {
   await page.waitForTimeout(400);
   const cards = page.locator('button[aria-controls^="gear-"]');
   if (await cards.count()) await cards.nth(2).click();
-  const seat = page.getByRole("button", { name: /Claim seat 3 on the Squeeze/ });
+  const seat = page.getByRole("button", { name: /Claim seat on Squeeze/ });
   if (await seat.count()) await seat.click();
   const next = page.getByRole("button", { name: "Next posts" });
   if (await next.count()) await next.click();

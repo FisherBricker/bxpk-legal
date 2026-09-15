@@ -44,7 +44,7 @@ export function RouteSection({
 /** The content column inside a route section. */
 export function RouteColumn({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn("mx-auto w-full max-w-[90rem] pr-5 pl-[2.125rem] sm:pr-8 lg:pr-[190px] lg:pl-[240px]", className)}>
+    <div className={cn("mx-auto w-full max-w-[90rem] px-5 sm:px-8 lg:pr-[190px] lg:pl-[240px]", className)}>
       <div className="relative">{children}</div>
     </div>
   );

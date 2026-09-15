@@ -7,6 +7,7 @@ import { Line } from "@/components/charts/line";
 import { SeriesBar } from "@/components/charts/series-bar";
 import { XAxis } from "@/components/charts/x-axis";
 import { DAYS, dayDate, RESUPPLY } from "@/data/trip";
+import { useMedia } from "@/lib/hooks";
 
 export const STACK = [
   { key: "base", label: "Base", color: "#A4BC6B" },
@@ -100,6 +101,8 @@ function ResupplyMarker({ visible }: { visible: boolean }) {
 }
 
 export function ResupplyChart({ throughDay }: { throughDay: number }) {
+  // Seven "Day N" labels crowd a phone-width chart, so narrow widths label every other day.
+  const roomy = useMedia("(min-width: 640px)", true);
   return (
     <div
       aria-label="Pack weight for each day of the sample trip: day 1 9.22 kg, day 2 8.76 kg, day 3 12.03 kg after a 4.73 kg resupply at Muir Trail Ranch, day 4 11.57 kg, day 5 9.61 kg, day 6 9.15 kg, day 7 7.69 kg. Each bar stacks base weight 4.62 kg with that day's food, water and fuel, and the line is skin-out weight."
@@ -131,7 +134,7 @@ export function ResupplyChart({ throughDay }: { throughDay: number }) {
         <KgTicks />
         <UnwalkedDays throughDay={throughDay} />
         <ResupplyMarker visible={throughDay >= RESUPPLY.day} />
-        <XAxis numTicks={7} />
+        <XAxis numTicks={roomy ? 7 : 4} />
       </ComposedChart>
     </div>
   );

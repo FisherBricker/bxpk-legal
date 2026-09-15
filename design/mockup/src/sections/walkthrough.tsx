@@ -119,7 +119,7 @@ function PinnedWalkthrough() {
   const phoneLeft = active % 2 === 0;
 
   return (
-    <div className="relative" ref={sectionRef} style={{ height: "400vh" }}>
+    <div className="relative" data-pin="guide" ref={sectionRef} style={{ height: "400vh" }}>
       <RouteColumn className="absolute top-24 right-0 left-0">
         <Waypoint id="guide" />
       </RouteColumn>

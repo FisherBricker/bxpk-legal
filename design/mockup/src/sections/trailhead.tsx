@@ -1,9 +1,10 @@
 import { motion, stagger } from "motion/react";
 import { ChevronDown } from "lucide-react";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
+import { TripProfileStatic } from "@/components/route";
 import { SignupForm } from "@/components/signup-form";
 import { TopoField } from "@/components/topo-field";
-import { EASE_EXPO, useReduced } from "@/lib/hooks";
+import { EASE_EXPO, useMedia, useReduced } from "@/lib/hooks";
 
 const HEADLINE = "Know what your pack weighs, every day of the trip.";
 
@@ -13,7 +14,7 @@ function WordReveal({ text }: { text: string }) {
     <motion.h1
       animate="show"
       aria-label={text}
-      className="display-1 max-w-[13.5ch]"
+      className="display-1 max-w-[13.5ch] lg:text-[min(clamp(3rem,1.2rem+5.4vw,6rem),9.6svh)]"
       initial="hidden"
       transition={{ delayChildren: stagger(0.045) }}
     >
@@ -33,9 +34,36 @@ function WordReveal({ text }: { text: string }) {
   );
 }
 
+function TrailheadMarker() {
+  const reduced = useReduced();
+  return (
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+      <span className="map-label flex items-center gap-2.5 text-ink">
+        <span className="relative flex h-3.5 w-3.5" data-trailhead-dot="">
+          {reduced ? null : (
+            <motion.span
+              animate={{ scale: [1, 2.4], opacity: [0.5, 0] }}
+              className="absolute inset-0 rounded-full bg-amber"
+              transition={{ duration: 2.4, repeat: Number.POSITIVE_INFINITY, ease: "easeOut" }}
+            />
+          )}
+          <span className="relative h-3.5 w-3.5 rounded-full bg-amber" />
+        </span>
+        Trailhead, mile 0, 9,360 ft
+      </span>
+      <a className="flex min-h-11 items-center gap-1.5 text-sm font-bold text-ink no-underline" href="#route">
+        Walk the route
+        <ChevronDown aria-hidden="true" className="h-4 w-4" />
+      </a>
+    </div>
+  );
+}
+
 export function Trailhead() {
   const copyRef = useRef<HTMLDivElement>(null);
-  const reduced = useReduced();
+  const profileRef = useRef<HTMLDivElement>(null);
+  const quietRefs = useMemo(() => [copyRef, profileRef], []);
+  const wide = useMedia("(min-width: 1024px)", true);
 
   return (
     <section
@@ -44,8 +72,8 @@ export function Trailhead() {
       data-nav="route"
       id="trailhead"
     >
-      <TopoField quietRef={copyRef} />
-      <div className="relative mx-auto flex min-h-[100svh] w-full max-w-[90rem] flex-col justify-center px-5 pt-32 pb-40 sm:px-10 lg:pr-[190px]">
+      <TopoField quietRefs={quietRefs} />
+      <div className="relative mx-auto grid min-h-[100svh] w-full max-w-[90rem] items-center gap-10 px-5 pt-28 pb-12 sm:px-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12 lg:pt-24 lg:pb-8">
         <div className="max-w-[46rem]" ref={copyRef}>
           <span className="sr-only" id="trailhead-heading">
             {HEADLINE}
@@ -53,7 +81,7 @@ export function Trailhead() {
           <WordReveal text={HEADLINE} />
           <motion.p
             animate={{ opacity: 1, y: 0 }}
-            className="lead mt-6"
+            className="lead mt-5 lg:text-[1.125rem]"
             initial={{ opacity: 0.35, y: 14 }}
             transition={{ duration: 0.9, delay: 0.35, ease: EASE_EXPO }}
           >
@@ -62,39 +90,25 @@ export function Trailhead() {
           </motion.p>
           <motion.div
             animate={{ opacity: 1, y: 0 }}
+            id="hero-signup"
             initial={{ opacity: 0.35, y: 14 }}
             transition={{ duration: 0.9, delay: 0.5, ease: EASE_EXPO }}
           >
-            <SignupForm className="mt-8" idPrefix="hero" />
-            <p className="mt-4 text-sm text-ink-muted">
-              Coming soon to the App Store, for iPhone on iOS 17 and later
-            </p>
+            <SignupForm className="mt-6" idPrefix="hero" />
+            <p className="mt-3 text-sm text-ink-muted">Coming soon to the App Store, for iPhone on iOS 17 and later</p>
           </motion.div>
         </div>
-      </div>
 
-      <div className="pointer-events-none absolute right-0 bottom-7 left-0 flex flex-col items-center gap-3">
-        <div className="pointer-events-auto flex flex-col items-center gap-2">
-          <span className="map-label flex items-center gap-2 rounded-full border border-amber/40 bg-map/85 px-3 py-1.5 text-ink">
-            <span className="relative flex h-3 w-3">
-              {reduced ? null : (
-                <motion.span
-                  animate={{ scale: [1, 2.2], opacity: [0.5, 0] }}
-                  className="absolute inset-0 rounded-full bg-amber"
-                  transition={{ duration: 2.4, repeat: Number.POSITIVE_INFINITY, ease: "easeOut" }}
-                />
-              )}
-              <span className="relative h-3 w-3 rounded-full bg-amber" />
-            </span>
-            Trailhead, mile 0, 9,360 ft
-          </span>
-          <a
-            className="flex min-h-11 items-center gap-1.5 text-sm font-bold text-ink no-underline"
-            href="#route"
-          >
-            Walk the route
-            <ChevronDown aria-hidden="true" className="h-4 w-4" />
-          </a>
+        <div className="flex flex-col gap-3">
+          {wide ? (
+            // The fixed trip instrument draws the profile over this space and folds it into the rail on scroll.
+            <div className="h-[clamp(380px,calc(100svh-250px),580px)] w-full" data-hero-profile="" ref={profileRef} />
+          ) : (
+            <div className="w-full" ref={profileRef}>
+              <TripProfileStatic />
+            </div>
+          )}
+          <TrailheadMarker />
         </div>
       </div>
     </section>

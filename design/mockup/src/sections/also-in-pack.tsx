@@ -11,10 +11,18 @@ import { cn } from "@/lib/utils";
 const TRACK = "M24 206 C 70 196, 64 150, 104 140 S 150 122, 150 92 S 196 56, 230 64 S 282 40, 300 22";
 
 function RouteTile() {
-  const [hovered, setHovered] = useState(false);
+  // Each time the pointer arrives, the track is walked again from the trailhead.
+  const [walks, setWalks] = useState(0);
   const reduced = useReduced();
   return (
-    <BentoTile className="lg:col-span-5 lg:row-span-2" from="left" index={0} onHoverChange={setHovered}>
+    <BentoTile
+      className="lg:col-span-5 lg:row-span-2"
+      from="left"
+      index={0}
+      onHoverChange={(hovered) => {
+        if (hovered) setWalks((n) => n + 1);
+      }}
+    >
       <BentoTitle
         body="Record with GPS on the trail, then import or export the track as GPX."
         title="Route recording and GPX"
@@ -26,13 +34,15 @@ function RouteTile() {
           ))}
           <path d={TRACK} stroke="var(--amber)" strokeDasharray="4 6" strokeLinecap="round" strokeOpacity="0.5" strokeWidth="2" />
           <motion.path
-            animate={{ pathLength: reduced ? 1 : hovered ? 1 : 0.32 }}
             d={TRACK}
-            initial={false}
+            initial={{ pathLength: reduced ? 1 : 0.05 }}
+            key={walks}
             stroke="var(--amber)"
             strokeLinecap="round"
             strokeWidth="3"
-            transition={{ duration: hovered ? 1.6 : 0.8, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.5 }}
+            whileInView={{ pathLength: 1 }}
           />
           <circle cx="24" cy="206" fill="var(--amber)" r="5" />
         </svg>
@@ -41,7 +51,6 @@ function RouteTile() {
           <span className="rounded-full bg-surface px-3 py-1 text-ink-muted">Export GPX</span>
         </div>
       </div>
-      <p className="mt-3 text-sm text-fg-muted">Hover the map to walk the track.</p>
     </BentoTile>
   );
 }
@@ -186,11 +195,11 @@ function WaterTile() {
       >
         {DAYS.map((day, index) => (
           <div className="flex h-full flex-col justify-end gap-1.5" key={day.day}>
-            <span className="text-center text-xs font-bold tnum">{day.water.toFixed(1)} L</span>
+            <span className="text-center text-xs font-bold text-fg tnum">{day.water.toFixed(1)} L</span>
             <motion.div
               className="rounded-t-md"
               initial={{ scaleY: 0.25 }}
-              style={{ height: `${(day.water / max) * 100}%`, background: "var(--cat-water)", originY: 1 }}
+              style={{ height: `${(day.water / max) * 100}%`, background: "color-mix(in srgb, var(--cat-water) 42%, var(--card))", originY: 1 }}
               transition={{ duration: 0.9, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
               viewport={{ once: true }}
               whileInView={{ scaleY: 1 }}

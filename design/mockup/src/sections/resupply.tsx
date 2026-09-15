@@ -5,6 +5,7 @@ import { Enter, MountInView } from "@/components/motion-helpers";
 import { PhonePreview } from "@/components/phone-screens";
 import { ResupplyChart, StackLegend } from "@/components/resupply-chart";
 import { Waypoint } from "@/components/route";
+import { walkDay } from "@/data/trip";
 import { usePinned } from "@/lib/hooks";
 
 const FACTS: [string, string][] = [
@@ -21,7 +22,7 @@ export function Resupply() {
 
   useMotionValueEvent(scrollYProgress, "change", (progress) => {
     if (!pinned) return;
-    const day = Math.min(7, Math.max(1, Math.ceil(progress * 7.4)));
+    const day = walkDay(progress);
     setThroughDay((previous) => (previous === day ? previous : day));
   });
 
@@ -40,9 +41,6 @@ export function Resupply() {
           </div>
         ))}
       </dl>
-      <p className="mt-6 text-sm text-fg-muted">
-        Walking the section moves the trip forward one day at a time. Day {throughDay} of 7.
-      </p>
     </>
   );
 
@@ -63,7 +61,7 @@ export function Resupply() {
 
   return (
     <RouteSection ground="night" labelledBy="resupply-heading" nav="route">
-      <div className="relative" ref={sectionRef} style={pinned ? { height: "300vh" } : undefined}>
+      <div className="relative" data-pin={pinned ? "resupply" : undefined} ref={sectionRef} style={pinned ? { height: "300vh" } : undefined}>
         {pinned ? (
           <RouteColumn className="absolute top-24 right-0 left-0">
             <Waypoint id="resupply" />

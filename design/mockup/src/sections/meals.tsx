@@ -1,10 +1,7 @@
 import { motion } from "motion/react";
-import { Bar } from "@/components/charts/bar";
-import { BarChart } from "@/components/charts/bar-chart";
-import { BarXAxis } from "@/components/charts/bar-x-axis";
-import { Grid } from "@/components/charts/grid";
 import { RingChart } from "@/components/charts/ring-chart";
 import { Ring } from "@/components/charts/ring";
+import { MealsChart } from "@/components/meals-chart";
 import { RouteColumn, RouteSection, SectionHeading } from "@/components/layout";
 import { Enter, MountInView } from "@/components/motion-helpers";
 import { Waypoint } from "@/components/route";
@@ -21,10 +18,6 @@ const MACROS: [string, string][] = [
 
 export function Meals() {
   const reduced = useReduced();
-  const bars = [
-    ...MEALS.map((meal) => ({ meal: meal.meal, kcal: meal.kcal })),
-    { meal: "Day total", kcal: MEAL_DAY.totalKcal },
-  ];
 
   return (
     <RouteSection ground="map" labelledBy="meals-heading" nav="route">
@@ -52,7 +45,7 @@ export function Meals() {
           </Enter>
 
           <motion.div
-            className="grid items-start gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
+            className="grid items-start gap-6"
             initial={{ opacity: 0.2, y: -34 }}
             transition={{ duration: 1, ease: EASE_EXPO }}
             viewport={{ once: true, amount: 0.15 }}
@@ -61,94 +54,65 @@ export function Meals() {
             <div className="panel px-5 py-5">
               <div className="flex items-baseline justify-between gap-3">
                 <h3 className="font-display text-xl font-medium">Day 2, by meal</h3>
-                <span className="map-label text-fg-muted">kcal</span>
+                <span className="text-sm text-fg-muted tnum">3,250 kcal</span>
               </div>
-              <MountInView className="mt-2" minHeight={260}>
-                <div
-                  aria-label="Day 2 by meal: breakfast 720 kcal, lunch 880 kcal, dinner 1,050 kcal, snacks 600 kcal, day total 3,250 kcal against a target of 3,000 kcal."
-                  role="img"
-                >
-                  <BarChart
-                    animationDuration={reduced ? 0 : 900}
-                    aspectRatio="4 / 3"
-                    barGap={0.32}
-                    data={bars}
-                    margin={{ top: 24, right: 8, bottom: 34, left: 8 }}
-                    xDataKey="meal"
-                  >
-                    <Grid
-                      highlightRowStroke="var(--data)"
-                      highlightRowStrokeDasharray="2,4"
-                      highlightRowStrokeWidth={1.5}
-                      highlightRowValues={[MEAL_DAY.targetKcal]}
-                      numTicksRows={4}
-                    />
-                    <Bar
-                      animationType="grow"
-                      dataKey="kcal"
-                      fill="var(--data)"
-                      lineCap={4}
-                      staggerDelay={reduced ? 0 : 0.09}
-                    />
-                    <BarXAxis showAllLabels />
-                  </BarChart>
-                </div>
+              <MountInView className="mt-2" minHeight={170}>
+                <MealsChart />
               </MountInView>
-              <p className="mt-1 text-sm text-fg-muted">Dashed row: the 3,000 kcal target for the day.</p>
-              <ul className="mt-4 space-y-2 border-t border-rule pt-3 text-sm">
-                {MEALS.map((meal) => (
-                  <li className="flex items-baseline gap-3" key={meal.meal}>
-                    <span className="w-[5.5rem] shrink-0 font-bold">{meal.meal}</span>
-                    <span className="min-w-0 flex-1 text-fg-muted">
-                      {meal.food}, {fmtInt(meal.g)} g
-                    </span>
-                    <span className="font-bold tnum">{fmtInt(meal.kcal)} kcal</span>
-                  </li>
-                ))}
-              </ul>
             </div>
 
-            <div className="panel flex flex-col px-5 py-5">
-              <h3 className="font-display text-xl font-medium">Against the target</h3>
-              <MountInView className="mt-4" minHeight={230}>
-                <div
-                  aria-label="Day total 3,250 kcal against a 3,000 kcal target, 250 kcal over."
-                  className="relative mx-auto w-full max-w-[230px]"
-                  role="img"
-                >
-                  <RingChart
-                    animationDuration={reduced ? 0 : 1100}
-                    baseInnerRadius={70}
-                    data={[
-                      { label: "Day total", value: MEAL_DAY.totalKcal, maxValue: MEAL_DAY.targetKcal, color: "var(--data)" },
-                    ]}
-                    strokeWidth={16}
+            <div className="grid items-start gap-6 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+              <div className="panel flex flex-col px-5 py-5">
+                <h3 className="font-display text-xl font-medium">Against the target</h3>
+                <MountInView className="mt-4" minHeight={210}>
+                  <div
+                    aria-label="Day total 3,250 kcal against a 3,000 kcal target, 250 kcal over."
+                    className="relative mx-auto w-full max-w-[210px]"
+                    role="img"
                   >
-                    <Ring index={0} lineCap="butt" showGlow={false} />
-                  </RingChart>
-                  {/* The 250 kcal over target, drawn where the ring passes its own start. */}
-                  <svg aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 200 200">
-                    <circle
-                      cx="100"
-                      cy="100"
-                      fill="none"
-                      r="68"
-                      stroke="var(--fg)"
-                      strokeDasharray={`${(250 / 3000) * 2 * Math.PI * 68} ${2 * Math.PI * 68}`}
-                      strokeWidth="14"
-                      transform="rotate(-90 100 100)"
-                    />
-                    <line stroke="var(--card)" strokeWidth="2" x1="100" x2="100" y1="25" y2="39" />
-                  </svg>
-                  <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-                    <span className="font-display text-[1.6rem] leading-none font-medium tnum">3,250 kcal</span>
-                    <span className="mt-1 text-sm text-fg-muted">of 3,000 kcal</span>
+                    <RingChart
+                      animationDuration={reduced ? 0 : 1100}
+                      baseInnerRadius={64}
+                      data={[{ label: "Day total", value: MEAL_DAY.totalKcal, maxValue: MEAL_DAY.targetKcal, color: "var(--data)" }]}
+                      strokeWidth={15}
+                    >
+                      <Ring index={0} lineCap="butt" showGlow={false} />
+                    </RingChart>
+                    <svg aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 200 200">
+                      <circle
+                        cx="100"
+                        cy="100"
+                        fill="none"
+                        r="68"
+                        stroke="var(--fg)"
+                        strokeDasharray={`${(250 / 3000) * 2 * Math.PI * 68} ${2 * Math.PI * 68}`}
+                        strokeWidth="14"
+                        transform="rotate(-90 100 100)"
+                      />
+                      <line stroke="var(--card)" strokeWidth="2" x1="100" x2="100" y1="25" y2="39" />
+                    </svg>
+                    <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
+                      <span className="font-display text-[1.45rem] leading-none font-medium tnum">3,250 kcal</span>
+                      <span className="mt-1 text-sm text-fg-muted">of 3,000 kcal</span>
+                    </div>
                   </div>
-                </div>
-              </MountInView>
-              <p className="mt-4 text-sm text-fg-muted">
-                The dark arc is the 250 kcal the day runs over target, past the ring&rsquo;s own start.
-              </p>
+                </MountInView>
+              </div>
+
+              <div className="panel px-5 py-5">
+                <h3 className="font-display text-xl font-medium">On the menu</h3>
+                <ul className="mt-3 divide-y divide-[var(--rule)] text-sm">
+                  {MEALS.map((meal) => (
+                    <li className="flex items-baseline gap-3 py-2.5" key={meal.meal}>
+                      <span className="w-[5.25rem] shrink-0 font-bold">{meal.meal}</span>
+                      <span className="min-w-0 flex-1 text-fg-muted">
+                        {meal.food}, {fmtInt(meal.g)} g
+                      </span>
+                      <span className="font-bold tnum">{fmtInt(meal.kcal)} kcal</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </motion.div>
         </div>

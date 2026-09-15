@@ -50,10 +50,15 @@ export const DAYS: Day[] = [
   { day: 7, startMi: 53.2, miles: 8.2, gainFt: 1230, base: 4.62, food: 0.9, water: 2.0, fuel: 0.17, pack: 7.69, skinOut: 8.87 },
 ];
 
-export function dayAt(mile: number): Day {
-  let d = DAYS[0];
-  for (const x of DAYS) if (mile >= x.startMi) d = x;
-  return d;
+/** The day whose walk covers this mile. A camp at the end of a day belongs to that day. */
+export function dayOnTrail(mile: number): Day {
+  for (const d of DAYS) if (mile <= d.startMi + d.miles + 1e-6) return d;
+  return DAYS[DAYS.length - 1];
+}
+
+/** The day the pinned resupply chart has walked to, from its scroll progress (0 to 1). */
+export function walkDay(progress: number): number {
+  return Math.min(7, Math.max(1, Math.ceil(progress * 7.4)));
 }
 
 export const RESUPPLY = { name: "Muir Trail Ranch", mile: 18.0, day: 3, pickupKg: 4.73, foodKg: 4.5, fuelG: 230 };

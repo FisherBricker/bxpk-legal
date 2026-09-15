@@ -94,3 +94,62 @@ Project: `design/mockup/` on `design/site-direction`. Build: `npm run build` (Ty
 - Community post counts (votes, comments) and packs, debriefs and forecasts are sample content, labelled in the section and the footer.
 - Contrast was checked by token math (the old mockup's measured table), not with an automated audit tool.
 - Some components have minor indentation drift from scripted edits; there is no formatter in the project.
+
+## Fix round 1
+
+1. **Hero trip profile that becomes the rail.**
+   - A new `components/trip-profile.tsx` draws the sample route's elevation profile large in the hero's right half. It has hairlines at 8,000, 10,000 and 12,000 ft and annotations with mile and ft at Trailhead, Piute Pass, Muir Trail Ranch, Muir Pass, Bishop Pass and South Lake.
+   - Under the profile, a day-by-day pack weight strip (Day 1 9.22 kg to Day 7 7.69 kg) aligns each bar to that day's miles. Day 3 carries the amber resupply dot.
+   - The amber you-are-here dot sits at mile 0.
+   - The profile is one fixed instrument layer (`TripInstrument` in `route.tsx`). Every profile point, the baseline, the fill and the dot are interpolated from hero geometry to rail geometry with `useScroll`. The line folds from horizontal (mile across, elevation up) into the vertical rail (mile down, elevation sideways) as the hero scrolls out. Annotations and the strip fade out, and the rail scale and readout fade in. Measured fold at 1440 x 900: 0 at the top, 0.81 after 450 px.
+   - There is no separate rail in the hero.
+   - The "Trailhead, mile 0, 9,360 ft" marker and "Walk the route" sit under the profile inside the first viewport, and the amber route line now starts at that marker.
+   - The headline scales with viewport height (`min(clamp(...), 9.6svh)`). Headline, lead, form and profile all fit at 1440 x 900 and 1280 x 800 (both checked by screenshot).
+   - The topo field keeps the profile area quiet (`quietRefs`).
+   - Phones get a static copy of the profile under the form, with compact labels.
+   - Reduced motion swaps profile to rail in one step with no fold.
+2. **Rail anchored to waypoints.**
+   - The rail reads the viewport's vertical centre against waypoint anchors (the waypoint label next to each heading) and interpolates only between consecutive anchors. At an anchor it shows that waypoint's exact mile and ft, the day that mile falls on (`dayOnTrail`, where a camp belongs to the day that ends there) and that day's pack weight.
+   - Inside the pinned resupply chapter, the day comes from the chart's own `walkDay` helper, with that day's start mile. The recaptured mid-scroll shows "Mile 36.5, Day 5, 9.61 kg" beside a chart walked to day 5.
+   - Inside the pinned walkthrough, the rail holds at mile 44.6.
+   - The drawn route head moved to the viewport centre to match.
+   - The scale labels "0 mi" and "61.4 mi" now sit above and below the strip, clear of the line.
+3. **Explanatory copy removed.**
+   - Deleted: "Walking the section moves the trip forward one day at a time. Day N of 7.", "Dashed row...", "The dark arc...", "Claim or release a seat..." and "Hover the map to walk the track."
+   - Open seats now have a 1.5 px dashed outline with a plus icon, a pointer cursor, a moss hover state and the label "Claim seat on Squeeze water filter". Your own seat keeps the default cursor.
+   - The GPX track tile now draws itself when it scrolls into view and walks again on hover. It no longer needs a hint.
+4. **Phone screens filled.**
+   - Screens are a flex column, and `ScreenBars` fills the remaining height with quiet rows down to the tab bar, so no screen has an empty band.
+   - Trip: the Shelter, Sleep system and Pack rows with grams.
+   - Itinerary: all 7 days with mi, ft and L, plus two forecast rows.
+   - Resupply: the bucket contents (breakfasts 0.70 kg, lunches 0.95 kg, dinners 1.15 kg, snacks 1.70 kg and a 230 g canister, summing to 4.73 kg) and the leaving rows.
+   - Route: a splits list under the map.
+   - Base weight: the five-season list.
+5. **Seasons chart.**
+   - bklit `LineChart` gained an explicit `yDomain` prop (edited `line-chart.tsx` and `time-series-chart-shell.tsx`, where an explicit domain now also skips nicing and projection widening). The chart uses 3.5 kg to 6.5 kg.
+   - The hatched fill is gone. The goal is a dashed moss highlight row at 4.00 kg labelled "Goal: 4.00 kg".
+   - The projection and both swap markers stay.
+   - "Axis starts at 3.5 kg" sits inside the chart panel.
+6. **Meals chart.**
+   - It is now one horizontal stacked bklit `BarChart` for day 2 (`components/meals-chart.tsx`). Segments Breakfast 720 kcal, Lunch 880 kcal, Dinner 1,050 kcal and Snacks 600 kcal are labelled under each segment; on phones the labels alternate between two rows.
+   - An ink tick marks "Target 3,000 kcal", and the 250 kcal past it carries a hatch and a "+250 kcal" label.
+   - bklit's horizontal stacked bars measured each segment from zero to its own value. I fixed `bar.tsx` so a segment spans its offset to its offset plus its value.
+   - The ring and the meal table stay, now in their own two panels.
+7. **Close band.**
+   - The right half now holds the amber route line arriving at the ringed trail's end marker, a map-tag card ("Trail's end, South Lake, Mile 61.4, 9,768 ft", with Walked 7 days, 61.4 mi; At trail's end 7.69 kg; Picked up at Muir Trail Ranch 4.73 kg) and the Base weight phone. The phone is hidden on phones.
+   - Dots at rest are 2 px at 40% moss-bright; dots near the cursor are 2.8 px.
+8. **Phones (390 px).**
+   - The route line and its gutter labels are not drawn below 1024 px. Each waypoint becomes an inline annotation row with an amber dot ("Mile 18.0, Muir Trail Ranch, 7,700 ft"), and the content column is no longer padded for a gutter.
+   - The pack-weight chart labels every other day below 640 px.
+   - No hover hints remain.
+9. **Nav CTA.** An IntersectionObserver on the hero form hides the nav's "Get the launch email" on desktop and mobile. It is transparent and `inert`, so it is not focusable and holds its layout space, and it fades in once the form leaves the screen.
+10. **Water per day.** The bars now use `color-mix(in srgb, var(--cat-water) 42%, var(--card))`, with value labels in ink.
+
+**Verification, round 1:**
+- `npm run build` passes with TypeScript clean. `dist/index.html` is 830 kB (295 kB gzip).
+- All seven screenshots were recaptured over the same files. Full pages use `?capture`; the two mid-scroll shots are real pinned behaviour.
+- Console: zero errors in production. The dev walk shows only Motion's own reduced-motion notice.
+- Form: error and success both pass.
+- Keyboard: 138 tabs, every control shows a focus ring, and every target is 44 px or more.
+- Hero field: the fast sweep bends 1,282 particles against 104 for the slow drift.
+- Grep: no dashes, emoji or banned words, and none of the removed hint sentences remain in `src/`.

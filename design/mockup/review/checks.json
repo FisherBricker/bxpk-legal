@@ -9,18 +9,18 @@
     },
     "heroField": {
       "slow": {
-        "peakBent": 91,
-        "peakDisplacement": 72.16,
+        "peakBent": 104,
+        "peakDisplacement": 76.23,
         "peakReach": 102,
-        "peakPush": 3355,
-        "particles": 5757
+        "peakPush": 3356,
+        "particles": 5766
       },
       "fast": {
-        "peakBent": 1070,
-        "peakDisplacement": 66.83,
+        "peakBent": 1282,
+        "peakDisplacement": 64.49,
         "peakReach": 212,
         "peakPush": 10400,
-        "particles": 5757
+        "particles": 5766
       },
       "fastBeatsSlow": true
     },

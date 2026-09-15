@@ -6,7 +6,6 @@ import { LineChart } from "@/components/charts/line-chart";
 import { ChartMarkers } from "@/components/charts/markers";
 import { ProjectionLine } from "@/components/charts/projection-line";
 import { buildProjectionPath } from "@/components/charts/projection-utils";
-import { ReferenceArea } from "@/components/charts/reference-area";
 import { XAxis } from "@/components/charts/x-axis";
 import { YAxis } from "@/components/charts/y-axis";
 import { RouteColumn, RouteSection, SectionHeading } from "@/components/layout";
@@ -31,10 +30,10 @@ const SWAPS = [
 ];
 
 function GoalLabel() {
-  const { yScale, innerWidth } = useChartStable();
+  const { yScale } = useChartStable();
   const y = yScale(GOAL_KG) ?? 0;
   return (
-    <text fill="var(--data)" fontSize="12" fontWeight="700" textAnchor="end" x={innerWidth - 4} y={y - 8}>
+    <text fill="var(--data)" fontSize="12" fontWeight="700" x={8} y={y - 8}>
       Goal: 4.00 kg
     </text>
   );
@@ -83,18 +82,17 @@ export function Seasons() {
                     animationDuration={reduced ? 0 : 1400}
                     aspectRatio={isDesktop ? "21 / 8" : "4 / 3"}
                     data={ROWS}
+                    yDomain={[3.5, 6.5]}
                     margin={{ top: 30, right: 24, bottom: 36, left: 52 }}
                   >
-                    <Grid numTicksRows={4} />
-                    <ReferenceArea
-                      pattern="diagonal"
-                      patternColor="rgba(95,112,64,0.28)"
-                      stroke="var(--data)"
-                      strokeStyle="dashed"
-                      y1={0}
-                      y2={GOAL_KG}
+                    <Grid
+                      highlightRowStroke="var(--data)"
+                      highlightRowStrokeDasharray="5,4"
+                      highlightRowStrokeWidth={1.5}
+                      highlightRowValues={[GOAL_KG]}
+                      rowTickValues={[3.5, 4, 4.5, 5, 5.5, 6, 6.5]}
                     />
-                    <YAxis formatValue={(value) => `${value} kg`} numTicks={4} />
+                    <YAxis formatValue={(value) => `${value} kg`} numTicks={6} />
                     <Line dataKey="kg" fadeEdges={false} showMarkers stroke="var(--data)" strokeWidth={2.5} />
                     <ProjectionLine data={PROJECTION} stroke="var(--data)" strokeDasharray="5,5" />
                     <GoalLabel />
@@ -111,6 +109,7 @@ export function Seasons() {
                   </LineChart>
                 </div>
               </MountInView>
+              <p className="mt-2 text-xs text-fg-muted">Axis starts at 3.5 kg</p>
             </div>
         </Enter>
       </RouteColumn>

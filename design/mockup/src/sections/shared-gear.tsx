@@ -48,9 +48,6 @@ export function SharedGear() {
               id="shared-heading"
               title="Shared gear, split fairly"
             />
-            <p className="mt-6 text-sm text-fg-muted">
-              Claim or release a seat to see the split change. Your own seat stays claimed.
-            </p>
           </motion.div>
 
           <div>

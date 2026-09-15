@@ -57,10 +57,10 @@ export function SeatPicker({ claimed, seats, itemLabel, onToggle }: SeatPickerPr
                 ? `Your seat on the ${itemLabel}`
                 : isClaimed
                   ? `Release ${who}'s seat on the ${itemLabel}`
-                  : `Claim seat ${index + 1} on the ${itemLabel}`
+                  : `Claim seat on ${itemLabel}`
             }
             aria-pressed={isClaimed}
-            className="flex h-11 w-11 items-center justify-center"
+            className={cn("group flex h-11 w-11 items-center justify-center", index === 0 ? "cursor-default" : "cursor-pointer")}
             key={index}
             onClick={() => handle(index)}
             type="button"
@@ -69,7 +69,9 @@ export function SeatPicker({ claimed, seats, itemLabel, onToggle }: SeatPickerPr
               animate={isClaimed ? "visible" : "hidden"}
               className={cn(
                 "flex h-9 w-9 items-center justify-center rounded-full border text-[0.6875rem] font-bold",
-                isClaimed ? "border-transparent bg-data text-ground" : "border-dashed border-fg-muted text-fg-muted"
+                isClaimed
+                  ? "border-transparent bg-data text-ground"
+                  : "border-[1.5px] border-dashed border-fg-muted bg-transparent text-fg-muted transition-colors group-hover:border-data group-hover:bg-data/10 group-hover:text-data"
               )}
               initial={false}
               variants={reduced ? undefined : AVATAR}

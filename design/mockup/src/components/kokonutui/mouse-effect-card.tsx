@@ -52,10 +52,10 @@ export function ContourDotBand({ children, className }: { children: ReactNode; c
         const x = homeX[i] + offX[i];
         const y = homeY[i] + offY[i];
         const d = Math.hypot(homeX[i] - mouse.x, homeY[i] - mouse.y);
-        if (d < RADIUS * 1.2) near.rect(x - 1.1, y - 1.1, 2.2, 2.2);
-        else rest.rect(x - 0.8, y - 0.8, 1.6, 1.6);
+        if (d < RADIUS * 1.2) near.rect(x - 1.4, y - 1.4, 2.8, 2.8);
+        else rest.rect(x - 1, y - 1, 2, 2);
       }
-      ctx.fillStyle = "rgba(164,188,107,0.42)";
+      ctx.fillStyle = "rgba(164,188,107,0.4)";
       ctx.fill(rest);
       ctx.fillStyle = "rgba(164,188,107,0.9)";
       ctx.fill(near);

@@ -41,6 +41,8 @@ export function Navbar() {
   const [condensed, setCondensed] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  // The nav's CTA would repeat the hero's own button, so it waits until the hero form has scrolled away.
+  const [formOnScreen, setFormOnScreen] = useState(true);
   const lastY = useRef(0);
   const { scrollY } = useScroll();
   const isDesktop = useIsDesktop();
@@ -65,6 +67,14 @@ export function Navbar() {
       { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
     );
     for (const section of sections) observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const form = document.getElementById("hero-signup");
+    if (!form) return;
+    const observer = new IntersectionObserver(([entry]) => setFormOnScreen(entry.isIntersecting), { threshold: 0 });
+    observer.observe(form);
     return () => observer.disconnect();
   }, []);
 
@@ -134,26 +144,36 @@ export function Navbar() {
                 })}
               </ul>
             </nav>
-            <button
-              className="inline-flex min-h-11 items-center rounded-full bg-ink px-5 text-[0.9375rem] font-bold text-paper"
-              onClick={() => focusSignup(reduced)}
-              type="button"
-            >
-              Get the launch email
-            </button>
+            <motion.div animate={{ opacity: formOnScreen ? 0 : 1 }} inert={formOnScreen} initial={false} transition={{ duration: 0.3 }}>
+              <button
+                className="inline-flex min-h-11 items-center rounded-full bg-ink px-5 text-[0.9375rem] font-bold text-paper"
+                onClick={() => focusSignup(reduced)}
+                type="button"
+              >
+                Get the launch email
+              </button>
+            </motion.div>
           </>
         ) : (
           <>
-            <button
-              className="ml-auto inline-flex min-h-11 items-center rounded-full bg-ink px-4 text-[0.875rem] font-bold text-paper"
-              onClick={() => {
-                setMenuOpen(false);
-                focusSignup(reduced);
-              }}
-              type="button"
+            <motion.div
+              animate={{ opacity: formOnScreen ? 0 : 1 }}
+              className="ml-auto"
+              inert={formOnScreen}
+              initial={false}
+              transition={{ duration: 0.3 }}
             >
-              Get the launch email
-            </button>
+              <button
+                className="inline-flex min-h-11 items-center rounded-full bg-ink px-4 text-[0.875rem] font-bold text-paper"
+                onClick={() => {
+                  setMenuOpen(false);
+                  focusSignup(reduced);
+                }}
+                type="button"
+              >
+                Get the launch email
+              </button>
+            </motion.div>
             <button
               aria-expanded={menuOpen}
               aria-label={menuOpen ? "Close menu" : "Open menu"}

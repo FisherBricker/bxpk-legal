@@ -153,6 +153,8 @@ export interface TimeSeriesChartInnerProps {
   composedStackGap?: number;
   /** When set, drives the y-axis max instead of scanning `lines` (e.g. stacked bar totals). */
   yScaleDomainMax?: number;
+  /** bxpk: an explicit y domain, for charts whose story lives far from zero (declared on the chart). */
+  yDomain?: [number, number];
   /** Loading vs ready — drives chart phase until transition orchestration lands. */
   chartStatus?: ChartStatus;
   loadingLabel?: string;
@@ -198,6 +200,7 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
   composedStackOffsets,
   composedStackGap,
   yScaleDomainMax,
+  yDomain,
   chartStatus = DEFAULT_CHART_STATUS,
   loadingLabel,
   yDomainTween = true,
@@ -213,6 +216,7 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
 
   const resolveYDomain = useCallback(
     (sourceData: Record<string, unknown>[], dataKeys: string[]) => {
+      if (yDomain) return yDomain;
       const axisGroups = groupLinesByYAxisId(lines);
       const usesDefaultOnly =
         axisGroups.size === 1 && axisGroups.has(DEFAULT_Y_AXIS_ID);
@@ -222,7 +226,7 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
           : undefined;
       return resolveTimeSeriesYDomain(sourceData, dataKeys, domainMax);
     },
-    [lines, yScaleDomainMax]
+    [lines, yScaleDomainMax, yDomain]
   );
 
   const skeletonData = useMemo(() => {
@@ -340,6 +344,10 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
       resolveDomain: (dataKeys) =>
         resolveYDomain(xDomain ? visiblePlotData : data, dataKeys),
     });
+    // bxpk: an explicit domain is final; projections draw inside it rather than widening it.
+    if (yDomain) {
+      return Object.fromEntries(Object.keys(base).map((axisId) => [axisId, yDomain])) as Record<string, [number, number]>;
+    }
     if (projectionConfigs.length === 0) {
       return base;
     }
@@ -368,6 +376,7 @@ const TimeSeriesChartCore = memo(function TimeSeriesChartCore({
     resolveYDomain,
     visiblePlotData,
     xDomain,
+    yDomain,
   ]);
 
   const animatedYDomainsByAxis = useAnimatedYDomains({
