@@ -1,4 +1,4 @@
-import { DAYS, fmtInt, PROFILE, RESUPPLY } from "@/data/trip";
+import { DAYS, fmtInt, RESUPPLY, TERRAIN } from "@/data/trip";
 
 /**
  * The trip instrument: the sample route's elevation profile with its day-by-day
@@ -83,7 +83,8 @@ export function TripProfile({ t: rawT, plot, strip, rail, readout, textScale = 1
   // Baseline: along the bottom of the hero plot, down the left edge of the rail strip.
   const base0: [number, number] = [lerp(plot.x0, rail.x0, t), lerp(plot.y1, rail.y0, t)];
   const base1: [number, number] = [lerp(plot.x1, rail.x0, t), lerp(plot.y1, rail.y1, t)];
-  const line = PROFILE.map(([mile, ft]) => at(mile, ft));
+  // The generated terrain: it undulates between surveyed points and passes exactly through each one.
+  const line = TERRAIN.map(([mile, ft]) => at(mile, ft));
   const d = line.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
   const area = `${d} L${base1[0].toFixed(1)} ${base1[1].toFixed(1)} L${base0[0].toFixed(1)} ${base0[1].toFixed(1)} Z`;
 

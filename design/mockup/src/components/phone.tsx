@@ -39,6 +39,8 @@ interface PhoneProps {
   /** Every phone on the page carries the same caption. */
   caption?: boolean;
   label: string;
+  /** A real app screenshot (402 x 874 pt). When absent, the token-colored skeleton passed as children is shown. */
+  src?: string;
 }
 
 /**
@@ -46,7 +48,7 @@ interface PhoneProps {
  * token-colored skeleton of the real layout with its most important rows set in
  * real text.
  */
-export function Phone({ children, width = 300, className = "", caption = true, label }: PhoneProps) {
+export function Phone({ children, width = 300, className = "", caption = true, label, src }: PhoneProps) {
   const scale = width / FRAME_W;
   return (
     <figure className={`m-0 flex flex-col items-center gap-3 ${className}`} style={{ width }}>
@@ -73,6 +75,10 @@ export function Phone({ children, width = 300, className = "", caption = true, l
               className="relative h-full w-full overflow-hidden bg-paper text-ink"
               style={{ borderRadius: 53 }}
             >
+              {src ? (
+                <img alt="" className="absolute inset-0 h-full w-full object-cover" src={src} />
+              ) : (
+                <>
               <ContourRings height={874} seed={label.length + 11} stroke="rgba(95,112,64,0.12)" width={402} />
               <div className="relative flex h-full flex-col">
                 <StatusBar />
@@ -82,6 +88,8 @@ export function Phone({ children, width = 300, className = "", caption = true, l
                 />
                 <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-5 pt-8 pb-6">{children}</div>
               </div>
+                </>
+              )}
             </div>
           </div>
         </div>

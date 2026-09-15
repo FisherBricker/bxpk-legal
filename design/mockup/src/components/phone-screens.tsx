@@ -4,6 +4,12 @@ import { CATEGORIES, catTotal, DAYS, fmtInt, SEASONS } from "@/data/trip";
 
 export type ScreenId = "trip" | "itinerary" | "resupply" | "route" | "base";
 
+/**
+ * Real app screenshots, once captured, go here by screen (for example trip: tripScreenshot).
+ * Any screen without one keeps its skeleton.
+ */
+export const SCREEN_IMAGES: Partial<Record<ScreenId, string>> = {};
+
 export const SCREEN_LABEL: Record<ScreenId, string> = {
   trip: "Trip, sample trip with base weight 4.62 kg",
   itinerary: "Itinerary, seven days with miles, elevation gain and water",
@@ -199,14 +205,16 @@ export function PhonePreview({
   width = 300,
   caption = true,
   className = "",
+  src = SCREEN_IMAGES[id],
 }: {
   id: ScreenId;
   width?: number;
   caption?: boolean;
   className?: string;
+  src?: string;
 }) {
   return (
-    <Phone caption={caption} className={className} label={SCREEN_LABEL[id]} width={width}>
+    <Phone caption={caption} className={className} label={SCREEN_LABEL[id]} src={src} width={width}>
       <PhoneScreen id={id} />
     </Phone>
   );

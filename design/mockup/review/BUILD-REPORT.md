@@ -210,3 +210,19 @@ Project: `design/mockup/` on `design/site-direction`. Build: `npm run build` (Ty
 - **Water per day:** the row under the resupply chart is a tabular strip with "Day N" above its litres. It has seven equal columns on desktop and aligned rows of four and three on phones, so a day never parts from its value.
 - **Close tag:** "mile 61.4" and "9,768 ft" are each kept on one line.
 - **Verification:** `npm run build` passes with TypeScript clean. `mobile.png`, `desktop.png` and `mobile-first-viewport.png` were recaptured and opened, and the capture console was clean.
+
+## Elevation terrain
+- **Terrain function:** every elevation drawing now uses `terrainProfile` in `src/lib/topo/terrain.ts`. That covers the hero profile, the pinned rail at every stage of the fold, and the phone profile. The footer ridge, phone screens and neatlines draw no elevation, so they are unchanged.
+- **How the terrain is built:**
+  - It passes exactly through every surveyed point in `src/data/profile.ts`. That now includes Day 2 camp (mile 17.4, 8,050 ft), so the rail and that waypoint label agree.
+  - Between points it lays a monotone cubic and adds seeded three-octave value noise, scaled by segment length and elevation change and shaped by a sin² window. The variation is zero, with zero slope, at every point.
+  - Smooth min and max keep each segment at or below its higher end, so each pass tops its approaches, and never below the lowest point (7,700 ft).
+- **Rail readouts:** they read ft from the same terrain (`elevationAt`), so the number matches the line under the you-are-here dot. The per-waypoint ft offsets are gone.
+- **`node scripts/check-terrain.ts` passes:**
+  - within 1 ft of every surveyed and named point
+  - every segment has a local reversal or 80 ft or more of variation
+  - pass ceilings and the floor hold
+  - the output is deterministic
+  - the worst slope change is 1,034 ft/mi between 1/8 mi samples
+- **Real screenshots:** `Phone` accepts an optional `src` for a real screenshot per screen (through `SCREEN_IMAGES` in `phone-screens.tsx`) and falls back to the skeleton. No images are set yet.
+- **Verification:** `npm run build` passes with TypeScript clean. `desktop-first-viewport.png`, `mobile-first-viewport.png`, `desktop-resupply-mid.png` and `desktop.png` were recaptured and opened: the profiles undulate, each label sits on its point, and the rail dot sits on the curve (mile 36.5, 11,400 ft).

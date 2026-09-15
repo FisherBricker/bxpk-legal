@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { SmoothTab } from "@/components/kokonutui/smooth-tab";
 import { RouteColumn, RouteSection } from "@/components/layout";
 import { Phone } from "@/components/phone";
-import { PhonePreview, PhoneScreen, SCREEN_LABEL, type ScreenId } from "@/components/phone-screens";
+import { PhonePreview, PhoneScreen, SCREEN_IMAGES, SCREEN_LABEL, type ScreenId } from "@/components/phone-screens";
 import { Waypoint } from "@/components/route";
 import { EASE_EXPO, useIsDesktop, usePinned } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
@@ -121,7 +121,7 @@ function PinnedWalkthrough() {
           </h2>
           <div className={cn("relative mt-16 flex min-h-0 flex-1 items-center gap-12", phoneLeft ? "flex-row" : "flex-row-reverse")}>
             <motion.div layout className="shrink-0" transition={{ type: "spring", stiffness: 90, damping: 20 }}>
-              <Phone label={SCREEN_LABEL[chapter.screen]} width={phoneWidth}>
+              <Phone label={SCREEN_LABEL[chapter.screen]} src={SCREEN_IMAGES[chapter.screen]} width={phoneWidth}>
                 <div className="relative h-full">
                   <AnimatePresence initial={false}>
                     <motion.div

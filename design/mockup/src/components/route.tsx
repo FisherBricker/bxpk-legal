@@ -85,7 +85,6 @@ function smoothPath(p: Point[]): string {
 interface Frame {
   y: number;
   mile: number;
-  ftOffset: number;
 }
 
 interface Pin {
@@ -150,7 +149,8 @@ function readoutAt(center: number, scroll: number, vh: number, m: Measured): Rea
   }
   const t = b === a ? 0 : (center - a.y) / Math.max(1, b.y - a.y);
   const mile = a.mile + (b.mile - a.mile) * t;
-  const ft = elevationAt(mile) + a.ftOffset + (b.ftOffset - a.ftOffset) * t;
+  // Read ft from the drawn terrain, so the number matches the line under the dot.
+  const ft = elevationAt(mile);
   const day = dayOnTrail(mile);
   return { mile, ft, day: day.day, pack: day.pack };
 }
@@ -196,7 +196,7 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
       const guidePin = pinOf("guide");
       const frames: Frame[] = [];
       WAYPOINTS.forEach((wp, i) => {
-        const frame = { y: anchors[i], mile: wp.mile, ftOffset: wp.ft - elevationAt(wp.mile) };
+        const frame = { y: anchors[i], mile: wp.mile };
         frames.push(frame);
         if (wp.id === "resupply" && resupplyPin) frames.push({ ...frame, y: resupplyPin.top + resupplyPin.height - vh / 2 });
         if (wp.id === "guide" && guidePin) frames.push({ ...frame, y: guidePin.top + guidePin.height - vh / 2 });

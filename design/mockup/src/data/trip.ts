@@ -7,24 +7,19 @@ export const TRIP = {
   miles: 61.4,
 };
 
-/** Elevation profile: [mile, ft] */
-export const PROFILE: [number, number][] = [
-  [0, 9360], [3, 10400], [5.5, 11423], [8, 10200], [12, 9000], [16, 8050], [18, 7700], [22, 8400],
-  [26.3, 9200], [32, 10300], [36.5, 11400], [38, 11955], [41, 10000], [44.6, 8700], [48, 9800],
-  [53.2, 11300], [55, 11972], [58, 10800], [61.4, 9768],
-];
+import { terrainAt, terrainProfile } from "@/lib/topo/terrain";
+import { PROFILE } from "./profile";
 
+export { NAMED_POINTS, PROFILE } from "./profile";
+
+export const TERRAIN_SEED = 61;
+
+/** The drawn terrain: dense samples that pass through every surveyed point. Every elevation graphic uses this. */
+export const TERRAIN = terrainProfile(PROFILE, 10, TERRAIN_SEED);
+
+/** Elevation at a mile, read from the same terrain the profiles draw, so readouts match the line. */
 export function elevationAt(mile: number): number {
-  const p = PROFILE;
-  if (mile <= p[0][0]) return p[0][1];
-  for (let i = 1; i < p.length; i++) {
-    if (mile <= p[i][0]) {
-      const [m0, e0] = p[i - 1];
-      const [m1, e1] = p[i];
-      return e0 + ((mile - m0) / (m1 - m0)) * (e1 - e0);
-    }
-  }
-  return p[p.length - 1][1];
+  return terrainAt(PROFILE, mile, TERRAIN_SEED);
 }
 
 export interface Day {
