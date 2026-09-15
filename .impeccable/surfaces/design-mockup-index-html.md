@@ -35,3 +35,9 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 - Real app screenshots replace the placeholders.
 - Pricing is not stated anywhere; the page makes no free or paid claim.
 - Whether launch email needs a confirmation step (Task 18 gate).
+
+## Recorded adaptations (after the first finish review, 2026-09-15)
+- FIRST VIEWPORT: instead of the slim rail, the desktop hero shows the same instrument at hero scale: the route's elevation profile with its six place annotations, a 7-day pack weight strip, and the you-are-here dot at mile 0. On scroll it condenses into the slim pinned rail. The first viewport carries the mechanism rather than a bare rail. Mobile reflows the instrument below the form, and the headline still carries STORY.
+- Category colors: the gear data uses the app's own category palette, which is brand-pinned: "Category palette is unchanged from the app (shelter forest #4C6444, sleep twilight #6B5B8F, pack brown #8F6E5B, clothing moss #7B8F5A, water blue #3A5E8C, cooking ember #C05B3A, electronics yellow #C9A227, misc gray) and appears in every chart" (bxpk/docs/design/DESIGN_DECISIONS.md). Moss carries every non-category data series. Categories appear as short tick marks or round swatches (the app's "category tick marks"), never as full-height side stripes.
+- Amber marks route events as well as the route: the resupply marker is the resupply stop on the route, drawn wherever that day appears.
+- Contours: terrain is drawn as isolines of one height field (two summits at the app ContourPanel's two centers), so lines nest and never cross. This matches the app's two-center motif without the crossing mesh.
