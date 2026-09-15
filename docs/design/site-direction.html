@@ -183,7 +183,7 @@
       <p>The rings are the app's ContourPanel geometry exactly: 1.9 to 1 ellipses around two off-canvas centers, (0.22 w, 1.45 h) every 17 px and (0.95 w, -0.55 h) every 21 px. Points sit along each ring about 7 px apart and the ring is drawn through them, so the contour line itself bends.</p>
       <ul>
         <li><strong>Reach</strong> grows from 70 px with a still pointer to 320 px at full speed.</li>
-        <li><strong>Push</strong> grows from a gentle 0.6 to about 6 times that with speed, plus a drag along the pointer's direction, so a fast swipe leaves a wake.</li>
+        <li><strong>Push</strong> grows from a gentle 0.6 px/frame² to 6.0 px/frame² with speed, plus a drag along the pointer's direction, so a fast swipe leaves a wake.</li>
         <li><strong>Spring</strong> pulls every point home with light damping: a soft wobble, never a bounce.</li>
         <li><strong>iPhone:</strong> a tap sends a ripple out from the finger, a sideways drag bends the lines, and vertical swipes still scroll the page.</li>
         <li>Lines under the headline stay quiet until disturbed, so the text stays easy to read. The loop sleeps once the field settles and pauses off screen.</li>
@@ -344,7 +344,7 @@
   .ring { width: 8.5rem; height: 8.5rem; position: relative; }
   .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
   .ring .c { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
-  .ring .c b { font: 500 1.375rem/1 var(--display); }
+  .ring .c b { font: 500 1.125rem/1.1 var(--display); white-space: nowrap; }
   .ring .c span { font-size: .75rem; color: var(--muted); }
   .macro { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; margin-top: .6rem; font-size: .9375rem; }
   .macro b { font-weight: 700; }
@@ -459,7 +459,7 @@
   .finger { display: flex; height: .6rem; border-radius: 3px; overflow: hidden; margin-top: .9rem; }
   .finger i { height: 100%; }
   .post p { margin-top: .9rem; }
-  .acts { display: flex; gap: .25rem; margin-top: .75rem; margin-left: -.6rem; color: var(--muted); }
+  .acts { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .75rem; margin-left: -.6rem; color: var(--muted); }
   .acts span { display: inline-flex; align-items: center; gap: .35rem; min-height: 44px; padding: 0 .6rem; font-weight: 700; font-size: .875rem; }
   .thread { padding: 1.1rem 1.25rem; margin-left: clamp(0rem, -2rem + 8vw, 4rem); }
   .chip { display: inline-flex; align-items: center; min-height: 1.6rem; padding: 0 .6rem; border-radius: 999px; background: var(--hero); color: var(--text); font-size: .8125rem; font-weight: 700; }
@@ -623,7 +623,7 @@
         </div>
       </div>
     </div>
-    <div class="anno-readout" aria-hidden="true">speed 0.00 px/ms · reach 70 px · push 0.60</div>
+    <div class="anno-readout" aria-hidden="true">speed 0.00 px/ms · reach 70 px · push 0.60 px/frame²</div>
   </section>
 
   <section class="section" id="features" aria-labelledby="feat-h">
@@ -648,7 +648,7 @@
             <div class="cat-h"><i class="dot"></i>Shelter<span class="num">1,146 g</span></div>
             <div class="row"><i class="tick"></i><span class="name">Two-person trekking pole tent</span><span class="role">Packed</span><span class="num">862 g</span></div>
             <div class="row"><i class="tick"></i><span class="name">Polycryo footprint</span><span class="role">Packed</span><span class="num">188 g</span></div>
-            <div class="row"><i class="tick"></i><span class="name">Titanium stakes, 8</span><span class="role">Packed</span><span class="num">96 g</span></div>
+            <div class="row"><i class="tick"></i><span class="name">8 titanium stakes</span><span class="role">Packed</span><span class="num">96 g</span></div>
           </div>
           <div class="cat" style="--c:var(--c-sleep)">
             <div class="cat-h"><i class="dot"></i>Sleep system<span class="num">1,372 g</span></div>
@@ -707,7 +707,7 @@
                 <circle cx="60" cy="60" r="50" fill="none" stroke="var(--accent)" stroke-width="10"/>
                 <circle cx="60" cy="60" r="50" fill="none" stroke="var(--amber)" stroke-width="10" stroke-dasharray="26.2 314.2" stroke-linecap="round"/>
               </svg>
-              <div class="c num"><b>3,250</b><span>of 3,000 kcal</span></div>
+              <div class="c num"><b>3,250 kcal</b><span>of 3,000 kcal</span></div>
             </div>
             <div>
               <span class="lbl">Day 2 of 7</span>
@@ -887,7 +887,7 @@
           <div class="lead-num"><b>4.21 kg</b><span class="down"><svg class="i" aria-hidden="true"><use href="#i-down"/></svg>0.64 kg lighter since June</span></div>
           <div class="finger" role="img" aria-label="Category breakdown: shelter 27%, sleep system 31%, pack 16%, clothing 14%, cooking 7%, other 5%"><i style="width:27%;background:var(--c-shelter)"></i><i style="width:31%;background:var(--c-sleep)"></i><i style="width:16%;background:var(--c-pack)"></i><i style="width:14%;background:var(--c-clothing)"></i><i style="width:7%;background:var(--c-cooking)"></i><i style="width:5%;background:var(--c-misc)"></i></div>
           <p>Swapped the freestanding tent for a trekking pole shelter and finally left the second fleece at home.</p>
-          <div class="acts"><span><svg class="i" aria-hidden="true"><use href="#i-up"/></svg>48</span><span><svg class="i" aria-hidden="true"><use href="#i-comment"/></svg>12</span><span><svg class="i" aria-hidden="true"><use href="#i-save"/></svg>Save</span></div>
+          <div class="acts"><span><svg class="i" aria-hidden="true"><use href="#i-up"/></svg>48 votes</span><span><svg class="i" aria-hidden="true"><use href="#i-comment"/></svg>12 comments</span><span><svg class="i" aria-hidden="true"><use href="#i-save"/></svg>Save</span></div>
         </article>
         <article class="panel thread" data-reveal="below" style="--d:150ms">
           <span class="chip">Shelters forum</span>
@@ -1174,7 +1174,7 @@
       }
       ptr.vx *= 0.9; ptr.vy *= 0.9; ptr.burst *= 0.8;
       draw();
-      if (readout) readout.textContent = `speed ${(speed / 16.67).toFixed(2)} px/ms · reach ${Math.round(reach)} px · push ${push.toFixed(2)}`;
+      if (readout) readout.textContent = `speed ${(speed / 16.67).toFixed(2)} px/ms · reach ${Math.round(reach)} px · push ${push.toFixed(2)} px/frame²`;
       canvas.dataset.energy = energy.toFixed(1);
       canvas.dataset.frames = (+canvas.dataset.frames || 0) + 1;
       if (energy > 0.5 || speed > 0.2 || ptr.burst > 0.01) requestAnimationFrame(step);
