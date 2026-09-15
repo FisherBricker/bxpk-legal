@@ -1,12 +1,12 @@
 ---
 import { SITE } from '../site.config';
+import { canonicalPath } from '../lib/paths';
 interface Props { title: string; description?: string }
 const { title, description = SITE.description } = Astro.props;
 const fullTitle = title === SITE.appName ? title : `${title} · ${SITE.appName}`;
 // `build.format: 'file'` makes Astro.url.pathname end in .html (or /index.html for the home
 // page); strip that so the canonical matches the clean URL the sitemap lists.
-const canonicalPath = Astro.url.pathname.replace(/(?:index)?\.html$/, '');
-const canonical = new URL(canonicalPath, Astro.site);
+const canonical = new URL(canonicalPath(Astro.url.pathname), Astro.site);
 ---
 <!doctype html>
 <html lang="en">
