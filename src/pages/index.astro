@@ -1,0 +1,12 @@
+---
+import Prose from '../layouts/Prose.astro';
+import { withBase } from '../lib/paths';
+---
+<Prose title="Backpack Weight Tracker">
+  <h1>Backpack Weight Tracker</h1>
+  <ul>
+    <li><a href={withBase('/privacy')}>Privacy Policy</a></li>
+    <li><a href={withBase('/terms')}>Terms of Service</a></li>
+    <li><a href={withBase('/support')}>Support</a></li>
+  </ul>
+</Prose>

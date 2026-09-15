@@ -1,0 +1,15 @@
+---
+import { getCollection, render } from 'astro:content';
+import Prose from '../layouts/Prose.astro';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('legal');
+  return docs.map((doc) => ({ params: { legal: doc.id }, props: { doc } }));
+}
+
+const { doc } = Astro.props;
+const { Content } = await render(doc);
+---
+<Prose title={doc.data.title}>
+  <Content />
+</Prose>
