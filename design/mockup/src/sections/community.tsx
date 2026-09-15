@@ -3,6 +3,7 @@ import { DragRail } from "@/components/kokonutui/carousel-cards";
 import { PlainSection, SectionHeading } from "@/components/layout";
 import { Enter } from "@/components/motion-helpers";
 import { useIsDesktop } from "@/lib/hooks";
+import { formatWeight } from "@/data/trip";
 
 type Fingerprint = [string, number][];
 
@@ -11,7 +12,8 @@ interface RegisterPost {
   initials: string;
   when: string;
   kind: string;
-  baseKg: string;
+  /** Base weight in grams, shown through formatWeight. */
+  baseG: number;
   delta?: string;
   title?: string;
   note: string;
@@ -26,8 +28,8 @@ const POSTS: RegisterPost[] = [
     initials: "JW",
     when: "2 h ago",
     kind: "Posted a loadout",
-    baseKg: "4.21 kg",
-    delta: "0.64 kg lighter since June",
+    baseG: 4210,
+    delta: `${formatWeight(640)} lighter since June`,
     note: "Swapped the freestanding tent for a trekking pole shelter and finally left the second fleece at home.",
     votes: 48,
     comments: 12,
@@ -38,9 +40,9 @@ const POSTS: RegisterPost[] = [
     initials: "RF",
     when: "5 h ago",
     kind: "Shelters forum",
-    baseKg: "5.34 kg",
+    baseG: 5340,
     title: "Trekking pole tent or freestanding for the Sierra in October?",
-    note: "Cold nights and granite pads. Base weight 5.34 kg now, and the tent is the biggest line on it.",
+    note: `Cold nights and granite pads. Base weight ${formatWeight(5340)} now, and the tent is the biggest line on it.`,
     votes: 23,
     comments: 31,
     fingerprint: [["shelter", 30], ["sleep", 27], ["pack", 16], ["clothing", 12], ["cooking", 7], ["water", 4], ["electronics", 3], ["misc", 1]],
@@ -50,9 +52,9 @@ const POSTS: RegisterPost[] = [
     initials: "HR",
     when: "1 d ago",
     kind: "Posted a loadout",
-    baseKg: "4.88 kg",
-    delta: "Food at 0.68 kg per day",
-    note: "Got food down to 0.68 kg per day at 3,100 kcal by trading dinner potatoes for olive oil and tortillas.",
+    baseG: 4880,
+    delta: `Food at ${formatWeight(680)} per day`,
+    note: `Got food down to ${formatWeight(680)} per day at 3,100 kcal by trading dinner potatoes for olive oil and tortillas.`,
     votes: 36,
     comments: 9,
     fingerprint: [["shelter", 24], ["sleep", 28], ["pack", 17], ["clothing", 13], ["cooking", 9], ["water", 4], ["electronics", 4], ["misc", 1]],
@@ -62,9 +64,9 @@ const POSTS: RegisterPost[] = [
     initials: "TC",
     when: "2 d ago",
     kind: "Resupply forum",
-    baseKg: "5.02 kg",
-    title: "Is 4.73 kg too much food for 5 days out of a Muir Trail Ranch bucket?",
-    note: "Planning 900 g per day plus one 230 g canister. Would you cut a day of snacks or carry it?",
+    baseG: 5020,
+    title: `Is ${formatWeight(4730)} too much food for 5 days out of a Muir Trail Ranch bucket?`,
+    note: `Planning ${formatWeight(900)} per day plus one ${formatWeight(230)} canister. Would you cut a day of snacks or carry it?`,
     votes: 11,
     comments: 17,
     fingerprint: [["shelter", 25], ["sleep", 26], ["pack", 18], ["clothing", 12], ["cooking", 9], ["water", 5], ["electronics", 3], ["misc", 2]],
@@ -74,9 +76,9 @@ const POSTS: RegisterPost[] = [
     initials: "AA",
     when: "3 d ago",
     kind: "Posted a gear swap",
-    baseKg: "4.47 kg",
-    delta: "0.21 kg lighter since May",
-    note: "Traded the 1.1 L pot set for a 750 mL titanium pot and a long spoon. Same dinners, 214 g gone.",
+    baseG: 4470,
+    delta: `${formatWeight(210)} lighter since May`,
+    note: `Traded the 1.1 L pot set for a 750 mL titanium pot and a long spoon. Same dinners, ${formatWeight(214)} gone.`,
     votes: 29,
     comments: 6,
     fingerprint: [["shelter", 26], ["sleep", 29], ["pack", 18], ["clothing", 11], ["cooking", 7], ["water", 5], ["electronics", 3], ["misc", 1]],
@@ -121,7 +123,7 @@ function RegisterCard({ post }: { post: RegisterPost }) {
           </div>
         </header>
         <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="font-display text-[2.125rem] leading-none font-medium tnum">{post.baseKg}</span>
+          <span className="font-display text-[2.125rem] leading-none font-medium tnum">{formatWeight(post.baseG)}</span>
           <span className="text-sm text-ink-muted">base weight</span>
         </div>
         {post.delta ? (
@@ -165,7 +167,7 @@ export function Community() {
           <SectionHeading
             body="Post a loadout with its base weight and category breakdown, ask the forums about a shelter, and see what your friends cut before the season starts."
             id="community-heading"
-            title="A trail community that talks in grams"
+            title="A trail community that counts every ounce"
           />
           <p className="mt-5 inline-flex items-center rounded-full border border-line px-3 py-1 text-sm font-bold text-ink-muted">
             Sample posts

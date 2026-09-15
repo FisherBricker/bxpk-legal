@@ -11,30 +11,35 @@ import { YAxis } from "@/components/charts/y-axis";
 import { Neatline, RouteColumn, RouteSection, SectionHeading } from "@/components/layout";
 import { Enter, MountInView } from "@/components/motion-helpers";
 import { Waypoint } from "@/components/route";
-import { GOAL_KG, SEASONS } from "@/data/trip";
+import { formatWeight, GOAL_G, SEASONS } from "@/data/trip";
+import { toPounds } from "@/lib/units";
 import { useIsDesktop, useReduced } from "@/lib/hooks";
 
-const ROWS = SEASONS.map((season) => ({ date: season.date, kg: season.kg }));
+// Plotted in pounds; labels go through formatWeight.
+const ROWS = SEASONS.map((season) => ({ date: season.date, lb: toPounds(season.g) }));
+const GOAL_LB = toPounds(GOAL_G);
+/** Round pound ticks; the axis does not start at zero, and the chart says so. */
+const LB_TICKS = [8, 9, 10, 11, 12, 13, 14];
 
 const PROJECTION = buildProjectionPath({
   sourceData: ROWS,
-  seriesKey: "kg",
+  seriesKey: "lb",
   mode: "target",
-  endValue: GOAL_KG,
+  endValue: GOAL_LB,
   horizonPoints: 4,
 });
 
 const SWAPS = [
-  { date: SEASONS[2].date, title: "Tent swap, 680 g lighter" },
-  { date: SEASONS[3].date, title: "Quilt for sleeping bag, 410 g lighter" },
+  { date: SEASONS[2].date, title: `Tent swap, ${formatWeight(680)} lighter` },
+  { date: SEASONS[3].date, title: `Quilt for sleeping bag, ${formatWeight(410)} lighter` },
 ];
 
 function GoalLabel() {
   const { yScale } = useChartStable();
-  const y = yScale(GOAL_KG) ?? 0;
+  const y = yScale(GOAL_LB) ?? 0;
   return (
     <text fill="var(--data)" fontSize="12" fontWeight="700" x={8} y={y - 8}>
-      Goal: 4.00 kg
+      Goal: {formatWeight(GOAL_G)}
     </text>
   );
 }
@@ -75,25 +80,25 @@ export function Seasons() {
               </div>
               <MountInView className="mt-3" minHeight={240}>
                 <div
-                  aria-label="Base weight by season, sample profile: Spring 2025 5.88 kg, Summer 2025 5.41 kg, Fall 2025 5.10 kg after a tent swap 680 g lighter, Spring 2026 4.87 kg after swapping a sleeping bag for a quilt 410 g lighter, Summer 2026 4.62 kg. Projected toward a 4.00 kg goal."
+                  aria-label={`Base weight by season, sample profile: ${SEASONS.map((s, i) => `${s.label} ${formatWeight(s.g)}${i === 2 ? ` after a tent swap ${formatWeight(680)} lighter` : i === 3 ? ` after swapping a sleeping bag for a quilt ${formatWeight(410)} lighter` : ""}`).join(", ")}. Projected toward a ${formatWeight(GOAL_G)} goal.`}
                   role="img"
                 >
                   <LineChart
                     animationDuration={reduced ? 0 : 1400}
                     aspectRatio={isDesktop ? "21 / 8" : "4 / 3"}
                     data={ROWS}
-                    yDomain={[3.5, 6.5]}
+                    yDomain={[8, 14]}
                     margin={{ top: 30, right: 24, bottom: 36, left: 52 }}
                   >
                     <Grid
                       highlightRowStroke="var(--data)"
                       highlightRowStrokeDasharray="5,4"
                       highlightRowStrokeWidth={1.5}
-                      highlightRowValues={[GOAL_KG]}
-                      rowTickValues={[3.5, 4, 4.5, 5, 5.5, 6, 6.5]}
+                      highlightRowValues={[GOAL_LB]}
+                      rowTickValues={LB_TICKS}
                     />
-                    <YAxis formatValue={(value) => `${value} kg`} numTicks={6} />
-                    <Line dataKey="kg" fadeEdges={false} showMarkers stroke="var(--data)" strokeWidth={2.5} />
+                    <YAxis formatValue={(value) => `${value} lb`} numTicks={6} />
+                    <Line dataKey="lb" fadeEdges={false} showMarkers stroke="var(--data)" strokeWidth={2.5} />
                     <ProjectionLine data={PROJECTION} stroke="var(--data)" strokeDasharray="5,5" />
                     <GoalLabel />
                     <ChartMarkers
@@ -109,7 +114,7 @@ export function Seasons() {
                   </LineChart>
                 </div>
               </MountInView>
-              <p className="mt-2 text-xs text-fg-muted">Axis starts at 3.5 kg</p>
+              <p className="mt-2 text-xs text-fg-muted">Axis starts at 8 lb</p>
             </div>
         </Enter>
       </RouteColumn>

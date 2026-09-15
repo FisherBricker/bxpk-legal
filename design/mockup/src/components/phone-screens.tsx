@@ -1,6 +1,6 @@
 import { ContourRings } from "@/components/kokonutui/background-paths";
 import { Phone, ScreenBars, ScreenCard, ScreenRow, ScreenTabBar, ScreenTitle } from "@/components/phone";
-import { CATEGORIES, catTotal, DAYS, fmtInt, SEASONS } from "@/data/trip";
+import { CATEGORIES, catTotal, DAYS, fmtInt, formatWeight, GOAL_G, RESUPPLY, SEASONS, TRIP } from "@/data/trip";
 
 export type ScreenId = "trip" | "itinerary" | "resupply" | "route" | "base";
 
@@ -11,11 +11,11 @@ export type ScreenId = "trip" | "itinerary" | "resupply" | "route" | "base";
 export const SCREEN_IMAGES: Partial<Record<ScreenId, string>> = {};
 
 export const SCREEN_LABEL: Record<ScreenId, string> = {
-  trip: "Trip, sample trip with base weight 4.62 kg",
+  trip: `Trip, sample trip with base weight ${formatWeight(TRIP.baseG)}`,
   itinerary: "Itinerary, seven days with miles, elevation gain and water",
   resupply: "Resupply at Muir Trail Ranch on day 3",
   route: "Route recording, a point every 15 s",
-  base: "Base weight 4.62 kg against a 4.00 kg goal",
+  base: `Base weight ${formatWeight(TRIP.baseG)} against a ${formatWeight(GOAL_G)} goal`,
 };
 
 function Strip({ items }: { items: [string, string][] }) {
@@ -49,23 +49,23 @@ function TripScreen() {
       <ScreenTitle sub="Trips" title="Sample trip" />
       <ScreenCard className="mb-3 px-4 py-3">
         <div className="text-[13px] font-bold tracking-[0.06em] text-ink-muted uppercase">Base weight</div>
-        <div className="font-display text-[34px] leading-none font-medium tnum">4.62 kg</div>
+        <div className="font-display text-[34px] leading-none font-medium tnum">{formatWeight(TRIP.baseG)}</div>
         <div className="mt-1 text-[13px] text-ink-muted">7 days, 61.4 mi</div>
       </ScreenCard>
       <Strip
         items={[
-          ["1.18 kg", "Worn"],
-          ["4.60 kg", "Consumables"],
-          ["9.22 kg", "Pack"],
-          ["10.40 kg", "Skin-out"],
+          [formatWeight(TRIP.wornG), "Worn"],
+          [formatWeight(DAYS[0].foodG + DAYS[0].waterG + DAYS[0].fuelG), "Consumables"],
+          [formatWeight(DAYS[0].packG), "Pack"],
+          [formatWeight(DAYS[0].skinOutG), "Skin-out"],
         ]}
       />
       {shown.map((category) => (
         <div key={category.id}>
-          <SectionLabel>{`${category.label}, ${fmtInt(catTotal(category))} g`}</SectionLabel>
+          <SectionLabel>{`${category.label}, ${formatWeight(catTotal(category))}`}</SectionLabel>
           <ScreenCard>
             {category.items.map((item) => (
-              <ScreenRow key={item.name} left={item.name} right={`${fmtInt(item.g)} g`} />
+              <ScreenRow key={item.name} left={item.name} right={formatWeight(item.g)} />
             ))}
           </ScreenCard>
         </div>
@@ -85,8 +85,8 @@ function ItineraryScreen() {
           <ScreenRow
             key={day.day}
             left={`Day ${day.day}`}
-            note={`${day.miles.toFixed(1)} mi, ${fmtInt(day.gainFt)} ft`}
-            right={`${day.water.toFixed(1)} L`}
+            note={`${day.miles.toFixed(1)} mi, ${day.gainFt.toFixed(0)} ft`}
+            right={`${day.waterL.toFixed(1)} L`}
           />
         ))}
       </ScreenCard>
@@ -107,21 +107,20 @@ function ResupplyScreen() {
       <ScreenTitle sub="Resupply" title="Muir Trail Ranch, Day 3" />
       <ScreenCard className="mb-1 px-4 py-3">
         <div className="text-[13px] font-bold tracking-[0.06em] text-ink-muted uppercase">Picked up</div>
-        <div className="font-display text-[34px] leading-none font-medium tnum">+4.73 kg</div>
+        <div className="font-display text-[34px] leading-none font-medium tnum">+{formatWeight(RESUPPLY.pickupG)}</div>
         <div className="mt-1 text-[13px] text-ink-muted">Bucket pickup, mile 18.0</div>
       </ScreenCard>
       <SectionLabel>In the bucket</SectionLabel>
       <ScreenCard>
-        <ScreenRow left="Breakfasts" note="5 days" right="0.70 kg" />
-        <ScreenRow left="Lunches" note="5 days" right="0.95 kg" />
-        <ScreenRow left="Dinners" note="5 days" right="1.15 kg" />
-        <ScreenRow left="Snacks" note="5 days" right="1.70 kg" />
-        <ScreenRow left="Fuel canister" right="230 g" />
+        {RESUPPLY.bucket.map((slot) => (
+          <ScreenRow key={slot.label} left={slot.label} note="5 days" right={formatWeight(slot.g)} />
+        ))}
+        <ScreenRow left="Fuel canister" right={formatWeight(RESUPPLY.fuelG)} />
       </ScreenCard>
       <SectionLabel>Pack weight</SectionLabel>
       <ScreenCard>
-        <ScreenRow left="Leaving day 2" right="8.76 kg" />
-        <ScreenRow left="Leaving day 3" right="12.03 kg" />
+        <ScreenRow left="Leaving day 2" right={formatWeight(DAYS[1].packG)} />
+        <ScreenRow left="Leaving day 3" right={formatWeight(DAYS[2].packG)} />
       </ScreenCard>
       <ScreenBars />
       <ScreenTabBar active={0} />
@@ -149,7 +148,7 @@ function RouteScreen() {
       <SectionLabel>Splits</SectionLabel>
       <ScreenCard>
         {DAYS.slice(0, 4).map((day) => (
-          <ScreenRow key={day.day} left={`Day ${day.day}`} note={`${fmtInt(day.gainFt)} ft`} right={`${day.miles.toFixed(1)} mi`} />
+          <ScreenRow key={day.day} left={`Day ${day.day}`} note={`${day.gainFt.toFixed(0)} ft`} right={`${day.miles.toFixed(1)} mi`} />
         ))}
       </ScreenCard>
       <ScreenBars />
@@ -163,22 +162,22 @@ function BaseWeightScreen() {
     <>
       <ScreenTitle sub="Profile" title="Base weight" />
       <ScreenCard className="mb-3 px-4 py-4 text-center">
-        <div className="font-display text-[46px] leading-none font-medium tnum">4.62 kg</div>
-        <div className="mt-2 text-[14px] text-ink-muted">0.62 kg to your 4.00 kg goal</div>
+        <div className="font-display text-[46px] leading-none font-medium tnum">{formatWeight(TRIP.baseG)}</div>
+        <div className="mt-2 text-[14px] text-ink-muted">{formatWeight(TRIP.baseG - GOAL_G)} to your {formatWeight(GOAL_G)} goal</div>
       </ScreenCard>
       <div aria-hidden="true" className="flex h-24 shrink-0 items-end gap-2">
         {SEASONS.map((season, i) => (
           <span
             className="flex-1 rounded-t-sm"
             key={season.label}
-            style={{ height: `${(season.kg / 5.88) * 100}%`, background: "var(--moss)", opacity: i === 4 ? 1 : 0.45 }}
+            style={{ height: `${(season.g / SEASONS[0].g) * 100}%`, background: "var(--moss)", opacity: i === 4 ? 1 : 0.45 }}
           />
         ))}
       </div>
       <SectionLabel>Seasons</SectionLabel>
       <ScreenCard>
         {[...SEASONS].reverse().map((season) => (
-          <ScreenRow key={season.label} left={season.label} right={`${season.kg.toFixed(2)} kg`} />
+          <ScreenRow key={season.label} left={season.label} right={formatWeight(season.g)} />
         ))}
       </ScreenCard>
       <ScreenBars />

@@ -69,7 +69,7 @@ export function News() {
                 Find your heaviest day before you leave
               </h4>
               <p className="mt-2 text-ink-muted">
-                Food and water swing a pack by several kilograms over a week. How the day-by-day chart shows where the
+                Food and water swing a pack by several pounds over a week. How the day-by-day chart shows where the
                 weight lands, and what to move when a resupply day runs heavy.
               </p>
             </div>

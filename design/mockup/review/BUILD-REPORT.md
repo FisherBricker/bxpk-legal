@@ -242,3 +242,32 @@ Project: `design/mockup/` on `design/site-direction`. Build: `npm run build` (Ty
 - **Legibility:** behind the hero copy and the close copy, line segments now draw at a lower alpha (0.10, or 0.07 at night), on top of the existing quiet rest dots.
 - **Portable spec:** `TERRAIN-SPEC.md` gives every step, constant, the case table, the saddle rule, joining order, pruning, smoothing, the site settings and the golden vectors.
 - **Verification:** `npm run build` passes with TypeScript clean. `desktop-first-viewport.png`, `mobile-first-viewport.png` and `desktop.png` were recaptured, plus crops `review/terrain-hero-crop.png` and `review/terrain-paper-crop.png`. They read as a quadrangle: a long ridge with a bunched face across the hero, spurs and saddles, and open benches on the paper sheet.
+
+## Imperial units
+- **One formatter:** every weight is stored in grams in `src/data/trip.ts` and shown through `formatWeight` (`src/lib/units.ts`), which mirrors `UnitConversion.displayString` for imperial: `%.2f lb` from 453.59237 g up, `%.1f oz` below, 28.349523125 g per oz.
+  - `node scripts/check-units.ts` passes all 7 required cases, plus the 1 lb boundary.
+  - Water stays `%.1f L` (TripItineraryView), boil water stays whole mL, and the meal plan's day row keeps macros and food in whole grams (MealPlanView), exactly as the app shows them in imperial. Single food items use `displayString`, so they read in oz.
+- **Charts:** they plot in pounds.
+  - The resupply axis uses round ticks at 0, 10, 20 and 30 lb.
+  - The seasons axis runs 8 to 14 lb, with the note "Axis starts at 8 lb" and the goal at 8.82 lb.
+- **Aligned with the seeded showcase account:**
+  - Day 2 food is 900 g (breakfast 155 g, lunch 211 g, dinner 255 g, snacks 279 g).
+  - The resupply bucket is split from the seeded days 3 to 7: breakfasts 775 g, lunches 1,111 g, dinners 1,235 g, snacks 1,379 g, plus the 230 g canister.
+  - Worn items (wind shirt, trail runners, trekking poles, sun hat) sit under Clothing, with base weight still 10.19 lb.
+  - Gear names match the seed ("Insulated air pad, regular"; "Power bank, 10,000 mAh"), and the saved pack is "Sierra summer kit".
+  - Shared gear is Rowan Ashford with Petra Lindqvist and Cedar Finch. Every seat is claimed, so the seats are shown, not claimable. The filter is 2 of 2 at 1.5 oz each. "Rowan carries 1.81 lb, 2.26 lb less than going solo." rolls once on entry.
+  - The phone itinerary shows elevation gain as the app does (`%.0f ft`, no separator).
+- **Copy:**
+  - hero: "down to the last ounce"
+  - gear: "down to the last ounce", plus the line "Weights in ounces or grams, your choice."
+  - community: "counts every ounce"
+  - news: "several pounds"
+  - meals: "food weight"
+- **Remaining metric mentions in `src/` (by design):**
+  - The meal day row: "118 g", "402 g", "131 g", "900 g" food, "1,450 mL". The app prints these in grams and mL in both unit systems.
+  - Item names as the app data names them: "Stove, pot and 230 g fuel canister", "750 mL titanium pot", "Two 1 L bottles", "55 L frameless pack", and "1.1 L pot set" in a sample post.
+  - "Weights in ounces or grams, your choice."
+  - Code comments and variable names (`g`, `foodG` and similar) describing gram storage.
+  - bklit chart source internals (untouched).
+  - "812" appears nowhere.
+- **Verification:** `npm run build` passes with TypeScript clean. The isolines (0 crossings), terrain and units checks pass. `desktop.png`, `mobile.png` and `desktop-first-viewport.png` were recaptured and opened, with a clean console.

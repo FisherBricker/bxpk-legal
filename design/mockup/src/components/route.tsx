@@ -1,7 +1,7 @@
 import { motion, useMotionValue, useMotionValueEvent, useScroll } from "motion/react";
 import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { type RailBox, type Readout, TripProfile } from "@/components/trip-profile";
-import { DAYS, dayOnTrail, elevationAt, fmtInt, walkDay } from "@/data/trip";
+import { DAYS, dayOnTrail, elevationAt, fmtInt, formatWeight, walkDay } from "@/data/trip";
 import { CAPTURE, useMedia, useReduced } from "@/lib/hooks";
 
 export interface WaypointDef {
@@ -121,7 +121,7 @@ const EMPTY: Measured = {
   heroHeight: 1,
 };
 
-const START: Readout = { mile: 0, ft: 9360, day: 1, pack: DAYS[0].pack };
+const START: Readout = { mile: 0, ft: 9360, day: 1, packG: DAYS[0].packG };
 
 /**
  * The rail reads the waypoint whose heading sits at the viewport's vertical
@@ -134,7 +134,7 @@ function readoutAt(center: number, scroll: number, vh: number, m: Measured): Rea
   if (pin && center >= pin.top + vh / 2 && center <= pin.top + pin.height - vh / 2) {
     const progress = (scroll - pin.top) / Math.max(1, pin.height - vh);
     const day = DAYS[walkDay(progress) - 1];
-    return { mile: day.startMi, ft: elevationAt(day.startMi), day: day.day, pack: day.pack };
+    return { mile: day.startMi, ft: elevationAt(day.startMi), day: day.day, packG: day.packG };
   }
   const f = m.frames;
   if (!f.length || center <= f[0].y) return START;
@@ -152,7 +152,7 @@ function readoutAt(center: number, scroll: number, vh: number, m: Measured): Rea
   // Read ft from the drawn terrain, so the number matches the line under the dot.
   const ft = elevationAt(mile);
   const day = dayOnTrail(mile);
-  return { mile, ft, day: day.day, pack: day.pack };
+  return { mile, ft, day: day.day, packG: day.packG };
 }
 
 export function RouteLine({ children }: { children: React.ReactNode }) {
@@ -362,7 +362,7 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
           </div>
           <motion.div animate={{ opacity: status.inRoute ? 1 : 0 }} className="mt-2 flex justify-center" initial={{ opacity: 0 }} transition={{ duration: 0.3 }}>
             <span className="map-label rounded-full border border-line bg-paper/95 px-3 py-1.5 text-ink shadow-sm">
-              Day {readout.day}, mile {readout.mile.toFixed(1)}, {readout.pack.toFixed(2)} kg
+              Day {readout.day}, mile {readout.mile.toFixed(1)}, {formatWeight(readout.packG)}
             </span>
           </motion.div>
         </div>
@@ -435,7 +435,7 @@ export function TripProfileStatic() {
   const plot = { x0: 6, x1: w - 6, y0: 66, y1: h * 0.66 };
   const strip = { x0: 6, x1: w - 6, y0: h * 0.66 + 40, y1: h };
   return (
-    <svg aria-label="Sample trip profile: 61.4 mi from North Lake to South Lake over Piute Pass 11,423 ft, Muir Pass 11,955 ft and Bishop Pass 11,972 ft, with pack weight from 9.22 kg on day 1 to 12.03 kg on day 3 after the Muir Trail Ranch resupply and 7.69 kg on day 7." className="h-auto w-full overflow-visible" role="img" viewBox={`0 0 ${w} ${h}`}>
+    <svg aria-label={`Sample trip profile: 61.4 mi from North Lake to South Lake over Piute Pass 11,423 ft, Muir Pass 11,955 ft and Bishop Pass 11,972 ft, with pack weight from ${formatWeight(DAYS[0].packG)} on day 1 to ${formatWeight(DAYS[2].packG)} on day 3 after the Muir Trail Ranch resupply and ${formatWeight(DAYS[6].packG)} on day 7.`} className="h-auto w-full overflow-visible" role="img" viewBox={`0 0 ${w} ${h}`}>
       <TripProfile plot={plot} rail={{ x0: 0, width: 1, y0: 0, y1: 1 }} readout={START} compact strip={strip} t={0} textScale={1.3} />
     </svg>
   );

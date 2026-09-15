@@ -11,7 +11,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ChevronDown } from "lucide-react";
-import { type Category, catTotal, fmtInt } from "@/data/trip";
+import { type Category, catTotal, formatWeight } from "@/data/trip";
 import { cn } from "@/lib/utils";
 
 interface GearCardStackProps {
@@ -79,9 +79,12 @@ export function GearCardStack({
                   <span className="font-bold whitespace-nowrap">{category.label}</span>
                   <span className="text-xs text-fg-muted tnum sm:ml-auto sm:text-sm">
                     {category.items.length} {category.items.length === 1 ? "item" : "items"}
+                    {category.items.some((item) => item.role === "Worn")
+                      ? `, ${category.items.filter((item) => item.role === "Worn").length} worn`
+                      : ""}
                   </span>
                 </span>
-                <span className="w-[4.75rem] text-right font-bold tnum">{fmtInt(total)} g</span>
+                <span className="w-[4.75rem] text-right font-bold tnum">{formatWeight(total)}</span>
                 <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={spring}>
                   <ChevronDown aria-hidden="true" className="h-4 w-4 text-fg-muted" strokeWidth={1.75} />
                 </motion.span>
@@ -105,7 +108,7 @@ export function GearCardStack({
                         >
                           <span className="min-w-0 flex-1 leading-snug">{item.name}</span>
                           <span className="map-label text-fg-muted">{item.role}</span>
-                          <span className="w-[4.75rem] text-right font-bold tnum">{fmtInt(item.g)} g</span>
+                          <span className="w-[4.75rem] text-right font-bold tnum">{formatWeight(item.g)}</span>
                         </li>
                       ))}
                     </ul>

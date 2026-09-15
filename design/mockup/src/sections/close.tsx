@@ -4,13 +4,14 @@ import { ContourPaths } from "@/components/kokonutui/background-paths";
 import { Mark, Wordmark } from "@/components/mark";
 import { PhonePreview } from "@/components/phone-screens";
 import { SignupForm } from "@/components/signup-form";
+import { DAYS, formatWeight, RESUPPLY } from "@/data/trip";
 import { TopoField } from "@/components/topo-field";
 import { EASE_EXPO } from "@/lib/hooks";
 
 const SUMMARY: [string, string][] = [
   ["7 days, 61.4 mi", "walked"],
-  ["7.69 kg", "at trail's end"],
-  ["4.73 kg", "picked up at Muir Trail Ranch"],
+  [formatWeight(DAYS[6].packG), "at trail's end"],
+  [formatWeight(RESUPPLY.pickupG), "picked up at Muir Trail Ranch"],
 ];
 
 /** The sample trip, closed out: the route line arriving at its amber end marker, a map tag and the Base weight screen. */

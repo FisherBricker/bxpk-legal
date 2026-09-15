@@ -5,7 +5,7 @@ import { GearCardStack } from "@/components/kokonutui/card-stack";
 import { Neatline, RouteColumn, RouteSection, SectionHeading } from "@/components/layout";
 import { Enter, MountInView } from "@/components/motion-helpers";
 import { Waypoint } from "@/components/route";
-import { CATEGORIES, catTotal, fmtInt } from "@/data/trip";
+import { CATEGORIES, catTotal, formatWeight, TRIP } from "@/data/trip";
 import { useReduced } from "@/lib/hooks";
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -38,9 +38,9 @@ export function GearList() {
       <RouteColumn className="pt-24 pb-20 lg:pt-32 lg:pb-28">
         <Waypoint id="gear" />
         <SectionHeading
-          body="Sort every item by category and mark it packed, worn or consumable. Base weight and skin-out weight update as you type. Group items into systems, save a whole pack, and load it onto a trip in one tap."
+          body="Sort every item by category and mark it packed, worn or consumable. Weights in ounces or grams, your choice. Base weight and skin-out weight update as you type. Group items into systems, save a whole pack, and load it onto a trip in one tap."
           id="gear-heading"
-          title="Your gear list, down to the gram"
+          title="Your gear list, down to the last ounce"
         />
         <div className="mt-12 grid items-start gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
           <Enter className="min-w-0" from="left">
@@ -52,10 +52,10 @@ export function GearList() {
               onHoveredChange={setHovered}
             />
             <p className="mt-6 text-sm text-fg-muted">
-              Worn, and not in base weight: wind shirt 58 g, trail runners 590 g, trekking poles 470 g, sun hat 62 g.
+              Worn items stay out of base weight: {formatWeight(TRIP.wornG)} of clothing, trail runners and trekking poles on this trip.
             </p>
             <p className="mt-2 text-sm text-fg-muted">
-              Saved as the pack &ldquo;Sierra summer&rdquo;, 4.62 kg, it loads onto the next trip in one tap.
+              Saved as the pack &ldquo;Sierra summer kit&rdquo;, {formatWeight(TRIP.baseG)}, it loads onto the next trip in one tap.
             </p>
           </Enter>
           <Enter className="min-w-0" from="right">
@@ -80,15 +80,15 @@ export function GearList() {
                 </PieChart>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
                   <span className="font-display text-[1.75rem] leading-none font-medium tnum">
-                    {active ? `${fmtInt(active.value)} g` : "4.62 kg"}
+                    {active ? formatWeight(active.value) : formatWeight(TRIP.baseG)}
                   </span>
                   <span className="mt-1 max-w-[9rem] text-sm text-fg-muted">
                     {active ? active.label : "base"}
                   </span>
                 </div>
               </MountInView>
-              <p className="sr-only" role="img" aria-label={`Category share of the 4,620 g base weight: ${slices
-                .map((slice) => `${slice.label} ${fmtInt(slice.value)} g`)
+              <p className="sr-only" role="img" aria-label={`Category share of the ${formatWeight(TRIP.baseG)} base weight: ${slices
+                .map((slice) => `${slice.label} ${formatWeight(slice.value)}`)
                 .join(", ")}.`} />
               <ul className="mt-5 grid grid-cols-1 gap-x-4 gap-y-1.5 text-sm min-[420px]:grid-cols-2">
                 {slices.map((slice, index) => (

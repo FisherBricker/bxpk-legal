@@ -80,7 +80,7 @@ export function Trailhead() {
             initial={{ opacity: 0.35, y: 14 }}
             transition={{ duration: 0.9, delay: 0.35, ease: EASE_EXPO }}
           >
-            Backpack Weight Tracker keeps your gear list in grams, then carries it through the whole trip:
+            Backpack Weight Tracker keeps your gear list down to the last ounce, then carries it through the whole trip:
             base weight, food, water and fuel for each day, resupply stops, and the gear your group splits.
           </motion.p>
           <motion.div

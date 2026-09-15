@@ -1,4 +1,4 @@
-import { DAYS, fmtInt, RESUPPLY, TERRAIN } from "@/data/trip";
+import { DAYS, fmtInt, formatWeight, RESUPPLY, TERRAIN } from "@/data/trip";
 
 /**
  * The trip instrument: the sample route's elevation profile with its day-by-day
@@ -26,13 +26,14 @@ export interface Readout {
   mile: number;
   ft: number;
   day: number;
-  pack: number;
+  /** Pack weight that day, in grams. */
+  packG: number;
 }
 
 const END_MILE = 61.4;
 const MIN_FT = 7400;
 const MAX_FT = 12200;
-const PEAK_PACK = 12.03;
+const PEAK_PACK_G = 12030;
 
 const NAMED = [
   { name: "Trailhead", mile: 0, ft: 9360, place: "below-start" },
@@ -148,7 +149,7 @@ export function TripProfile({ t: rawT, plot, strip, rail, readout, textScale = 1
         {DAYS.map((day) => {
           const [xa] = heroPoint(plot, day.startMi, 0);
           const [xb] = heroPoint(plot, day.startMi + day.miles, 0);
-          const h = (day.pack / PEAK_PACK) * stripH;
+          const h = (day.packG / PEAK_PACK_G) * stripH;
           const x = xa + 2;
           const w = Math.max(4, xb - xa - 4);
           const top = stripTop + stripH - h;
@@ -164,7 +165,7 @@ export function TripProfile({ t: rawT, plot, strip, rail, readout, textScale = 1
                 Day {day.day}
               </text>
               <text className="tnum" fill="var(--fg-muted)" fontSize={fs(11)} textAnchor={anchor} x={lx} y={stripTop + stripH + fs(28)}>
-                {day.pack.toFixed(2)} kg
+                {formatWeight(day.packG)}
               </text>
               </>
               ) : null}
@@ -173,7 +174,7 @@ export function TripProfile({ t: rawT, plot, strip, rail, readout, textScale = 1
         })}
         {(() => {
           const [x] = heroPoint(plot, RESUPPLY.mile, 0);
-          const top = stripTop + stripH - (DAYS[2].pack / PEAK_PACK) * stripH;
+          const top = stripTop + stripH - (DAYS[2].packG / PEAK_PACK_G) * stripH;
           return <circle cx={x + 4} cy={top - 7} fill="var(--route)" r={4.5} />;
         })()}
       </g>
@@ -198,7 +199,7 @@ export function TripProfile({ t: rawT, plot, strip, rail, readout, textScale = 1
             Day {readout.day}
           </text>
           <text className="tnum" fill="var(--fg)" fontSize={13} fontWeight={700} textAnchor="end" y={64}>
-            {readout.pack.toFixed(2)} kg
+            {formatWeight(readout.packG)}
           </text>
         </g>
       </g>

@@ -6,7 +6,8 @@ import { Grid } from "@/components/charts/grid";
 import { Line } from "@/components/charts/line";
 import { SeriesBar } from "@/components/charts/series-bar";
 import { XAxis } from "@/components/charts/x-axis";
-import { DAYS, dayDate, RESUPPLY } from "@/data/trip";
+import { DAYS, dayDate, formatWeight, RESUPPLY } from "@/data/trip";
+import { toPounds } from "@/lib/units";
 import { useMedia } from "@/lib/hooks";
 
 export const STACK = [
@@ -18,11 +19,12 @@ export const STACK = [
 
 const ROWS = DAYS.map((day) => ({
   date: dayDate(day.day),
-  base: day.base,
-  food: day.food,
-  water: day.water,
-  fuel: day.fuel,
-  skinOut: day.skinOut,
+  // Plotted in pounds; every label goes through formatWeight.
+  base: toPounds(day.baseG),
+  food: toPounds(day.foodG),
+  water: toPounds(day.waterG),
+  fuel: toPounds(day.fuelG),
+  skinOut: toPounds(day.skinOutG),
 }));
 
 /**
@@ -49,7 +51,11 @@ function UnwalkedDays({ throughDay }: { throughDay: number }) {
 }
 
 /**
- * Kilogram ticks set clear of the first bar. bklit's YAxis sits flush against
+/** Round pound ticks on the weight axis. */
+const LB_TICKS = [0, 10, 20, 30];
+
+/**
+ * Pound ticks set clear of the first bar. bklit's YAxis sits flush against
  * the plot edge, where a stacked bar centred on day 1 would cover its labels.
  */
 function KgTicks() {
@@ -57,7 +63,7 @@ function KgTicks() {
   const x = -Math.min(54, columnWidth * 0.8) / 2 - 10;
   return (
     <g>
-      {yScale.ticks(4).map((value) => (
+      {LB_TICKS.map((value) => (
         <text
           dominantBaseline="middle"
           fill="var(--chart-label)"
@@ -67,7 +73,7 @@ function KgTicks() {
           x={x}
           y={yScale(value)}
         >
-          {value} kg
+          {value} lb
         </text>
       ))}
     </g>
@@ -94,7 +100,7 @@ function ResupplyMarker({ visible }: { visible: boolean }) {
       />
       <circle cx={x} cy={4} fill="var(--amber-bright)" r="5" />
       <text fill="var(--amber-bright)" fontSize="12" fontWeight="700" x={x + 10} y={8}>
-        +4.73 kg
+        +{formatWeight(RESUPPLY.pickupG)}
       </text>
     </motion.g>
   );
@@ -105,7 +111,7 @@ export function ResupplyChart({ throughDay }: { throughDay: number }) {
   const roomy = useMedia("(min-width: 640px)", true);
   return (
     <div
-      aria-label="Pack weight for each day of the sample trip: day 1 9.22 kg, day 2 8.76 kg, day 3 12.03 kg after a 4.73 kg resupply at Muir Trail Ranch, day 4 11.57 kg, day 5 9.61 kg, day 6 9.15 kg, day 7 7.69 kg. Each bar stacks base weight 4.62 kg with that day's food, water and fuel, and the line is skin-out weight."
+      aria-label={`Pack weight for each day of the sample trip: ${DAYS.map((d) => `day ${d.day} ${formatWeight(d.packG)}${d.day === RESUPPLY.day ? ` after a ${formatWeight(RESUPPLY.pickupG)} resupply at Muir Trail Ranch` : ""}`).join(", ")}. Each bar stacks base weight ${formatWeight(DAYS[0].baseG)} with that day's food, water and fuel, and the line is skin-out weight.`}
       role="img"
     >
       <ComposedChart
@@ -117,7 +123,7 @@ export function ResupplyChart({ throughDay }: { throughDay: number }) {
         maxBarSize={54}
         stacked
       >
-        <Grid numTicksRows={4} />
+        <Grid rowTickValues={LB_TICKS} />
         {STACK.map((segment) => (
           <SeriesBar dataKey={segment.key} fill={segment.color} key={segment.key} radius={2} />
         ))}

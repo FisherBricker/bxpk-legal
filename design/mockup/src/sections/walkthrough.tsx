@@ -6,6 +6,7 @@ import { RouteColumn, RouteSection } from "@/components/layout";
 import { Phone } from "@/components/phone";
 import { PhonePreview, PhoneScreen, SCREEN_IMAGES, SCREEN_LABEL, type ScreenId } from "@/components/phone-screens";
 import { Waypoint } from "@/components/route";
+import { formatWeight, GOAL_G, TRIP } from "@/data/trip";
 import { EASE_EXPO, useIsDesktop, usePinned } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 
@@ -29,7 +30,7 @@ const CHAPTERS: Chapter[] = [
     id: "pack",
     name: "Pack",
     title: "Load the pack.",
-    body: "Pick a saved pack or add items one at a time. Base weight shows up with the first item, 4.62 kg on this trip, and worn, consumable and skin-out weights follow as you go.",
+    body: `Pick a saved pack or add items one at a time. Base weight shows up with the first item, ${formatWeight(TRIP.baseG)} on this trip, and worn, consumable and skin-out weights follow as you go.`,
     screen: "trip",
   },
   {
@@ -43,14 +44,14 @@ const CHAPTERS: Chapter[] = [
     id: "share",
     name: "Share",
     title: "Debrief and share.",
-    body: "Back home, finalize the trip. Your base weight joins your profile's trend, 0.62 kg short of a 4.00 kg goal here, and you can post the loadout to the community.",
+    body: `Back home, finalize the trip. Your base weight joins your profile's trend, ${formatWeight(TRIP.baseG - GOAL_G)} short of an ${formatWeight(GOAL_G)} goal here, and you can post the loadout to the community.`,
     screen: "base",
   },
 ];
 
 /** Readiness checks, folded into the Plan chapter as one compact checklist. */
 const READINESS: Array<{ label: string; state: string; ok: boolean }> = [
-  { label: "Gear", state: "ready, 4.62 kg base", ok: true },
+  { label: "Gear", state: `ready, ${formatWeight(TRIP.baseG)} base`, ok: true },
   { label: "Calories", state: "ready, 3,250 kcal on day 2", ok: true },
   { label: "Weather", state: "check day 3, afternoon storms", ok: false },
 ];

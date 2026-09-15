@@ -5,13 +5,13 @@ import { Enter, MountInView } from "@/components/motion-helpers";
 import { PhonePreview } from "@/components/phone-screens";
 import { ResupplyChart, StackLegend } from "@/components/resupply-chart";
 import { Waypoint } from "@/components/route";
-import { DAYS, walkDay } from "@/data/trip";
+import { DAYS, formatWeight, RESUPPLY, walkDay } from "@/data/trip";
 import { usePinned } from "@/lib/hooks";
 
 const FACTS: [string, string][] = [
-  ["Heaviest day", "Day 3, 12.03 kg"],
-  ["Picked up at Muir Trail Ranch", "4.73 kg"],
-  ["Trail's end", "7.69 kg"],
+  ["Heaviest day", `Day 3, ${formatWeight(DAYS[2].packG)}`],
+  ["Picked up at Muir Trail Ranch", formatWeight(RESUPPLY.pickupG)],
+  ["Trail's end", formatWeight(DAYS[6].packG)],
 ];
 
 export function Resupply() {
@@ -63,7 +63,7 @@ export function Resupply() {
           {DAYS.map((day) => (
             <div key={day.day}>
               <dt className="text-xs text-fg-muted">Day {day.day}</dt>
-              <dd className="font-bold whitespace-nowrap text-fg">{day.water.toFixed(1)} L</dd>
+              <dd className="font-bold whitespace-nowrap text-fg">{day.waterL.toFixed(1)} L</dd>
             </div>
           ))}
         </dl>

@@ -5,15 +5,17 @@ import { MealsChart } from "@/components/meals-chart";
 import { RouteColumn, RouteSection, SectionHeading } from "@/components/layout";
 import { Enter, MountInView } from "@/components/motion-helpers";
 import { Waypoint } from "@/components/route";
-import { MEAL_DAY, MEALS, fmtInt } from "@/data/trip";
+import { fmtInt, formatWeight, MEAL_DAY, MEALS } from "@/data/trip";
 import { EASE_EXPO, useReduced } from "@/lib/hooks";
 
+// The meal plan's day row, as the app sets it in either unit system: macros and food in whole grams,
+// boil water in mL (MealPlanView). Single food items use displayString, so they read in oz.
 const MACROS: [string, string][] = [
-  ["Fat", "118 g"],
-  ["Carbs", "402 g"],
-  ["Protein", "131 g"],
-  ["Food", "812 g"],
-  ["Boil water", "1,450 mL"],
+  ["Fat", `${fmtInt(MEAL_DAY.fatG)} g`],
+  ["Carbs", `${fmtInt(MEAL_DAY.carbsG)} g`],
+  ["Protein", `${fmtInt(MEAL_DAY.proteinG)} g`],
+  ["Food", `${fmtInt(MEAL_DAY.foodG)} g`],
+  ["Boil water", `${fmtInt(MEAL_DAY.boilMl)} mL`],
 ];
 
 export function Meals() {
@@ -26,7 +28,7 @@ export function Meals() {
         <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
           <Enter from="left">
             <SectionHeading
-              body="Your daily calorie target comes from your pack weight and the miles ahead. Place food into breakfast, lunch, dinner and snacks, and each day shows its kcal, grams of food and the boil water you will need."
+              body="Your daily calorie target comes from your pack weight and the miles ahead. Place food into breakfast, lunch, dinner and snacks, and each day shows its kcal, food weight and the boil water you will need."
               id="meals-heading"
               title="Meals planned to the calorie"
             />
@@ -105,7 +107,7 @@ export function Meals() {
                     <li className="flex items-baseline gap-3 py-2.5" key={meal.meal}>
                       <span className="w-[5.25rem] shrink-0 font-bold">{meal.meal}</span>
                       <span className="min-w-0 flex-1 text-fg-muted">
-                        {meal.food}, {fmtInt(meal.g)} g
+                        {meal.food}, {formatWeight(meal.g)}
                       </span>
                       <span className="font-bold tnum">{fmtInt(meal.kcal)} kcal</span>
                     </li>

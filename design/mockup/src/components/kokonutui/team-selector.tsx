@@ -1,88 +1,43 @@
 /**
  * Adapted from KokonutUI "Team Selector" (MIT, kokonutui.com).
- * Kept: overlapping avatars that spring in and out as the count changes, and
- * the shake when the count cannot go any lower. Changed: the plus and minus
- * stepper becomes the seats themselves (each seat is its own 44 px button, so a
- * seat can be claimed or released directly), the DiceBear avatar images are
- * replaced with initials in Topo tokens, and the card chrome is dropped so the
- * seats sit in a gear pool row.
+ * Kept: overlapping avatars that spring in one after another. Changed: the plus
+ * and minus stepper is gone. In the app's seeded shared gear every seat on every
+ * item is already claimed, so the seats are shown as they stand, with initials in
+ * Topo tokens instead of DiceBear images, and nothing on the page pretends to be
+ * claimable. The DiceBear avatar images and the card chrome are dropped.
  */
 
 import { motion, useReducedMotion } from "motion/react";
-import { Plus } from "lucide-react";
-import { useState } from "react";
-import { cn } from "@/lib/utils";
 
-export interface SeatPickerProps {
-  /** Initials in the claimed seats. The first seat is always "You". */
-  claimed: string[];
-  seats: number;
-  itemLabel: string;
-  onToggle: (index: number) => void;
+export interface SeatHolder {
+  name: string;
+  initials: string;
 }
 
-const AVATAR = {
-  visible: { opacity: 1, scale: 1, transition: { type: "spring" as const, stiffness: 260, damping: 22, mass: 0.6 } },
-  hidden: { opacity: 0.4, scale: 0.85, transition: { duration: 0.18, ease: "easeOut" as const } },
-};
-
-export function SeatPicker({ claimed, seats, itemLabel, onToggle }: SeatPickerProps) {
-  const [shake, setShake] = useState(false);
+export function SeatRow({ holders, itemLabel }: { holders: SeatHolder[]; itemLabel: string }) {
   const reduced = useReducedMotion() ?? false;
-
-  const handle = (index: number) => {
-    if (index === 0) {
-      if (!reduced) {
-        setShake(true);
-        window.setTimeout(() => setShake(false), 300);
-      }
-      return;
-    }
-    onToggle(index);
-  };
-
   return (
-    <motion.div
-      animate={shake ? { x: [-3, 3, -2, 2, 0] } : { x: 0 }}
+    <div
+      aria-label={`${itemLabel}: seats held by ${holders.map((h) => h.name).join(" and ")}`}
       className="flex items-center"
-      transition={{ duration: 0.28, ease: "easeOut" }}
+      role="img"
     >
-      {Array.from({ length: seats }, (_, index) => {
-        const who = claimed[index];
-        const isClaimed = Boolean(who);
-        return (
-          <button
-            aria-label={
-              index === 0
-                ? `Your seat on the ${itemLabel}`
-                : isClaimed
-                  ? `Release ${who}'s seat on the ${itemLabel}`
-                  : `Claim seat on ${itemLabel}`
-            }
-            aria-pressed={isClaimed}
-            className={cn("group flex h-11 w-11 items-center justify-center", index === 0 ? "cursor-default" : "cursor-pointer")}
-            key={index}
-            onClick={() => handle(index)}
-            type="button"
-          >
-            <motion.span
-              animate={isClaimed ? "visible" : "hidden"}
-              className={cn(
-                "flex h-9 w-9 items-center justify-center rounded-full border text-[0.6875rem] font-bold",
-                isClaimed
-                  ? "border-transparent bg-data text-ground"
-                  : "border-[1.5px] border-dashed border-fg-muted bg-transparent text-fg-muted transition-colors group-hover:border-data group-hover:bg-data/10 group-hover:text-data"
-              )}
-              initial={false}
-              variants={reduced ? undefined : AVATAR}
-            >
-              {isClaimed ? who : <Plus aria-hidden="true" className="h-4 w-4" strokeWidth={1.75} />}
-            </motion.span>
-          </button>
-        );
-      })}
-    </motion.div>
+      {holders.map((holder, index) => (
+        <motion.span
+          aria-hidden="true"
+          className="-ml-2 flex h-10 w-10 items-center justify-center rounded-full border-2 border-[var(--ground)] bg-data text-[0.75rem] font-bold text-ground first:ml-0"
+          initial={reduced ? false : { opacity: 0.3, scale: 0.85 }}
+          key={holder.name}
+          title={holder.name}
+          transition={{ type: "spring", stiffness: 260, damping: 22, mass: 0.6, delay: index * 0.08 }}
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1, scale: 1 }}
+        >
+          {holder.initials}
+        </motion.span>
+      ))}
+    </div>
   );
 }
 
-export default SeatPicker;
+export default SeatRow;
