@@ -1,20 +1,31 @@
 import { ContourRings } from "@/components/kokonutui/background-paths";
 import { Phone, ScreenBars, ScreenCard, ScreenRow, ScreenTabBar, ScreenTitle } from "@/components/phone";
+import baseScreenshot from "@/assets/screens/base.jpg";
+import itineraryScreenshot from "@/assets/screens/itinerary.jpg";
+import resupplyScreenshot from "@/assets/screens/resupply.jpg";
+import routeScreenshot from "@/assets/screens/route.jpg";
+import tripScreenshot from "@/assets/screens/trip.jpg";
 import { CATEGORIES, catTotal, DAYS, fmtInt, formatWeight, GOAL_G, RESUPPLY, SEASONS, TRIP } from "@/data/trip";
 
 export type ScreenId = "trip" | "itinerary" | "resupply" | "route" | "base";
 
 /**
- * Real app screenshots, once captured, go here by screen (for example trip: tripScreenshot).
- * Any screen without one keeps its skeleton.
+ * Real app screenshots from the iPhone 17 simulator, light appearance, imperial units, captured
+ * from the seeded showcase account. Any screen without one keeps its skeleton.
  */
-export const SCREEN_IMAGES: Partial<Record<ScreenId, string>> = {};
+export const SCREEN_IMAGES: Partial<Record<ScreenId, string>> = {
+  trip: tripScreenshot,
+  itinerary: itineraryScreenshot,
+  resupply: resupplyScreenshot,
+  route: routeScreenshot,
+  base: baseScreenshot,
+};
 
 export const SCREEN_LABEL: Record<ScreenId, string> = {
   trip: `Trip, sample trip with base weight ${formatWeight(TRIP.baseG)}`,
   itinerary: "Itinerary, seven days with miles, elevation gain and water",
   resupply: "Resupply at Muir Trail Ranch on day 3",
-  route: "Route recording, a point every 15 s",
+  route: "Route imported from GPX, 26.1 mi over Piute Pass into Evolution Basin",
   base: `Base weight ${formatWeight(TRIP.baseG)} against a ${formatWeight(GOAL_G)} goal`,
 };
 

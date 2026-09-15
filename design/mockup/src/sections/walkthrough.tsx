@@ -37,7 +37,7 @@ const CHAPTERS: Chapter[] = [
     id: "walk",
     name: "Walk",
     title: "Record the route.",
-    body: "Record your route with GPS on the trail, at every fix or every 15 s, 30 s or 60 s to save battery, and export all 61.4 mi as GPX.",
+    body: "Record your route with GPS on the trail, at every fix or every 15 s, 30 s or 60 s to save battery, and import or export any track as GPX.",
     screen: "route",
   },
   {

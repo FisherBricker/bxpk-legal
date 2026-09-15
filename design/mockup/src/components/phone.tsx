@@ -96,7 +96,7 @@ export function Phone({ children, width = 300, className = "", caption = true, l
       </div>
       {caption ? (
         <figcaption className="text-center text-[0.8125rem] text-fg-muted">
-          Screen preview. App screenshots coming soon.
+          {src ? "Screenshot from the app, with sample data." : "Screen preview. App screenshots coming soon."}
         </figcaption>
       ) : null}
     </figure>
