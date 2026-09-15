@@ -56,7 +56,7 @@ export function SignupForm({ tone = "hero", idPrefix, className = "" }: SignupFo
         {status === "done" ? (
           <motion.div
             animate={{ opacity: 1, y: 0 }}
-            className="flex max-w-xl flex-col items-start gap-3 rounded-2xl border border-rule bg-card px-5 py-5"
+            className="flex max-w-xl flex-col items-start gap-3 rounded-lg border border-rule bg-card px-5 py-5"
             exit={{ opacity: 0 }}
             initial={{ opacity: 0.4, y: 8 }}
             key="done"

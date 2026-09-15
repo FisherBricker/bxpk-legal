@@ -1,3 +1,4 @@
+import { ContourRings } from "@/components/kokonutui/background-paths";
 import { Phone, ScreenBars, ScreenCard, ScreenRow, ScreenTabBar, ScreenTitle } from "@/components/phone";
 import { CATEGORIES, catTotal, DAYS, fmtInt, SEASONS } from "@/data/trip";
 
@@ -127,10 +128,9 @@ function RouteScreen() {
     <>
       <ScreenTitle sub="Recording" title="Route" />
       <div className="relative shrink-0 overflow-hidden rounded-2xl border border-line bg-map" style={{ height: 270 }}>
+        <ContourRings height={270} seed={27} stroke="rgba(95,112,64,0.24)" width={340} ringStep={16} />
         <svg aria-hidden="true" className="absolute inset-0 h-full w-full" fill="none" viewBox="0 0 340 270">
-          {[0, 1, 2, 3, 4, 5].map((i) => (
-            <ellipse cx={90} cy={210} key={i} rx={(i + 1) * 38} ry={(i + 1) * 22} stroke="rgba(95,112,64,0.22)" strokeWidth="1" />
-          ))}
+
           <path d="M40 240 C 96 222, 88 186, 130 170 S 196 148, 206 112 S 250 70, 300 46" stroke="var(--amber)" strokeLinecap="round" strokeWidth="4" />
           <circle cx="40" cy="240" fill="var(--amber)" r="6" />
           <circle cx="300" cy="46" fill="var(--paper)" r="7" stroke="var(--amber)" strokeWidth="4" />

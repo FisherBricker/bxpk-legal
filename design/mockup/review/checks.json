@@ -9,24 +9,24 @@
     },
     "heroField": {
       "slow": {
-        "peakBent": 104,
-        "peakDisplacement": 76.23,
-        "peakReach": 102,
-        "peakPush": 3356,
-        "particles": 5766
+        "peakBent": 92,
+        "peakDisplacement": 68.48,
+        "peakReach": 101,
+        "peakPush": 3335,
+        "particles": 5885
       },
       "fast": {
-        "peakBent": 1282,
-        "peakDisplacement": 64.49,
+        "peakBent": 1222,
+        "peakDisplacement": 64.24,
         "peakReach": 212,
         "peakPush": 10400,
-        "particles": 5766
+        "particles": 5885
       },
       "fastBeatsSlow": true
     },
     "keyboard": {
       "reached": 138,
-      "unique": 45,
+      "unique": 41,
       "withoutRing": [],
       "under44": [
         "Skip to content 1x1"

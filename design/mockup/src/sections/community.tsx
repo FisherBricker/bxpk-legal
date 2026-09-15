@@ -97,7 +97,7 @@ const CATEGORY_NAMES: Record<string, string> = {
 function RegisterCard({ post }: { post: RegisterPost }) {
   return (
     <article
-      className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-line text-ink shadow-[0_18px_40px_-30px_rgba(28,46,30,0.45)]"
+      className="relative flex h-full flex-col overflow-hidden rounded-lg border border-line text-ink"
       style={{
         background:
           "repeating-linear-gradient(to bottom, transparent 0, transparent 27px, rgba(95,112,64,0.12) 27px, rgba(95,112,64,0.12) 28px), #FCFBF6",

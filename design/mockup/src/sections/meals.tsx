@@ -30,14 +30,13 @@ export function Meals() {
               id="meals-heading"
               title="Meals planned to the calorie"
             />
-            <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3">
+            <p className="mt-8 flex flex-wrap gap-x-5 gap-y-1.5 text-[1.0625rem] tnum">
               {MACROS.map(([label, value]) => (
-                <div className="border-t border-rule pt-2" key={label}>
-                  <dt className="map-label text-fg-muted">{label}</dt>
-                  <dd className="mt-0.5 font-display text-xl font-medium tnum">{value}</dd>
-                </div>
+                <span key={label}>
+                  <span className="text-fg-muted">{label}</span> <span className="font-bold">{value}</span>
+                </span>
               ))}
-            </dl>
+            </p>
             <p className="mt-6 flex items-center gap-2 font-bold">
               <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-data" />
               250 kcal over target
@@ -51,7 +50,7 @@ export function Meals() {
             viewport={{ once: true, amount: 0.15 }}
             whileInView={{ opacity: 1, y: 0 }}
           >
-            <div className="panel px-5 py-5">
+            <div className="panel panel-chart px-5 py-5">
               <div className="flex items-baseline justify-between gap-3">
                 <h3 className="font-display text-xl font-medium">Day 2, by meal</h3>
                 <span className="text-sm text-fg-muted tnum">3,250 kcal</span>
@@ -62,7 +61,7 @@ export function Meals() {
             </div>
 
             <div className="grid items-start gap-6 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-              <div className="panel flex flex-col px-5 py-5">
+              <div className="panel panel-chart flex flex-col px-5 py-5">
                 <h3 className="font-display text-xl font-medium">Against the target</h3>
                 <MountInView className="mt-4" minHeight={210}>
                   <div

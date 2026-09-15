@@ -73,7 +73,7 @@ export function Phone({ children, width = 300, className = "", caption = true, l
               className="relative h-full w-full overflow-hidden bg-paper text-ink"
               style={{ borderRadius: 53 }}
             >
-              <ContourRings className="opacity-70" seed={label.length + 11} stroke="rgba(95,112,64,0.13)" />
+              <ContourRings height={874} seed={label.length + 11} stroke="rgba(95,112,64,0.12)" width={402} />
               <div className="relative flex h-full flex-col">
                 <StatusBar />
                 <div

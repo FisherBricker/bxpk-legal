@@ -2,7 +2,7 @@ import { useState } from "react";
 import { PieChart } from "@/components/charts/pie-chart";
 import { PieSlice } from "@/components/charts/pie-slice";
 import { GearCardStack } from "@/components/kokonutui/card-stack";
-import { RouteColumn, RouteSection, SectionHeading } from "@/components/layout";
+import { Neatline, RouteColumn, RouteSection, SectionHeading } from "@/components/layout";
 import { Enter, MountInView } from "@/components/motion-helpers";
 import { Waypoint } from "@/components/route";
 import { CATEGORIES, catTotal, fmtInt } from "@/data/trip";
@@ -34,6 +34,7 @@ export function GearList() {
 
   return (
     <RouteSection ground="paper" id="route" labelledBy="gear-heading" nav="route">
+      <Neatline edge="top" />
       <RouteColumn className="pt-24 pb-20 lg:pt-32 lg:pb-28">
         <Waypoint id="gear" />
         <SectionHeading
@@ -53,9 +54,12 @@ export function GearList() {
             <p className="mt-6 text-sm text-fg-muted">
               Worn, and not in base weight: wind shirt 58 g, trail runners 590 g, trekking poles 470 g, sun hat 62 g.
             </p>
+            <p className="mt-2 text-sm text-fg-muted">
+              Saved as the pack &ldquo;Sierra summer&rdquo;, 4.62 kg, it loads onto the next trip in one tap.
+            </p>
           </Enter>
           <Enter className="min-w-0" from="right">
-            <div className="panel px-5 py-6">
+            <div className="panel panel-chart px-5 py-6">
               <div className="flex items-baseline justify-between gap-4">
                 <h3 className="font-display text-xl font-medium">Share of base weight</h3>
                 <span className="text-sm text-fg-muted tnum">8 categories</span>

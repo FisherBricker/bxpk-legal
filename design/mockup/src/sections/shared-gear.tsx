@@ -88,20 +88,9 @@ export function SharedGear() {
               );
             })}
           </motion.ul>
-          <div className="mt-8 flex flex-wrap gap-x-16 gap-y-6">
-          <div>
-            <p className="map-label text-fg-muted">You carry</p>
-            <p className="mt-1 font-display text-[2.5rem] leading-none font-medium tnum">
-              <NumberFlow suffix=" g" value={youCarry} />
-            </p>
-          </div>
-          <div>
-            <p className="map-label text-fg-muted">Saved vs going solo</p>
-            <p className="mt-1 font-display text-[2.5rem] leading-none font-medium tnum">
-              <NumberFlow suffix=" g" value={solo - youCarry} />
-            </p>
-          </div>
-        </div>
+          <p className="mt-8 font-display text-[clamp(1.5rem,1.1rem+1.2vw,2.25rem)] leading-snug font-medium tnum" aria-live="polite">
+            You carry <NumberFlow suffix=" g" value={youCarry} />, <NumberFlow suffix=" g" value={solo - youCarry} /> less than going solo.
+          </p>
           </div>
         </div>
 

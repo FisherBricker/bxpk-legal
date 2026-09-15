@@ -54,7 +54,7 @@ export function GearCardStack({
             <motion.div
               animate={{ y: isHot && !isOpen ? -4 : 0 }}
               className={cn(
-                "panel overflow-hidden",
+                "panel panel-chart overflow-hidden",
                 isHot || isOpen ? "border-data" : "border-rule"
               )}
               layout
@@ -71,7 +71,7 @@ export function GearCardStack({
               >
                 <span
                   aria-hidden="true"
-                  className="h-7 w-[3px] shrink-0 rounded-full"
+                  className="h-3 w-[3px] shrink-0 rounded-full"
                   style={{ background: category.color }}
                 />
                 <span className="flex-1 font-bold">{category.label}</span>

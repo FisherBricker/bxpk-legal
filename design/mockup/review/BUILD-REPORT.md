@@ -62,7 +62,7 @@ Project: `design/mockup/` on `design/site-direction`. Build: `npm run build` (Ty
 5. **Resupply kg ticks are a small custom child, not `YAxis`.** bklit's YAxis sits flush against the plot edge, where the first stacked bar covered its labels.
 6. **The hero field check compares how much of the field bends.** The brief asks for a fast sweep to beat a slow one. Over 1.2 s, the fast sweep bends 1,070 particles versus 91 for the slow drift, with 212 px versus 102 px reach and 10,400 versus 3,355 push. Peak single-particle displacement is slightly lower for the fast sweep (67 px versus 72 px), because a slow pointer dwells on the same particles.
 7. **Full-page captures load `?capture`.** That lays pinned chapters out flat, draws the route fully and opens every privacy line, so the image has no empty sticky runway. The viewport captures show the real pinned behavior.
-8. **The rail is visible in the hero.** The brief says the rail fades out "before the trailhead", but the binding contract's first viewport puts the dot at mile 0 in the hero. The rail follows the contract and fades after trail's end. The mobile pill only appears on the route.
+8. **The hero shows the hero-scale instrument, not the slim rail** (corrected after fix round 1). The first viewport carries the same instrument at hero scale: the elevation profile with its six place annotations, the 7-day pack weight strip and the you-are-here dot at mile 0. On scroll it condenses into the slim pinned rail, which fades after trail's end. This is now a recorded adaptation in the surface brief. On phones the instrument reflows below the form, and the progress pill appears only on the route.
 9. **Amber is never used for text.** Waypoint and rail mile labels use ink, because amber small text fails AA on light grounds and amber is route-only. The email error state uses a 2 px ink border instead of amber.
 10. **No eyebrow labels on the walkthrough chapters.** "Chapter N of 4" kickers were removed; the chapter index carries progress.
 
@@ -153,3 +153,51 @@ Project: `design/mockup/` on `design/site-direction`. Build: `npm run build` (Ty
 - Keyboard: 138 tabs, every control shows a focus ring, and every target is 44 px or more.
 - Hero field: the fast sweep bends 1,282 particles against 104 for the slow drift.
 - Grep: no dashes, emoji or banned words, and none of the removed hint sentences remain in `src/`.
+
+## Fix round 2
+
+**Material fixes**
+1. **Isoline terrain.**
+   - New `src/lib/topo/isolines.ts` builds one height field: two gaussian summits at the ContourPanel centres (0.22w, 1.45h) and (0.95w, -0.55h), stretched 1.9:1 and warped by the same two low harmonics as `contours.ts`.
+   - Marching squares on a 9 px grid (saddles resolved by the cell centre) extracts isolines at a fixed interval, and consecutive segments are stitched into polylines. Particles sit along each line at 7.5 px (6.5 px on phones) and link only along their own line, within a 6,000-particle budget.
+   - The hero `TopoField` uses this layout with the unchanged tested `physics.ts` and `pointer.ts`. Speed-scaled push, spring-back, touch ripple and the static reduced-motion draw all remain.
+   - `scripts/check-isolines.ts` (run with `node`) checks every chord against every other line's: 0 crossings at 1440 x 900, 390 x 844 and 1440 x 1100.
+   - Every other contour texture now comes from the same field: section sheets, footer, phone screens, the Route screen map, the news cover and the close band.
+2. **Phone route.**
+   - The amber route line is drawn on phones in a 12 px track inside a 48 px gutter, with content padded clear, and it draws with scroll like desktop. Markers sit in the gutter beside each heading.
+   - The annotation ("Mile 18.0, Muir Trail Ranch, 7,700 ft") runs down the gutter as vertical text under its marker, like a label along a map feature, so nothing is stacked above a heading.
+   - The 3 px route-progress line (with a faint track) now sits under the nav on phones at all times, following the nav when it hides. The day, mile and kg pill still appears on the route only.
+   - The close tag is one line: "South Lake, trail's end, mile 61.4, 9,768 ft".
+3. **Category ticks.** The gear cards use a 3 x 12 px rounded category tick instead of the full-height stripe. No colored side stripes remain; non-category series stay moss.
+4. **Bento deleted.** `also-in-pack.tsx` and `kokonutui/bento-grid.tsx` are removed.
+   - Readiness is a three-line inline checklist in the Plan chapter.
+   - NOAA weather is inline in the Plan caption ("day 1 is clear, 71°F / 39°F").
+   - Water per day is a quiet row under the resupply chart (Day 1 2.5 L to Day 7 2.0 L).
+   - Saved packs get one sentence in the gear waypoint.
+   - The Bishop Pass waypoint is dropped; the rail interpolates LeConte Canyon (44.6) to South Lake (61.4), and the mid-scroll captures still agree with their sections.
+   - The page is now 13,041 px, down from 14,244 px.
+5. **Stat tiles removed.**
+   - The walkthrough chapter tiles are gone, with the one fact now inline in each caption: 4.62 kg, 61.4 mi as GPX, 0.62 kg short of 4.00 kg.
+   - Shared gear reads "You carry 820 g, 1,023 g less than going solo." with both numbers still rolling.
+   - The meals macros became one inline row.
+   - The resupply chapter keeps the only fact stack.
+6. **Hero cue.** "Walk the route" and its chevron are removed; the trailhead marker remains.
+7. **Walkthrough spacing.** 64 px between "Plan a trip, start to finish" and the stage in all three variants. The pinned phone is sized to leave room.
+8. **Map-sheet panels.**
+   - `.panel` is now a 1 px line hairline with an 8 px radius, a paper-tinted fill and a 1 px flat shadow. Chart panels use `.panel-chart`, slightly lighter. Night panels are flat.
+   - Register cards and the success card follow.
+   - Paper sections (gear, community, news) carry the isoline texture at 0.14 alpha.
+
+**Raises**
+- **Close band:** the dot starfield (`kokonutui/mouse-effect-card.tsx`, now deleted) is replaced by the night isoline particle field, which bends from the cursor and quiets behind the copy and tag.
+- **Neatlines:** a hairline neatline with ticks every 48 px sits along the top of the gear sheet and the bottom of the Trail's end sheet.
+- **Footer sheet-title block:** "bxpk quadrangle · North Lake to South Lake · Sample trip", a five-segment scale bar labelled "0 to 5 mi", and "Contour interval 200 ft". The footer ridge is the isoline field drawn in once.
+
+**Verification, round 2**
+- `npm run build` passes with TypeScript clean. `dist/index.html` is 821 kB (293 kB gzip).
+- All seven screenshots were recaptured over the same files and opened. Full pages use `?capture`; the mid-scroll shots are real pinning (resupply "Mile 36.5, Day 5, 9.61 kg" beside day 5; walkthrough holds at mile 44.6).
+- Console: zero errors. The dev walk shows only Motion's own reduced-motion notice.
+- Form: error and success both pass.
+- Keyboard: tab-through gives every control a visible ring, and every target is 44 px or more.
+- Hero field sweep on the isoline field: the fast sweep bends 1,222 particles against 92 for the slow drift, with reach 212 px against 101 px and push 10,400 against 3,335.
+- Grep: no dashes, emoji or banned words.

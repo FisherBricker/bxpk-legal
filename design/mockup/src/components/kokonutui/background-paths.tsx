@@ -1,134 +1,113 @@
 /**
  * Adapted from KokonutUI "Background Paths" (MIT, kokonutui.com).
  * The original draws slow-floating waves stroked with a three-color demo gradient.
- * Here the same path generator is retuned into quadrangle contour hairlines:
- * one token color, no gradients, no endless loops, drawn in once when the band
- * is reached, and fully drawn under reduced motion.
+ * Kept: a full-bleed SVG of hairline paths behind a band, drawn in with
+ * pathLength. Changed: the paths are now isolines of the page's one height field
+ * (src/lib/topo/isolines.ts), sized to the band they sit in, so every contour
+ * texture on the page agrees with the hero and none of them cross. One token
+ * color, no gradients, no endless loops; drawn in once when reached, and fully
+ * drawn under reduced motion.
  */
 
 import { motion, useReducedMotion } from "motion/react";
-import { memo, useMemo } from "react";
-import { mulberry32 } from "@/lib/topo/contours";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { isolinePaths } from "@/lib/topo/isolines";
 
 interface ContourPathsProps {
-  /** Distinct seed per band so no two sections carry the same contour. */
+  /** Distinct seed per band so no two sections carry the same sheet. */
   seed?: number;
-  /** Number of hairlines. */
-  count?: number;
   className?: string;
-  /** Stroke color. Defaults to the section's contour token. */
+  /** Stroke color. Defaults to the section's contour texture token. */
   stroke?: string;
   /** Draw the lines in on entry instead of showing them at once. */
   drawIn?: boolean;
-  /** "contour" wanders across the band, "ridge" rises to a summit. */
-  shape?: "contour" | "ridge";
-}
-
-function buildPath(index: number, rand: () => number, shape: "contour" | "ridge"): string {
-  const segments = 8;
-  const amplitude = shape === "ridge" ? 90 + index * 6 : 46 + index * 3;
-  const phase = rand() * Math.PI * 2;
-  const drift = shape === "ridge" ? index * 26 : index * 34;
-  const points: Array<[number, number]> = [];
-  for (let i = 0; i <= segments; i++) {
-    const t = i / segments;
-    const x = -100 + t * 1400;
-    const crest = shape === "ridge" ? Math.sin(t * Math.PI) * amplitude : 0;
-    const wave =
-      Math.sin(t * Math.PI * 2.1 + phase) * amplitude * 0.5 +
-      Math.cos(t * Math.PI * 3.4 + phase) * amplitude * 0.22;
-    points.push([x, 340 + drift - crest + wave]);
-  }
-  return points
-    .map(([x, y], i) => {
-      if (i === 0) return `M ${x.toFixed(1)} ${y.toFixed(1)}`;
-      const [px, py] = points[i - 1];
-      const cx1 = px + (x - px) * 0.4;
-      const cx2 = px + (x - px) * 0.6;
-      return `C ${cx1.toFixed(1)} ${py.toFixed(1)}, ${cx2.toFixed(1)} ${y.toFixed(1)}, ${x.toFixed(1)} ${y.toFixed(1)}`;
-    })
-    .join(" ");
+  /** Average px between lines. */
+  ringStep?: number;
 }
 
 export const ContourPaths = memo(function ContourPaths({
   seed = 7,
-  count = 9,
   className = "",
-  stroke = "var(--topo)",
+  stroke = "var(--topo-texture)",
   drawIn = false,
-  shape = "contour",
+  ringStep = 30,
 }: ContourPathsProps) {
   const reduced = useReducedMotion() ?? false;
-  const paths = useMemo(() => {
-    const rand = mulberry32(seed);
-    return Array.from({ length: count }, (_, i) => buildPath(i, rand, shape));
-  }, [count, seed, shape]);
+  const ref = useRef<SVGSVGElement>(null);
+  const [size, setSize] = useState({ w: 0, h: 0 });
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      const w = Math.round(entry.contentRect.width / 20) * 20;
+      const h = Math.round(entry.contentRect.height / 20) * 20;
+      setSize((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const paths = useMemo(() => (size.w && size.h ? isolinePaths(size.w, size.h, seed, ringStep, 16) : []), [size, seed, ringStep]);
 
   return (
     <svg
       aria-hidden="true"
       className={`pointer-events-none absolute inset-0 h-full w-full ${className}`}
       fill="none"
-      preserveAspectRatio="xMidYMid slice"
-      viewBox="0 0 1200 700"
+      preserveAspectRatio="none"
+      ref={ref}
+      viewBox={`0 0 ${size.w || 1} ${size.h || 1}`}
     >
       {paths.map((d, index) =>
         drawIn && !reduced ? (
           <motion.path
             d={d}
             initial={{ pathLength: 0 }}
-            key={d}
+            key={index}
             stroke={stroke}
             strokeLinecap="round"
             strokeWidth={1}
+            transition={{ duration: 1.6, delay: Math.min(index * 0.04, 0.8), ease: [0.16, 1, 0.3, 1] }}
             vectorEffect="non-scaling-stroke"
-            transition={{ duration: 1.5, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
             viewport={{ once: true, amount: 0.2 }}
             whileInView={{ pathLength: 1 }}
           />
         ) : (
-          <path d={d} key={d} stroke={stroke} strokeLinecap="round" strokeWidth={1} vectorEffect="non-scaling-stroke" />
+          <path d={d} key={index} stroke={stroke} strokeLinecap="round" strokeWidth={1} vectorEffect="non-scaling-stroke" />
         )
       )}
     </svg>
   );
 });
 
-/** Nested contour rings, the app's ContourPanel geometry, used as a quiet texture. */
+/** The same field at a fixed size, for small surfaces such as phone screens and story covers. */
 export const ContourRings = memo(function ContourRings({
   seed = 3,
   className = "",
-  stroke = "var(--topo)",
-  rings = 9,
+  stroke = "var(--topo-texture)",
+  width = 400,
+  height = 400,
+  ringStep = 22,
 }: {
   seed?: number;
   className?: string;
   stroke?: string;
-  rings?: number;
+  width?: number;
+  height?: number;
+  ringStep?: number;
 }) {
-  const geometry = useMemo(() => {
-    const r = mulberry32(seed);
-    return { cx: 60 + r() * 240, cy: 250 + r() * 140, step: 15 + r() * 9 };
-  }, [seed]);
+  const paths = useMemo(() => isolinePaths(width, height, seed, ringStep, 12), [width, height, seed, ringStep]);
   return (
     <svg
       aria-hidden="true"
       className={`pointer-events-none absolute inset-0 h-full w-full ${className}`}
       fill="none"
       preserveAspectRatio="xMidYMid slice"
-      viewBox="0 0 400 400"
+      viewBox={`0 0 ${width} ${height}`}
     >
-      {Array.from({ length: rings }, (_, i) => (
-        <ellipse
-          cx={geometry.cx}
-          cy={geometry.cy}
-          key={i}
-          rx={(i + 1) * geometry.step * 1.9}
-          ry={(i + 1) * geometry.step}
-          stroke={stroke}
-          strokeWidth={1}
-          vectorEffect="non-scaling-stroke"
-        />
+      {paths.map((d, i) => (
+        <path d={d} key={i} stroke={stroke} strokeWidth={1} vectorEffect="non-scaling-stroke" />
       ))}
     </svg>
   );

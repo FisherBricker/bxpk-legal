@@ -8,7 +8,7 @@ import { ProjectionLine } from "@/components/charts/projection-line";
 import { buildProjectionPath } from "@/components/charts/projection-utils";
 import { XAxis } from "@/components/charts/x-axis";
 import { YAxis } from "@/components/charts/y-axis";
-import { RouteColumn, RouteSection, SectionHeading } from "@/components/layout";
+import { Neatline, RouteColumn, RouteSection, SectionHeading } from "@/components/layout";
 import { Enter, MountInView } from "@/components/motion-helpers";
 import { Waypoint } from "@/components/route";
 import { GOAL_KG, SEASONS } from "@/data/trip";
@@ -68,7 +68,7 @@ export function Seasons() {
           </Enter>
         </div>
         <Enter className="mt-10" from="right">
-            <div className="panel px-4 py-5 sm:px-6">
+            <div className="panel panel-chart px-4 py-5 sm:px-6">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <h3 className="font-display text-xl font-medium">Base weight by season</h3>
                 <span className="map-label text-fg-muted">Sample profile</span>
@@ -113,6 +113,7 @@ export function Seasons() {
             </div>
         </Enter>
       </RouteColumn>
+      <Neatline edge="bottom" />
     </RouteSection>
   );
 }

@@ -5,7 +5,7 @@ import { Enter, MountInView } from "@/components/motion-helpers";
 import { PhonePreview } from "@/components/phone-screens";
 import { ResupplyChart, StackLegend } from "@/components/resupply-chart";
 import { Waypoint } from "@/components/route";
-import { walkDay } from "@/data/trip";
+import { DAYS, walkDay } from "@/data/trip";
 import { usePinned } from "@/lib/hooks";
 
 const FACTS: [string, string][] = [
@@ -56,6 +56,14 @@ export function Resupply() {
       <div className="mt-4 border-t border-rule pt-4">
         <StackLegend />
       </div>
+      <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm text-fg-muted tnum">
+        <span className="text-fg">Water per day</span>
+        {DAYS.map((day) => (
+          <span key={day.day}>
+            Day {day.day} {day.water.toFixed(1)} L
+          </span>
+        ))}
+      </p>
     </div>
   );
 

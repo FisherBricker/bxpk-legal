@@ -1,6 +1,5 @@
 import { Navbar } from "@/components/kokonutui/morphic-navbar";
 import { RouteLine } from "@/components/route";
-import { AlsoInPack } from "@/sections/also-in-pack";
 import { Close, Footer } from "@/sections/close";
 import { Community } from "@/sections/community";
 import { GearList } from "@/sections/gear-list";
@@ -31,7 +30,6 @@ export default function App() {
           <Resupply />
           <SharedGear />
           <Walkthrough />
-          <AlsoInPack />
           <Seasons />
         </RouteLine>
         <Community />

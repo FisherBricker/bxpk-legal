@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { buildContours, type ContourLayout } from "@/lib/topo/contours";
+import type { ContourLayout } from "@/lib/topo/contours";
+import { buildIsolineLayout } from "@/lib/topo/isolines";
 import { createState, type ParticleState, PHYSICS, step } from "@/lib/topo/physics";
 import { createPointerTracker } from "@/lib/topo/pointer";
 import { useReduced } from "@/lib/hooks";
@@ -9,18 +10,21 @@ interface TopoFieldProps {
   quietRefs?: React.RefObject<HTMLElement | null>[];
   className?: string;
   seed?: number;
+  /** `map` for light grounds, `night` for the spruce chapters. */
+  tone?: "map" | "night";
 }
 
-const LINE = "rgba(95,112,64,0.22)";
-const DOT_REST = "rgba(95,112,64,0.45)";
-const DOT_LIVE = "rgba(95,112,64,0.95)";
+const TONES = {
+  map: { line: "rgba(95,112,64,0.22)", rest: "rgba(95,112,64,0.45)", live: "rgba(95,112,64,0.95)" },
+  night: { line: "rgba(164,188,107,0.16)", rest: "rgba(164,188,107,0.34)", live: "rgba(164,188,107,0.9)" },
+};
 
 /**
  * The hero's contour particle field: contour lines drawn through linked particles,
  * dots at rest, pushed away from the pointer harder the faster it moves.
  * Uses the app's tested topo physics (contours.ts, physics.ts, pointer.ts).
  */
-export function TopoField({ quietRefs, className = "", seed = 20260915 }: TopoFieldProps) {
+export function TopoField({ quietRefs, className = "", seed = 20260915, tone = "map" }: TopoFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const reduced = useReduced();
 
@@ -54,7 +58,8 @@ export function TopoField({ quietRefs, className = "", seed = 20260915 }: TopoFi
       canvas!.width = Math.round(width * dpr);
       canvas!.height = Math.round(height * dpr);
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
-      layout = buildContours({ width, height, seed, spacing: width < 600 ? 6.5 : 7.5, ringStep: 18, maxParticles: 6000 });
+      // Isolines of one height field: the lines nest and never cross.
+      layout = buildIsolineLayout({ width, height, seed, spacing: width < 600 ? 6.5 : 7.5, ringStep: 18, cell: 9, maxParticles: 6000 });
       state = createState(layout);
       quiet = new Uint8Array(layout.count);
       const hostRect = host!.getBoundingClientRect();
@@ -80,7 +85,7 @@ export function TopoField({ quietRefs, className = "", seed = 20260915 }: TopoFi
       if (!layout || !state) return;
       ctx!.clearRect(0, 0, width, height);
       ctx!.lineWidth = 1;
-      ctx!.strokeStyle = LINE;
+      ctx!.strokeStyle = TONES[tone].line;
       ctx!.beginPath();
       for (let i = 0; i < layout.count; i++) {
         if (layout.linked[i]) ctx!.lineTo(state.x[i], state.y[i]);
@@ -103,9 +108,9 @@ export function TopoField({ quietRefs, className = "", seed = 20260915 }: TopoFi
         }
         else if (!quiet[i]) rest.rect(state.x[i] - 0.75, state.y[i] - 0.75, 1.5, 1.5);
       }
-      ctx!.fillStyle = DOT_REST;
+      ctx!.fillStyle = TONES[tone].rest;
       ctx!.fill(rest);
-      ctx!.fillStyle = DOT_LIVE;
+      ctx!.fillStyle = TONES[tone].live;
       ctx!.fill(live);
       if (peak > maxDisplacement) maxDisplacement = peak;
       canvas!.dataset.displacement = peak.toFixed(2);
@@ -222,7 +227,7 @@ export function TopoField({ quietRefs, className = "", seed = 20260915 }: TopoFi
       host.removeEventListener("pointerleave", onLeave);
       host.removeEventListener("pointercancel", onLeave);
     };
-  }, [quietRefs, reduced, seed]);
+  }, [quietRefs, reduced, seed, tone]);
 
   return <canvas aria-hidden="true" className={`absolute inset-0 h-full w-full ${className}`} data-topo-field="" ref={canvasRef} />;
 }

@@ -52,7 +52,10 @@ export function Navbar() {
     setCondensed(y > 40);
     const goingDown = y > lastY.current && y > 220;
     lastY.current = y;
-    setHidden(goingDown && !menuOpen);
+    const hide = goingDown && !menuOpen;
+    setHidden(hide);
+    // Anything pinned under the nav (the phone route-progress line) follows it up and down.
+    document.documentElement.style.setProperty("--nav-bottom", hide ? "0px" : "68px");
   });
 
   useEffect(() => {

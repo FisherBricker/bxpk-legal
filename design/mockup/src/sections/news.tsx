@@ -1,30 +1,18 @@
 import { ArrowRight, ExternalLink } from "lucide-react";
+import { ContourRings } from "@/components/kokonutui/background-paths";
 import { SlideTextButton } from "@/components/kokonutui/slide-text-button";
 import { PlainSection } from "@/components/layout";
 import { Enter } from "@/components/motion-helpers";
 
 function ContourCover() {
   return (
-    <svg aria-hidden="true" className="h-full w-full" fill="none" preserveAspectRatio="xMidYMid slice" viewBox="0 0 600 260">
-      <rect fill="var(--map)" height="260" width="600" />
-      {Array.from({ length: 14 }, (_, i) => (
-        <ellipse
-          cx="170"
-          cy="330"
-          key={`a${i}`}
-          rx={(i + 1) * 36 * 1.9}
-          ry={(i + 1) * 36}
-          stroke="var(--contour)"
-          strokeWidth="1"
-          transform={`rotate(${-4 + i * 0.6} 170 330)`}
-        />
-      ))}
-      {Array.from({ length: 8 }, (_, i) => (
-        <ellipse cx="520" cy="-40" key={`b${i}`} rx={(i + 1) * 30 * 1.9} ry={(i + 1) * 30} stroke="var(--contour)" strokeWidth="1" />
-      ))}
+    <div className="relative h-full bg-map">
+    <ContourRings height={260} seed={61} stroke="var(--contour)" width={600} ringStep={18} />
+    <svg aria-hidden="true" className="relative h-full w-full" fill="none" preserveAspectRatio="xMidYMid slice" viewBox="0 0 600 260">
       <path d="M40 220 C 120 200, 150 150, 230 150 S 330 120, 380 90 S 470 70, 560 40" stroke="var(--amber)" strokeDasharray="6 7" strokeLinecap="round" strokeWidth="2.5" />
       <circle cx="380" cy="90" fill="var(--amber)" r="6" />
     </svg>
+    </div>
   );
 }
 

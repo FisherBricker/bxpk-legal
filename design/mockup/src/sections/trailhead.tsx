@@ -1,5 +1,4 @@
 import { motion, stagger } from "motion/react";
-import { ChevronDown } from "lucide-react";
 import { useMemo, useRef } from "react";
 import { TripProfileStatic } from "@/components/route";
 import { SignupForm } from "@/components/signup-form";
@@ -37,7 +36,7 @@ function WordReveal({ text }: { text: string }) {
 function TrailheadMarker() {
   const reduced = useReduced();
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+    <div className="flex min-h-11 flex-wrap items-center gap-x-4 gap-y-1">
       <span className="map-label flex items-center gap-2.5 text-ink">
         <span className="relative flex h-3.5 w-3.5" data-trailhead-dot="">
           {reduced ? null : (
@@ -51,10 +50,6 @@ function TrailheadMarker() {
         </span>
         Trailhead, mile 0, 9,360 ft
       </span>
-      <a className="flex min-h-11 items-center gap-1.5 text-sm font-bold text-ink no-underline" href="#route">
-        Walk the route
-        <ChevronDown aria-hidden="true" className="h-4 w-4" />
-      </a>
     </div>
   );
 }

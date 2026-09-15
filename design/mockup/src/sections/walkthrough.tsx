@@ -1,3 +1,4 @@
+import { AlertTriangle, Check } from "lucide-react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { SmoothTab } from "@/components/kokonutui/smooth-tab";
@@ -14,7 +15,6 @@ interface Chapter {
   title: string;
   body: string;
   screen: ScreenId;
-  stats: [string, string][];
 }
 
 const CHAPTERS: Chapter[] = [
@@ -22,69 +22,60 @@ const CHAPTERS: Chapter[] = [
     id: "plan",
     name: "Plan",
     title: "Map the days.",
-    body: "Enter miles and elevation gain for each day, or import a GPX track. Water per day comes with it, and a NOAA forecast arrives for every trip day in the US.",
+    body: "Enter miles and elevation gain for each day, or import a GPX track. Water per day comes with it, and a NOAA forecast arrives for every trip day in the US: day 1 is clear, 71°F / 39°F.",
     screen: "itinerary",
-    stats: [
-      ["Day 3", "8.9 mi, 1,880 ft, 2.5 L"],
-      ["Day 1 forecast", "Clear, 71°F / 39°F"],
-    ],
   },
   {
     id: "pack",
     name: "Pack",
     title: "Load the pack.",
-    body: "Pick a saved pack or add items one at a time. Base weight shows up with the first item, and worn, consumable and skin-out weights follow as you go.",
+    body: "Pick a saved pack or add items one at a time. Base weight shows up with the first item, 4.62 kg on this trip, and worn, consumable and skin-out weights follow as you go.",
     screen: "trip",
-    stats: [
-      ["Base weight", "4.62 kg"],
-      ["Skin-out, day 1", "10.40 kg"],
-    ],
   },
   {
     id: "walk",
     name: "Walk",
     title: "Record the route.",
-    body: "Record your route with GPS on the trail, at every fix or every 15 s, 30 s or 60 s to save battery, and export it as GPX.",
+    body: "Record your route with GPS on the trail, at every fix or every 15 s, 30 s or 60 s to save battery, and export all 61.4 mi as GPX.",
     screen: "route",
-    stats: [
-      ["GPS interval", "Every 15 s"],
-      ["Track", "61.4 mi, as GPX"],
-    ],
   },
   {
     id: "share",
     name: "Share",
     title: "Debrief and share.",
-    body: "Back home, finalize the trip. Your base weight joins your profile's trend, and you can post the loadout to the community.",
+    body: "Back home, finalize the trip. Your base weight joins your profile's trend, 0.62 kg short of a 4.00 kg goal here, and you can post the loadout to the community.",
     screen: "base",
-    stats: [
-      ["Base weight", "4.62 kg"],
-      ["To your goal", "0.62 kg"],
-    ],
   },
+];
+
+/** Readiness checks, folded into the Plan chapter as one compact checklist. */
+const READINESS: Array<{ label: string; state: string; ok: boolean }> = [
+  { label: "Gear", state: "ready, 4.62 kg base", ok: true },
+  { label: "Calories", state: "ready, 3,250 kcal on day 2", ok: true },
+  { label: "Weather", state: "check day 3, afternoon storms", ok: false },
 ];
 
 function Caption({ chapter, index }: { chapter: Chapter; index: number }) {
   return (
     <div className="max-w-[34rem]" data-chapter={index + 1}>
-      <h3 className="font-display text-[clamp(2.25rem,1.3rem+2.2vw,3.75rem)] leading-[1.02] font-medium">
-        {chapter.title}
-      </h3>
+      <h3 className="font-display text-[clamp(2.25rem,1.3rem+2.2vw,3.75rem)] leading-[1.02] font-medium">{chapter.title}</h3>
       <p className="mt-5 text-lg leading-relaxed text-fg-muted">{chapter.body}</p>
-      <dl className="mt-7 grid gap-3 sm:grid-cols-2">
-        {chapter.stats.map(([label, value], i) => (
-          <motion.div
-            animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl border border-rule bg-card px-4 py-3"
-            initial={{ opacity: 0.2, y: 16 }}
-            key={label}
-            transition={{ duration: 0.6, delay: 0.15 + i * 0.1, ease: EASE_EXPO }}
-          >
-            <dt className="map-label text-fg-muted">{label}</dt>
-            <dd className="mt-1 font-display text-xl font-medium tnum">{value}</dd>
-          </motion.div>
-        ))}
-      </dl>
+      {chapter.id === "plan" ? (
+        <ul aria-label="Readiness checks" className="mt-6 space-y-1.5 text-[0.9375rem]">
+          {READINESS.map((check) => (
+            <li className="flex items-center gap-2.5" key={check.label}>
+              {check.ok ? (
+                <Check aria-hidden="true" className="h-4 w-4 shrink-0 text-data" strokeWidth={2} />
+              ) : (
+                <AlertTriangle aria-hidden="true" className="h-4 w-4 shrink-0 text-fg" strokeWidth={1.75} />
+              )}
+              <span>
+                <span className="font-bold">{check.label}</span> <span className="text-fg-muted">{check.state}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </div>
   );
 }
@@ -101,7 +92,7 @@ function PinnedWalkthrough() {
   });
 
   useEffect(() => {
-    const size = () => setPhoneWidth(Math.round(Math.max(210, Math.min(290, (window.innerHeight - 330) / 2.11))));
+    const size = () => setPhoneWidth(Math.round(Math.max(210, Math.min(290, (window.innerHeight - 380) / 2.11))));
     size();
     window.addEventListener("resize", size);
     return () => window.removeEventListener("resize", size);
@@ -128,7 +119,7 @@ function PinnedWalkthrough() {
           <h2 className="display-2 max-w-[20ch]" id="guide-heading">
             Plan a trip, start to finish
           </h2>
-          <div className={cn("relative mt-4 flex flex-1 items-center gap-12", phoneLeft ? "flex-row" : "flex-row-reverse")}>
+          <div className={cn("relative mt-16 flex min-h-0 flex-1 items-center gap-12", phoneLeft ? "flex-row" : "flex-row-reverse")}>
             <motion.div layout className="shrink-0" transition={{ type: "spring", stiffness: 90, damping: 20 }}>
               <Phone label={SCREEN_LABEL[chapter.screen]} width={phoneWidth}>
                 <div className="relative h-full">
@@ -200,7 +191,7 @@ function StaticWalkthrough() {
       <h2 className="display-2 max-w-[20ch]" id="guide-heading">
         Plan a trip, start to finish
       </h2>
-      <ol className="m-0 mt-12 list-none space-y-16 p-0">
+      <ol className="m-0 mt-16 list-none space-y-16 p-0">
         {CHAPTERS.map((chapter, index) => (
           <li
             className={cn("flex flex-col items-center gap-10 md:flex-row", index % 2 === 1 && "md:flex-row-reverse")}
@@ -223,7 +214,7 @@ function TabbedWalkthrough() {
         Plan a trip, start to finish
       </h2>
       <SmoothTab
-        className="mt-8"
+        className="mt-16"
         items={CHAPTERS.map((chapter, index) => ({
           id: chapter.id,
           title: chapter.name,

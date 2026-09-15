@@ -18,22 +18,24 @@ export const WAYPOINTS: WaypointDef[] = [
   { id: "resupply", name: "Muir Trail Ranch", mile: 18.0, ft: 7700 },
   { id: "shared", name: "Muir Pass", mile: 38.0, ft: 11955 },
   { id: "guide", name: "LeConte Canyon", mile: 44.6, ft: 8700 },
-  { id: "bento", name: "Bishop Pass", mile: 55.0, ft: 11972 },
   { id: "seasons", name: "Trail's end, South Lake", mile: 61.4, ft: 9768 },
 ];
 
 
 /**
  * A marker label on the route: it labels the route, not the heading beside it.
- * Desktop sets it in the line's gutter; phones get an inline annotation row with
- * its own amber dot, since the line itself is not drawn there.
+ * Desktop sets it in the line's gutter beside the heading. Phones have a 48 px
+ * gutter, so the annotation runs down the gutter beside the line, set vertically
+ * like a label along a feature on a quadrangle, starting just under the marker.
  */
 export function Waypoint({ id }: { id: string }) {
   const wp = WAYPOINTS.find((w) => w.id === id);
   if (!wp) return null;
   return (
-    <p className="map-label mb-6 flex items-center gap-2 text-fg-muted lg:absolute lg:top-1 lg:-left-[136px] lg:mb-0 lg:block lg:w-[124px]" data-waypoint={id}>
-      <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-full bg-route lg:hidden" />
+    <p
+      className="map-label absolute top-0 -left-[27px] w-4 pt-7 text-[0.6875rem] leading-none tracking-[0.06em] whitespace-nowrap text-fg-muted [writing-mode:vertical-rl] lg:top-1 lg:-left-[136px] lg:w-[124px] lg:pt-0 lg:text-[0.8125rem] lg:leading-[1.3] lg:tracking-[0.08em] lg:whitespace-normal lg:[writing-mode:horizontal-tb]"
+      data-waypoint={id}
+    >
       <span className="lg:hidden">
         Mile {wp.mile.toFixed(1)}, {wp.name}, {fmtInt(wp.ft)} ft
       </span>
@@ -53,8 +55,8 @@ interface Point {
   y: number;
 }
 
-function knots(start: Point, ys: number[], gutter: number, amp: number): Point[] {
-  const pts: Point[] = [start, { x: start.x, y: Math.max(start.y + 40, 24) }, { x: gutter + 60, y: Math.max(ys[0] - 70, 90) }];
+function knots(start: Point, ys: number[], gutter: number, amp: number, approach: number): Point[] {
+  const pts: Point[] = [start, { x: start.x, y: Math.max(start.y + 40, 24) }, { x: gutter + approach, y: Math.max(ys[0] - 70, 90) }];
   for (const y of ys) {
     const prev = pts[pts.length - 1];
     const dy = y - prev.y;
@@ -209,7 +211,7 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
       const hero = heroRect && heroRect.width > 0 ? { left: heroRect.left, top: heroRect.top + scroll, width: heroRect.width, height: heroRect.height } : null;
       const width = box.width;
       const columnLeft = Math.max(0, (width - 1440) / 2);
-      const gutter = columnLeft + 64;
+      const gutter = isDesktop ? columnLeft + 64 : 12;
       const startNode = document.querySelector("[data-trailhead-dot]");
       const startRect = startNode?.getBoundingClientRect();
       const start = startRect && startRect.width > 0
@@ -220,7 +222,7 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
         width,
         height: box.height,
         docTop: top,
-        path: smoothPath(knots(start, local, gutter, 30)),
+        path: smoothPath(knots(start, local, gutter, isDesktop ? 30 : 4, isDesktop ? 60 : 8)),
         markers: local.map((y) => ({ x: gutter, y })),
         anchors,
         frames,
@@ -301,7 +303,7 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="relative" ref={containerRef}>
-      {isDesktop ? (
+      {m.path || isDesktop ? (
         <svg
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-20 h-full w-full overflow-visible"
@@ -331,15 +333,15 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
             const trailsEnd = i === WAYPOINTS.length - 1;
             return (
               <g key={WAYPOINTS[i].id}>
-                {trailsEnd ? <circle cx={p.x} cy={p.y} fill="none" r="15" stroke={stroke} strokeOpacity="0.45" strokeWidth="1.5" /> : null}
-                <circle cx={p.x} cy={p.y} fill={ground} r={trailsEnd ? 10 : 8} stroke={stroke} strokeWidth="2.5" />
+                {trailsEnd ? <circle cx={p.x} cy={p.y} fill="none" r={isDesktop ? 15 : 10} stroke={stroke} strokeOpacity="0.45" strokeWidth="1.5" /> : null}
+                <circle cx={p.x} cy={p.y} fill={ground} r={(trailsEnd ? 10 : 8) * (isDesktop ? 1 : 0.7)} stroke={stroke} strokeWidth={isDesktop ? 2.5 : 2} />
                 <motion.circle
                   animate={{ scale: lit ? 1 : 0 }}
                   cx={p.x}
                   cy={p.y}
                   fill={stroke}
                   initial={{ scale: reduced ? 1 : 0 }}
-                  r={trailsEnd ? 5.5 : 4.5}
+                  r={(trailsEnd ? 5.5 : 4.5) * (isDesktop ? 1 : 0.7)}
                   transition={{ type: "spring", stiffness: 260, damping: 20 }}
                 />
               </g>
@@ -353,20 +355,17 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
       {isDesktop ? (
         <TripInstrument heroHeight={m.heroHeight} hero={m.hero} night={onNight} readout={readout} show={status.show} />
       ) : (
-        <motion.div
-          animate={{ opacity: status.inRoute ? 1 : 0 }}
-          aria-hidden="true"
-          className="pointer-events-none fixed top-[72px] right-0 left-0 z-20"
-          initial={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <motion.div className="h-[3px] origin-left bg-amber" style={{ scaleX: drawn }} />
-          <div className="mt-2 flex justify-center">
+        <div aria-hidden="true" className="pointer-events-none fixed right-0 left-0 z-40 transition-[top] duration-300" style={{ top: "var(--nav-bottom, 72px)" }}>
+          {/* The 3 px route-progress line stays under the nav; the pill appears once on the route. */}
+          <div className="h-[3px] bg-amber/20">
+            <motion.div className="h-full origin-left bg-amber" style={{ scaleX: drawn }} />
+          </div>
+          <motion.div animate={{ opacity: status.inRoute ? 1 : 0 }} className="mt-2 flex justify-center" initial={{ opacity: 0 }} transition={{ duration: 0.3 }}>
             <span className="map-label rounded-full border border-line bg-paper/95 px-3 py-1.5 text-ink shadow-sm">
               Day {readout.day}, mile {readout.mile.toFixed(1)}, {readout.pack.toFixed(2)} kg
             </span>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       )}
     </div>
   );

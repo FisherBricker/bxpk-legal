@@ -1,4 +1,3 @@
-import { ContourPaths } from "@/components/kokonutui/background-paths";
 import { ScrollStatements } from "@/components/kokonutui/scroll-text";
 import { SlideTextButton } from "@/components/kokonutui/slide-text-button";
 import { PlainSection } from "@/components/layout";
@@ -27,7 +26,6 @@ const STATEMENTS = [
 export function Privacy() {
   return (
     <PlainSection className="relative overflow-hidden py-24 lg:py-36" ground="night" id="privacy" labelledBy="privacy-heading">
-      <ContourPaths className="opacity-80" count={11} seed={41} />
       <div className="relative grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
         <div className="lg:sticky lg:top-32 lg:self-start">
           <h2 className="display-2" id="privacy-heading">
