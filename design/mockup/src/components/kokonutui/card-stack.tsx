@@ -74,9 +74,12 @@ export function GearCardStack({
                   className="h-3 w-[3px] shrink-0 rounded-full"
                   style={{ background: category.color }}
                 />
-                <span className="flex-1 font-bold">{category.label}</span>
-                <span className="text-sm text-fg-muted tnum">
-                  {category.items.length} {category.items.length === 1 ? "item" : "items"}
+                {/* On phones the item count drops under the name, so a category name never wraps or truncates. */}
+                <span className="flex min-w-0 flex-1 flex-col sm:flex-row sm:items-baseline sm:gap-3">
+                  <span className="font-bold whitespace-nowrap">{category.label}</span>
+                  <span className="text-xs text-fg-muted tnum sm:ml-auto sm:text-sm">
+                    {category.items.length} {category.items.length === 1 ? "item" : "items"}
+                  </span>
                 </span>
                 <span className="w-[4.75rem] text-right font-bold tnum">{fmtInt(total)} g</span>
                 <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={spring}>
@@ -100,7 +103,7 @@ export function GearCardStack({
                           className="flex items-center gap-3 border-b border-rule py-2 text-[0.9375rem] last:border-b-0"
                           key={item.name}
                         >
-                          <span className="min-w-0 flex-1 truncate">{item.name}</span>
+                          <span className="min-w-0 flex-1 leading-snug">{item.name}</span>
                           <span className="map-label text-fg-muted">{item.role}</span>
                           <span className="w-[4.75rem] text-right font-bold tnum">{fmtInt(item.g)} g</span>
                         </li>

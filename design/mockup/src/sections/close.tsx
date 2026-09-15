@@ -34,7 +34,7 @@ function TrailsEnd({ tagRef }: { tagRef: React.RefObject<HTMLDivElement | null> 
         <div className="panel relative z-10 w-full max-w-[18rem] px-5 py-4 sm:mt-24">
           <p className="leading-snug">
             <span className="font-display text-2xl font-medium">South Lake</span>{" "}
-            <span className="text-sm text-fg-muted">trail&rsquo;s end, mile 61.4, 9,768 ft</span>
+            <span className="text-sm text-fg-muted">trail&rsquo;s end, <span className="whitespace-nowrap">mile 61.4</span>, <span className="whitespace-nowrap">9,768 ft</span></span>
           </p>
           <ul className="mt-4 space-y-1.5 border-t border-rule pt-3 text-[0.9375rem]">
             {SUMMARY.map(([value, label]) => (

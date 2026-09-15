@@ -90,7 +90,7 @@ export function GearList() {
               <p className="sr-only" role="img" aria-label={`Category share of the 4,620 g base weight: ${slices
                 .map((slice) => `${slice.label} ${fmtInt(slice.value)} g`)
                 .join(", ")}.`} />
-              <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+              <ul className="mt-5 grid grid-cols-1 gap-x-4 gap-y-1.5 text-sm min-[420px]:grid-cols-2">
                 {slices.map((slice, index) => (
                   <li
                     className="flex items-center gap-2"
@@ -99,7 +99,7 @@ export function GearList() {
                     onPointerLeave={() => setHovered(null)}
                   >
                     <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: slice.color }} />
-                    <span className="min-w-0 flex-1 truncate">{slice.label}</span>
+                    <span className="min-w-0 flex-1 whitespace-nowrap">{slice.label}</span>
                     <span className="text-fg-muted tnum">{Math.round((slice.value / total) * 100)}%</span>
                   </li>
                 ))}

@@ -56,14 +56,18 @@ export function Resupply() {
       <div className="mt-4 border-t border-rule pt-4">
         <StackLegend />
       </div>
-      <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm text-fg-muted tnum">
-        <span className="text-fg">Water per day</span>
-        {DAYS.map((day) => (
-          <span key={day.day}>
-            Day {day.day} {day.water.toFixed(1)} L
-          </span>
-        ))}
-      </p>
+      <div className="mt-3">
+        <p className="text-sm text-fg">Water per day</p>
+        {/* Seven equal columns; phones get two aligned rows, days 1 to 4 then 5 to 7, so a day never parts from its litres. */}
+        <dl className="mt-1.5 grid grid-cols-4 gap-y-2 text-center text-sm tnum sm:grid-cols-7">
+          {DAYS.map((day) => (
+            <div key={day.day}>
+              <dt className="text-xs text-fg-muted">Day {day.day}</dt>
+              <dd className="font-bold whitespace-nowrap text-fg">{day.water.toFixed(1)} L</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </div>
   );
 

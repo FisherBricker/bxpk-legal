@@ -201,3 +201,12 @@ Project: `design/mockup/` on `design/site-direction`. Build: `npm run build` (Ty
 - Keyboard: tab-through gives every control a visible ring, and every target is 44 px or more.
 - Hero field sweep on the isoline field: the fast sweep bends 1,222 particles against 92 for the slow drift, with reach 212 px against 101 px and push 10,400 against 3,335.
 - Grep: no dashes, emoji or banned words.
+
+## Polish after ship
+- **Gear on phones:**
+  - The item count now sits under the category name, so names such as "Sleep system" never wrap or truncate.
+  - Item names wrap instead of truncating.
+  - The donut legend uses one column below 420 px, so every category name shows in full.
+- **Water per day:** the row under the resupply chart is a tabular strip with "Day N" above its litres. It has seven equal columns on desktop and aligned rows of four and three on phones, so a day never parts from its value.
+- **Close tag:** "mile 61.4" and "9,768 ft" are each kept on one line.
+- **Verification:** `npm run build` passes with TypeScript clean. `mobile.png`, `desktop.png` and `mobile-first-viewport.png` were recaptured and opened, and the capture console was clean.
