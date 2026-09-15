@@ -1,0 +1,1303 @@
+<title>bxpk Site Direction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<style>
+  /* Review board chrome. The proposed site itself lives in <template id="site"> below. */
+  :root {
+    --b-ground: #EFEEE8; --b-panel: #FFFFFF; --b-text: #1C2E1E; --b-muted: #5F665A;
+    --b-line: #DAD8CD; --b-accent: #5F7040; --b-flag: #8A5A22;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --b-ground: #121610; --b-panel: #1B2117; --b-text: #E7EADF; --b-muted: #98A08A;
+      --b-line: #2E3626; --b-accent: #A4BC6B; --b-flag: #D2A25E; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --b-ground: #121610; --b-panel: #1B2117; --b-text: #E7EADF; --b-muted: #98A08A;
+    --b-line: #2E3626; --b-accent: #A4BC6B; --b-flag: #D2A25E; color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--b-ground); color: var(--b-text);
+    font: 400 15px/1.55 "Nunito Sans", ui-sans-serif, system-ui, sans-serif; }
+  .board { width: min(100% - 32px, 1880px); margin-inline: auto; padding-block: 28px 80px; }
+  .b-head { display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: end; justify-content: space-between;
+    padding-bottom: 20px; border-bottom: 1px solid var(--b-line); }
+  .b-head h1 { font: 500 clamp(26px, 3vw, 38px)/1.1 Jost, "Futura", ui-sans-serif, sans-serif; margin: 0 0 6px; letter-spacing: .01em; }
+  .b-head p { margin: 0; color: var(--b-muted); max-width: 70ch; }
+  .b-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+  .b-btn { min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--b-line); background: var(--b-panel);
+    color: var(--b-text); font: 600 14px/1 "Nunito Sans", sans-serif; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+  .b-btn[aria-pressed="true"] { border-color: var(--b-accent); box-shadow: inset 0 0 0 1px var(--b-accent); }
+  .b-btn[aria-pressed="true"]::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--b-accent); }
+  .b-btn:focus-visible { outline: 2px solid var(--b-accent); outline-offset: 2px; }
+  .stage { margin-top: 36px; }
+  .stage h2 { font: 500 20px/1.2 Jost, sans-serif; margin: 0 0 14px; letter-spacing: .01em; }
+  .stage h2 span { color: var(--b-muted); font: 400 14px "Nunito Sans", sans-serif; margin-left: 10px; }
+  .pair { display: flex; gap: 28px; align-items: flex-start; }
+  .pair.stacked { flex-direction: column; }
+  .frame { flex: none; }
+  .frame-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px; color: var(--b-muted); font-size: 13px; }
+  .frame-bar b { color: var(--b-text); font-weight: 700; }
+  .frame-bar .b-btn { min-height: 44px; font-size: 13px; padding: 0 12px; }
+  .viewport { position: relative; overflow: hidden; border-radius: 10px; border: 1px solid var(--b-line); background: var(--b-panel);
+    box-shadow: 0 10px 30px -12px rgba(20, 28, 16, .25); }
+  .viewport iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; background: transparent; }
+  .notes { margin-top: 56px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 20px; }
+  .note { background: var(--b-panel); border: 1px solid var(--b-line); border-radius: 12px; padding: 22px 24px; min-width: 0; }
+  .note.wide { grid-column: 1 / -1; }
+  .note h3 { font: 500 19px/1.2 Jost, sans-serif; margin: 0 0 12px; letter-spacing: .01em; }
+  .note p, .note li { color: var(--b-muted); margin: 0 0 10px; max-width: 75ch; }
+  .note ul { padding-left: 18px; margin: 0; }
+  .note strong { color: var(--b-text); }
+  .flag { color: var(--b-flag); font-weight: 700; }
+  .tbl-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px 8px 0; border-bottom: 1px solid var(--b-line); vertical-align: top; }
+  th { font-weight: 700; color: var(--b-muted); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+  td code { font: 500 13px/1 ui-monospace, "SF Mono", Menlo, monospace; }
+  .sw { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; margin-right: 6px; border: 1px solid rgba(0,0,0,.15); }
+  .tnum { font-variant-numeric: tabular-nums; }
+  dialog { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: var(--b-ground); }
+  dialog::backdrop { background: rgba(10, 14, 8, .6); }
+  .full-bar { height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-inline: 16px; border-bottom: 1px solid var(--b-line); }
+  .full-body { height: calc(100dvh - 56px); display: flex; justify-content: center; }
+  .full-body iframe { border: 0; height: 100%; width: 100%; }
+  .full-body.phone iframe { width: 390px; max-width: 100%; border-inline: 1px solid var(--b-line); }
+</style>
+
+<div class="board">
+  <header class="b-head">
+    <div>
+      <h1>bxpk site direction</h1>
+      <p>A proposal for the Backpack Weight Tracker home page, for approval before any real page styling is built. Every frame below is the same live page at its true width, scaled to fit: scroll inside a frame, and move the pointer across the hero contours. Nothing here is final until you approve it.</p>
+    </div>
+    <div class="b-controls">
+      <button class="b-btn" id="t-anno" aria-pressed="true" type="button">Reveal annotations</button>
+      <button class="b-btn" id="t-rm" aria-pressed="false" type="button">Preview reduced motion</button>
+    </div>
+  </header>
+
+  <section class="stage" aria-labelledby="st-light">
+    <h2 id="st-light">Light<span>follows the visitor's system setting</span></h2>
+    <div class="pair">
+      <div class="frame" data-theme="light" data-w="1440" data-h="900" data-label="Desktop, 1440 px, light">
+        <div class="frame-bar"><span><b>Desktop</b> 1440 px</span><button class="b-btn open-full" type="button">Open at actual size</button></div>
+        <div class="viewport"><iframe title="Home page, desktop, light" loading="eager"></iframe></div>
+      </div>
+      <div class="frame" data-theme="light" data-w="390" data-h="844" data-label="iPhone, 390 px, light">
+        <div class="frame-bar"><span><b>iPhone</b> 390 px</span><button class="b-btn open-full" type="button">Actual size</button></div>
+        <div class="viewport"><iframe title="Home page, iPhone width, light" loading="eager"></iframe></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage" aria-labelledby="st-dark">
+    <h2 id="st-dark">Dark<span>the app's Topo palette</span></h2>
+    <div class="pair">
+      <div class="frame" data-theme="dark" data-w="1440" data-h="900" data-label="Desktop, 1440 px, dark">
+        <div class="frame-bar"><span><b>Desktop</b> 1440 px</span><button class="b-btn open-full" type="button">Open at actual size</button></div>
+        <div class="viewport"><iframe title="Home page, desktop, dark" loading="lazy"></iframe></div>
+      </div>
+      <div class="frame" data-theme="dark" data-w="390" data-h="844" data-label="iPhone, 390 px, dark">
+        <div class="frame-bar"><span><b>iPhone</b> 390 px</span><button class="b-btn open-full" type="button">Actual size</button></div>
+        <div class="viewport"><iframe title="Home page, iPhone width, dark" loading="lazy"></iframe></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="notes" aria-label="Proposal notes">
+    <div class="note wide">
+      <h3>Proposed tokens</h3>
+      <p>This is the starting table from the brief, taken from the app's approved Topo palette, <strong>unchanged</strong>. Contrast was measured with the WCAG 2.2 formula; every text token clears 4.5:1 on every background it sits on in this mockup.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Token</th><th>Light</th><th>Dark</th><th>Measured contrast</th></tr></thead>
+          <tbody class="tnum">
+            <tr><td>ground</td><td><i class="sw" style="background:#F7F6F0"></i><code>#F7F6F0</code></td><td><i class="sw" style="background:#191F15"></i><code>#191F15</code></td><td>page background</td></tr>
+            <tr><td>surface</td><td><i class="sw" style="background:#FFFFFF"></i><code>#FFFFFF</code></td><td><i class="sw" style="background:#232A1D"></i><code>#232A1D</code></td><td>cards, phone screens</td></tr>
+            <tr><td>hero panel</td><td><i class="sw" style="background:#EDEFE2"></i><code>#EDEFE2</code></td><td><i class="sw" style="background:#1F2717"></i><code>#1F2717</code></td><td>hero and contour panels</td></tr>
+            <tr><td>text</td><td><i class="sw" style="background:#1C2E1E"></i><code>#1C2E1E</code></td><td><i class="sw" style="background:#E7EADF"></i><code>#E7EADF</code></td><td>light 13.29:1 ground, 12.37:1 hero. Dark 13.81:1 ground, 12.13:1 surface</td></tr>
+            <tr><td>muted</td><td><i class="sw" style="background:#5F665A"></i><code>#5F665A</code></td><td><i class="sw" style="background:#98A08A"></i><code>#98A08A</code></td><td>light 5.49:1 ground, 5.94:1 surface, 5.11:1 hero. Dark 6.19:1 ground, 5.44:1 surface, 5.68:1 hero</td></tr>
+            <tr><td>line</td><td><i class="sw" style="background:#E2E0D6"></i><code>#E2E0D6</code></td><td><i class="sw" style="background:#2E3626"></i><code>#2E3626</code></td><td>dividers only, never text</td></tr>
+            <tr><td>accent</td><td><i class="sw" style="background:#5F7040"></i><code>#5F7040</code></td><td><i class="sw" style="background:#A4BC6B"></i><code>#A4BC6B</code></td><td>light 5.00:1 ground, 4.65:1 hero. Dark 8.00:1 ground, 7.03:1 surface</td></tr>
+            <tr><td>amber</td><td><i class="sw" style="background:#B0763B"></i><code>#B0763B</code></td><td><i class="sw" style="background:#D2A25E"></i><code>#D2A25E</code></td><td>light 3.53:1 ground, so marks and large text only. Dark 7.27:1 ground</td></tr>
+            <tr><td>topo line</td><td><code>rgba(95,112,64,0.22)</code></td><td><code>rgba(164,188,107,0.10)</code></td><td>decorative contour strokes, as in the app's ContourPanel</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="note">
+      <h3>Additions to the table, for your call</h3>
+      <p>No token was changed. Three values are new, each labelled here so nothing slips in unseen:</p>
+      <ul>
+        <li><span class="flag">Added: topo particle.</span> Accent at 45% opacity in light and 30% in dark for resting points, full accent for points the pointer has moved. Reason: at the topo line's own 22% and 10%, single points one and a half pixels wide disappear; the lines themselves keep the exact token.</li>
+        <li><span class="flag">Added: closing band.</span> The download section uses the dark ground and dark text tokens in both themes, so the light page ends on the app's spruce Topo field. Reason: the page needs a real close, and this is the app's identity rather than a new color. Its text measures 13.81:1.</li>
+        <li><span class="flag">Added: phone bezel</span> <code>#10140D</code> in both themes, for the walkthrough's device frame only.</li>
+      </ul>
+    </div>
+
+    <div class="note">
+      <h3>Type, spacing, radii</h3>
+      <p><strong>Jost</strong> for display (500 for headings, 600 for the wordmark), set slightly open at large sizes, following BRAND.md. <strong>Nunito Sans</strong> for text (400 body, 600 links and labels, 700 figures and data labels), with tabular figures on every number so weights line up. This mockup loads both from Google Fonts; the real site self-hosts them.</p>
+      <div class="tbl-wrap"><table class="tnum">
+        <tbody>
+          <tr><td>Hero headline</td><td>clamp 2.75 to 5.5 rem, line height 1.0</td></tr>
+          <tr><td>Section heading</td><td>clamp 2 to 3.5 rem, line height 1.05</td></tr>
+          <tr><td>Band heading</td><td>clamp 1.625 to 2.25 rem</td></tr>
+          <tr><td>Lead / body / small</td><td>1.1875 rem / 1.0625 rem / 0.875 rem</td></tr>
+          <tr><td>Data label</td><td>0.75 rem, 700, uppercase, 0.08 em tracking</td></tr>
+          <tr><td>Spacing scale</td><td>4, 8, 12, 16, 24, 32, 48, 64, 96, 144 px</td></tr>
+          <tr><td>Radii</td><td>8 px controls, 12 px panels (the app's ContourPanel), 48 px phone frame, full for pills</td></tr>
+          <tr><td>Touch targets</td><td>44 px minimum on every link and button</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="note">
+      <h3>Reveal direction map</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Section</th><th>Element</th><th>Enters from</th></tr></thead>
+        <tbody>
+          <tr><td>Gear band</td><td>Copy / gear list</td><td>left / right, rows staggered from right</td></tr>
+          <tr><td>Day chart band</td><td>Copy / chart / bars</td><td>right / scale / bars rise from below</td></tr>
+          <tr><td>Meal band</td><td>Contour panel / copy</td><td>above (wipes down) / left</td></tr>
+          <tr><td>Shared gear band</td><td>Copy / pool rows</td><td>right / below, staggered</td></tr>
+          <tr><td>Spec tag</td><td>Tag</td><td>scale</td></tr>
+          <tr><td>Walkthrough</td><td>Phone / step screens</td><td>scale, then pinned; screens swap from above</td></tr>
+          <tr><td>Community</td><td>Copy / post / thread</td><td>left / right / below</td></tr>
+          <tr><td>Privacy</td><td>Heading / statements</td><td>pinned while statements rise from below</td></tr>
+          <tr><td>News and releases</td><td>News / release note</td><td>left / right</td></tr>
+          <tr><td>Close</td><td>Headline block</td><td>scale</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:12px">Everything moves once, on first entry, with an exponential ease out over 0.9 to 1.1 s. Horizontal entries are clipped to the page so iPhone never scrolls sideways.</p>
+    </div>
+
+    <div class="note">
+      <h3>Hero contour field</h3>
+      <p>The rings are the app's ContourPanel geometry exactly: 1.9 to 1 ellipses around two off-canvas centers, (0.22 w, 1.45 h) every 17 px and (0.95 w, -0.55 h) every 21 px. Points sit along each ring about 7 px apart and the ring is drawn through them, so the contour line itself bends.</p>
+      <ul>
+        <li><strong>Reach</strong> grows from 70 px with a still pointer to 320 px at full speed.</li>
+        <li><strong>Push</strong> grows from a gentle 0.6 to about 6 times that with speed, plus a drag along the pointer's direction, so a fast swipe leaves a wake.</li>
+        <li><strong>Spring</strong> pulls every point home with light damping: a soft wobble, never a bounce.</li>
+        <li><strong>iPhone:</strong> a tap sends a ripple out from the finger, a sideways drag bends the lines, and vertical swipes still scroll the page.</li>
+        <li>Lines under the headline stay quiet until disturbed, so the text stays easy to read. The loop sleeps once the field settles and pauses off screen.</li>
+      </ul>
+      <p>Turn on annotations to see a live readout of speed, reach and push in the hero's corner.</p>
+    </div>
+
+    <div class="note">
+      <h3>Reduced motion</h3>
+      <p>With <strong>prefers-reduced-motion: reduce</strong>, the page is complete and fully visible from the first paint: the contour field is drawn once at rest and ignores the pointer, nothing slides or fades in, and the walkthrough screens change without transitions. Pinning stays, because it is layout rather than animation. Use <strong>Preview reduced motion</strong> above to see it. Without JavaScript all content is visible too; only motion is lost.</p>
+    </div>
+
+    <div class="note">
+      <h3>Open questions for approval</h3>
+      <ul>
+        <li><strong>Headline.</strong> "Know what your pack weighs, every day of the trip." reuses the site's current description. Keep it, or write your own?</li>
+        <li><strong>Closing band.</strong> Keep the spruce close in light mode, or end on the light ground?</li>
+        <li><strong>Walkthrough length.</strong> Four steps are shown. Add a fifth for route recording, or keep it short?</li>
+        <li><strong>Community.</strong> Sample posts are labelled as samples. Keep the section before launch, or hold it until real posts exist?</li>
+        <li><strong>Pricing.</strong> Nothing on the page says free or paid, because nothing confirms either. Say something?</li>
+        <li><strong>Support email.</strong> Still a placeholder on the support page.</li>
+        <li><strong>Sample content.</strong> The trip, gear, posts, news items and dates are illustrations and will be replaced with real entries.</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<dialog id="full" aria-labelledby="full-title">
+  <div class="full-bar"><b id="full-title">Actual size</b><button class="b-btn" id="full-close" type="button">Close</button></div>
+  <div class="full-body"><iframe title="Home page at actual size"></iframe></div>
+</dialog>
+
+<template id="site">
+<style>
+  :root {
+    --ground: #F7F6F0; --surface: #FFFFFF; --hero: #EDEFE2; --text: #1C2E1E; --muted: #5F665A;
+    --line: #E2E0D6; --accent: #5F7040; --amber: #B0763B;
+    --topo: rgba(95, 112, 64, 0.22); --topo-dot: rgba(95, 112, 64, 0.45); --topo-live: rgba(95, 112, 64, 0.95);
+    --mark-moss: #5F7040; --mark-a: #D2A25E; --mark-b: #B0763B; --mark-knock: var(--ground);
+    --bezel: #10140D; --anno: #B0763B;
+    --c-shelter: #4C6444; --c-sleep: #6B5B8F; --c-pack: #8F6E5B; --c-clothing: #7B8F5A;
+    --c-water: #3A5E8C; --c-cooking: #C05B3A; --c-electronics: #C9A227; --c-misc: #8A8F87;
+    --ease: cubic-bezier(.16, 1, .3, 1);
+    --display: Jost, "Futura", "Avenir Next", ui-sans-serif, sans-serif;
+    --body: "Nunito Sans", "Avenir Next", ui-sans-serif, system-ui, sans-serif;
+    color-scheme: light;
+  }
+  :root[data-theme="dark"] {
+    --ground: #191F15; --surface: #232A1D; --hero: #1F2717; --text: #E7EADF; --muted: #98A08A;
+    --line: #2E3626; --accent: #A4BC6B; --amber: #D2A25E;
+    --topo: rgba(164, 188, 107, 0.10); --topo-dot: rgba(164, 188, 107, 0.30); --topo-live: rgba(164, 188, 107, 0.9);
+    --mark-moss: #7E9A4E; --mark-a: #E8BE72; --mark-b: #C88A45; --anno: #D2A25E;
+    color-scheme: dark;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scrollbar-color: var(--line) var(--ground); }
+  body { margin: 0; background: var(--ground); color: var(--text); font: 400 1.0625rem/1.6 var(--body); -webkit-font-smoothing: antialiased; }
+  main { overflow-x: clip; }
+  ::selection { background: var(--accent); color: var(--ground); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+  a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .22em; }
+  h1, h2, h3, h4 { font-family: var(--display); font-weight: 500; margin: 0; text-wrap: balance; letter-spacing: .005em; }
+  p { margin: 0; text-wrap: pretty; }
+  svg.i { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .num { font-variant-numeric: tabular-nums; }
+  .wrap { width: min(100% - 2.5rem, 76rem); margin-inline: auto; }
+  .lbl { font: 700 .75rem/1.2 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .sample { font-size: .8125rem; color: var(--muted); }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  /* Header */
+  .site-head { position: sticky; top: 0; z-index: 30; background: var(--ground); border-bottom: 1px solid transparent; transition: border-color .3s; }
+  .site-head.scrolled { border-color: var(--line); }
+  .head-in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 4rem; }
+  .brand { display: inline-flex; align-items: center; gap: .55rem; min-height: 44px; text-decoration: none; font: 600 1.4rem/1 var(--display); letter-spacing: .02em; }
+  .brand svg { width: 2rem; height: 2rem; }
+  .nav { display: flex; gap: .125rem; }
+  .nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 .85rem; border-radius: 8px; text-decoration: none; color: var(--muted); font-weight: 600; font-size: .9375rem; transition: color .2s, background-color .2s; }
+  .nav a:hover { color: var(--text); background: var(--hero); }
+  .soon-chip { display: inline-flex; align-items: center; gap: .45rem; min-height: 36px; padding: 0 .85rem; border: 1.5px dashed var(--accent); border-radius: 999px; font-size: .875rem; font-weight: 700; color: var(--text); }
+  .soon-chip svg { width: 1rem; height: 1rem; color: var(--accent); }
+  .menu-btn { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; border: 0; border-radius: 8px; background: transparent; color: var(--text); cursor: pointer; }
+  .menu-btn svg { width: 1.5rem; height: 1.5rem; }
+  .m-nav { border-top: 1px solid var(--line); padding-block: .5rem 1rem; }
+  .m-nav a { display: flex; align-items: center; min-height: 48px; text-decoration: none; font: 500 1.25rem/1 var(--display); border-bottom: 1px solid var(--line); }
+  @media (max-width: 880px) { .nav, .soon-chip { display: none; } .menu-btn { display: inline-flex; } }
+
+  /* Hero */
+  .hero { position: relative; isolation: isolate; background: var(--hero); overflow: hidden; touch-action: pan-y; }
+  .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; display: block; }
+  .hero-in { min-height: min(54rem, calc(100svh - 4rem)); display: grid; align-content: center; padding-block: clamp(4rem, 3rem + 5vw, 7rem); }
+  .hero-copy { max-width: 44rem; }
+  .hero h1 { font-size: clamp(2.75rem, 1.35rem + 4.6vw, 5.5rem); line-height: 1; letter-spacing: .004em; max-width: 13.5ch; }
+  .hero .lead { margin-top: 1.5rem; font-size: clamp(1.125rem, 1rem + .4vw, 1.3125rem); line-height: 1.55; color: var(--muted); max-width: 34rem; }
+  .cta-row { margin-top: 2.25rem; display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.75rem; }
+  .store { display: inline-flex; align-items: center; gap: .9rem; padding: .85rem 1.25rem .85rem 1rem; border: 1.5px dashed var(--accent); border-radius: 12px;
+    background: color-mix(in srgb, var(--surface) 72%, transparent); }
+  .store svg { width: 1.75rem; height: 1.75rem; color: var(--accent); }
+  .store strong { display: block; font: 500 1.125rem/1.25 var(--display); letter-spacing: .01em; }
+  .store span { display: block; font-size: .875rem; color: var(--muted); }
+  .text-link { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; font-weight: 700; text-decoration: none; color: var(--text); }
+  .text-link svg { color: var(--accent); transition: transform .35s var(--ease); }
+  .text-link:hover svg { transform: translateX(4px); }
+  .text-link:hover { text-decoration: underline; }
+
+  /* Sections */
+  .section { padding-block: clamp(4.5rem, 3rem + 6vw, 9rem); }
+  .sec-head { max-width: 42rem; margin-bottom: clamp(2.5rem, 1.5rem + 4vw, 5rem); }
+  .sec-head h2 { font-size: clamp(2rem, 1.3rem + 2.6vw, 3.5rem); line-height: 1.05; }
+  .sec-head p { margin-top: 1rem; font-size: 1.1875rem; color: var(--muted); max-width: 36rem; }
+
+  .band { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 1rem + 5vw, 7rem); align-items: center; padding-block: clamp(3rem, 2rem + 3vw, 5.5rem); border-top: 1px solid var(--line); }
+  .band.flip { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+  .band.flip .band-copy { order: 2; }
+  .band h3 { font-size: clamp(1.625rem, 1.15rem + 1.5vw, 2.375rem); line-height: 1.1; }
+  .band p { margin-top: 1rem; color: var(--muted); max-width: 34rem; }
+  .band .facts { margin: 1.5rem 0 0; padding: 0; list-style: none; display: grid; gap: .5rem; }
+  .band .facts li { display: flex; gap: .6rem; align-items: baseline; }
+  .band .facts li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex: none; transform: translateY(-2px); }
+  @media (max-width: 880px) { .band, .band.flip { grid-template-columns: minmax(0, 1fr); } .band.flip .band-copy { order: 0; } }
+
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+
+  /* Gear manifest */
+  .manifest { padding: 1.25rem 1.25rem .5rem; }
+  .mf-top { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; align-items: baseline; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+  .mf-top b { font: 500 1.625rem/1 var(--display); letter-spacing: .01em; }
+  .mf-top .grow { flex: 1; }
+  .cat { padding-block: .9rem .35rem; }
+  .cat + .cat { border-top: 1px solid var(--line); }
+  .cat-h { display: flex; align-items: center; gap: .6rem; font-weight: 700; margin-bottom: .35rem; }
+  .cat-h .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+  .cat-h .num { margin-left: auto; }
+  .row { display: grid; grid-template-columns: 4px minmax(0, 1fr) auto 4.75rem; gap: .75rem; align-items: center; min-height: 2.25rem; font-size: .9375rem; }
+  .row .tick { width: 3px; height: 14px; border-radius: 2px; background: var(--c); }
+  .row .role { font-size: .75rem; font-weight: 700; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+  .row .num { text-align: right; font-weight: 700; }
+  .row .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Day chart */
+  .daychart { padding-top: .5rem; }
+  .dc-top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .dc-top b { font: 500 1.5rem/1.1 var(--display); letter-spacing: .01em; }
+  .dc-plot { position: relative; height: clamp(15rem, 12rem + 10vw, 21rem); display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: clamp(.35rem, .2rem + 1vw, 1rem); align-items: end;
+    border-bottom: 1.5px solid var(--text); background-image: linear-gradient(var(--line) 1px, transparent 1px); background-size: 100% 33.333%; background-position: 0 0; }
+  .dc-bar { position: relative; height: var(--h); background: var(--accent); border-radius: 3px 3px 0 0; transform-origin: 50% 100%; }
+  .dc-bar.resupply { background: var(--amber); }
+  .dc-bar span { position: absolute; bottom: calc(100% + .35rem); left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: clamp(.6875rem, .6rem + .25vw, .8125rem); font-weight: 700; }
+  .dc-axis { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: clamp(.35rem, .2rem + 1vw, 1rem); margin-top: .5rem; font-size: .75rem; color: var(--muted); text-align: center; }
+  .dc-scale { display: flex; justify-content: space-between; margin-top: 1rem; font-size: .8125rem; color: var(--muted); gap: 1rem; flex-wrap: wrap; }
+  .dc-scale i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--amber); margin-right: .4rem; vertical-align: 0; }
+
+  /* Contour panel */
+  .contour { position: relative; isolation: isolate; background: var(--hero); border-radius: 12px; overflow: hidden; }
+  .contour > canvas.rings { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+  .meal { padding: 1.5rem; }
+  .meal-top { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.5rem; align-items: center; }
+  .ring { width: 8.5rem; height: 8.5rem; position: relative; }
+  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring .c { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+  .ring .c b { font: 500 1.375rem/1 var(--display); }
+  .ring .c span { font-size: .75rem; color: var(--muted); }
+  .macro { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; margin-top: .6rem; font-size: .9375rem; }
+  .macro b { font-weight: 700; }
+  .over { display: flex; align-items: center; gap: .45rem; font-weight: 700; }
+  .over::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--amber); }
+  .slots { margin-top: 1.25rem; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+  .slot { background: var(--surface); border-radius: 10px; padding: .8rem .9rem; font-size: .875rem; }
+  .slot-h { display: flex; justify-content: space-between; gap: .5rem; font-weight: 700; margin-bottom: .25rem; font-size: .9375rem; }
+  .slot p { color: var(--muted); }
+  @media (max-width: 520px) { .meal-top { grid-template-columns: minmax(0, 1fr); } .slots { grid-template-columns: minmax(0, 1fr); } }
+
+  /* Shared pool */
+  .pool { list-style: none; margin: 0; padding: 0; }
+  .pool li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .35rem 1rem; padding-block: 1.1rem; border-bottom: 1px solid var(--line); }
+  .pool li:first-child { border-top: 1px solid var(--line); }
+  .pool .it { font-weight: 700; }
+  .pool .meta { color: var(--muted); font-size: .9375rem; }
+  .seats { display: flex; gap: .35rem; align-items: center; justify-content: flex-end; }
+  .seat { width: 1.25rem; height: 1.25rem; border-radius: 50%; border: 1.75px solid var(--accent); }
+  .seat.on { background: var(--accent); }
+  .pool .share { text-align: right; font-weight: 700; }
+  .pool-sum { display: flex; flex-wrap: wrap; gap: .5rem 2rem; margin-top: 1.25rem; }
+  .pool-sum div { display: grid; }
+  .pool-sum b { font: 500 1.75rem/1.15 var(--display); letter-spacing: .01em; }
+
+  /* Spec tag */
+  .tag { position: relative; margin-top: clamp(3rem, 2rem + 4vw, 6rem); padding: clamp(1.5rem, 1rem + 2vw, 2.75rem); padding-left: clamp(3.5rem, 2.5rem + 3vw, 5.5rem); }
+  .tag::before { content: ""; position: absolute; left: clamp(1.25rem, .8rem + 1.2vw, 2rem); top: 50%; width: 1.1rem; height: 1.1rem; margin-top: -.55rem; border-radius: 50%; background: var(--ground); box-shadow: inset 0 0 0 1px var(--line); }
+  .tag h3 { font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); margin-bottom: 1.25rem; }
+  .spec { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 3rem; }
+  .spec div { display: flex; align-items: baseline; gap: .6rem; padding-block: .7rem; border-bottom: 1px dotted var(--muted); }
+  .spec dt { font-weight: 700; white-space: nowrap; }
+  .spec dd { margin: 0 0 0 auto; text-align: right; color: var(--muted); }
+  @media (max-width: 880px) { .spec { grid-template-columns: minmax(0, 1fr); } .spec div { display: block; } .spec dd { text-align: left; margin: .15rem 0 0; } }
+
+  /* Walkthrough */
+  .walk { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 1rem + 5vw, 7rem); }
+  .walk-pin { position: sticky; top: calc(4rem + max(1.5rem, (100vh - 4rem - 41rem) / 2)); align-self: start; display: grid; justify-items: center; gap: 1.25rem; }
+  .phone { position: relative; width: 19.5rem; height: 39rem; border-radius: 3rem; background: var(--bezel); padding: .7rem; box-shadow: 0 0 0 1px var(--line), 0 30px 60px -30px rgba(16, 20, 13, .55); }
+  .phone::before { content: ""; position: absolute; top: 1.3rem; left: 50%; width: 5.5rem; height: 1.5rem; margin-left: -2.75rem; border-radius: 1rem; background: var(--bezel); z-index: 3; }
+  .phone .glass { position: relative; height: 100%; border-radius: 2.35rem; overflow: hidden; background: var(--ground); }
+  .screen { position: absolute; inset: 0; opacity: 0; visibility: hidden; }
+  .screen.on { opacity: 1; visibility: visible; }
+  .trail-ticks { display: flex; gap: .4rem; }
+  .trail-ticks i { width: 1.5rem; height: 3px; border-radius: 2px; background: var(--line); transition: background-color .4s; }
+  .trail-ticks i.on { background: var(--accent); }
+  .steps { list-style: none; margin: 0; padding: 0; }
+  .step { min-height: 88vh; display: flex; flex-direction: column; justify-content: center; max-width: 30rem; }
+  .step .lbl { color: var(--accent); }
+  .step h3 { margin-top: .6rem; font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem); line-height: 1.08; }
+  .step p { margin-top: 1rem; color: var(--muted); }
+  .step-inline { display: none; }
+  @media (max-width: 880px) {
+    .walk { grid-template-columns: minmax(0, 1fr); }
+    .walk-pin { display: none; }
+    .step { min-height: 0; padding-block: 2.5rem; max-width: none; }
+    .step + .step { border-top: 1px solid var(--line); }
+    .step-inline { display: block; margin-top: 1.75rem; }
+    .step-inline .phone { width: 16.25rem; height: 32.5rem; margin-inline: auto; border-radius: 2.6rem; padding: .6rem; }
+    .step-inline .phone .glass { border-radius: 2.05rem; }
+    .step-inline .phone::before { top: 1.05rem; width: 4.5rem; height: 1.25rem; margin-left: -2.25rem; }
+    .step-inline .screen { position: relative; opacity: 1; visibility: visible; height: 100%; }
+    .step-inline .app { zoom: .833; }
+  }
+
+  /* Mini app screens */
+  .app { height: 100%; padding: 3rem .9rem 1rem; font-size: .8125rem; line-height: 1.4; display: flex; flex-direction: column; gap: .7rem; }
+  .app-title { font: 500 1.25rem/1.1 var(--display); letter-spacing: .01em; }
+  .app-sub { color: var(--muted); font-size: .75rem; }
+  .app .contour { padding: .9rem; }
+  .app .big { font: 500 2.25rem/1 var(--display); letter-spacing: .01em; margin-top: .35rem; }
+  .strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+  .strip div { padding: .55rem .4rem; text-align: center; }
+  .strip div { border-top: 1px solid var(--line); }
+  .strip div:nth-child(-n+2) { border-top: 0; }
+  .strip div:nth-child(even) { border-left: 1px solid var(--line); }
+  .strip3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .strip3 div { border-top: 0; }
+  .strip3 div + div { border-left: 1px solid var(--line); }
+  .strip b { display: block; font-size: .875rem; white-space: nowrap; }
+  .strip span { font-size: .6875rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; font-weight: 700; }
+  .list { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+  .list > div { display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .6rem .75rem; }
+  .list > div + div { border-top: 1px solid var(--line); }
+  .list b { font-weight: 700; }
+  .list .m { color: var(--muted); font-size: .75rem; }
+  .wx { display: flex; align-items: center; gap: .6rem; }
+  .wx svg { width: 1.5rem; height: 1.5rem; color: var(--amber); }
+  .point { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: .75rem; }
+  .point .ph { display: flex; justify-content: space-between; font-weight: 700; }
+  .point .delta { color: var(--accent); font-weight: 800; }
+  .dial { width: 11rem; margin: -.25rem auto 0; position: relative; }
+  .dial svg { width: 100%; display: block; }
+  .dial .c { position: absolute; left: 0; right: 0; top: 38%; text-align: center; }
+  .dial .c b { font: 500 2rem/1 var(--display); }
+  .trend { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .4rem; align-items: end; height: 5rem; }
+  .trend i { display: block; height: var(--h); background: var(--accent); border-radius: 2px 2px 0 0; opacity: .55; }
+  .trend i:last-child { opacity: 1; }
+  .trend-l { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .4rem; font-size: .6875rem; color: var(--muted); text-align: center; }
+
+  /* Community */
+  .comm { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 1rem + 5vw, 7rem); align-items: start; }
+  .comm-cards { display: grid; gap: 1.25rem; }
+  .post { padding: 1.25rem; }
+  .post-h { display: flex; align-items: center; gap: .7rem; }
+  .avatar { width: 2.5rem; height: 2.5rem; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: .875rem; background: var(--hero); color: var(--accent); border: 1px solid var(--line); }
+  .post-h .who { font-weight: 700; }
+  .post-h .when { color: var(--muted); font-size: .875rem; }
+  .post .lead-num { margin-top: 1rem; display: flex; align-items: baseline; flex-wrap: wrap; gap: .25rem 1rem; }
+  .post .lead-num b { font: 500 2.25rem/1 var(--display); letter-spacing: .01em; }
+  .post .down { display: inline-flex; align-items: center; gap: .3rem; font-weight: 700; color: var(--accent); }
+  .finger { display: flex; height: .6rem; border-radius: 3px; overflow: hidden; margin-top: .9rem; }
+  .finger i { height: 100%; }
+  .post p { margin-top: .9rem; }
+  .acts { display: flex; gap: .25rem; margin-top: .75rem; margin-left: -.6rem; color: var(--muted); }
+  .acts span { display: inline-flex; align-items: center; gap: .35rem; min-height: 44px; padding: 0 .6rem; font-weight: 700; font-size: .875rem; }
+  .thread { padding: 1.1rem 1.25rem; margin-left: clamp(0rem, -2rem + 8vw, 4rem); }
+  .chip { display: inline-flex; align-items: center; min-height: 1.6rem; padding: 0 .6rem; border-radius: 999px; background: var(--hero); color: var(--text); font-size: .8125rem; font-weight: 700; }
+  .thread h3 { font: 700 1.0625rem/1.35 var(--body); margin-top: .6rem; }
+  .thread .meta { color: var(--muted); font-size: .875rem; margin-top: .35rem; }
+  @media (max-width: 880px) { .comm { grid-template-columns: minmax(0, 1fr); } }
+
+  /* Privacy */
+  .priv { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 1rem + 5vw, 7rem); align-items: start; }
+  .priv-pin { position: sticky; top: 7rem; }
+  .priv-pin h2 { font-size: clamp(2rem, 1.3rem + 2.6vw, 3.5rem); line-height: 1.05; }
+  .priv-pin p { margin-top: 1rem; color: var(--muted); font-size: 1.1875rem; }
+  .priv-list { list-style: none; margin: 0; padding: 0; }
+  .priv-list li { padding-block: clamp(1.5rem, 1rem + 2vw, 2.75rem); border-bottom: 1px solid var(--line); }
+  .priv-list li:first-child { padding-top: 0; }
+  .priv-list h3 { font-size: clamp(1.375rem, 1.1rem + 1vw, 1.875rem); line-height: 1.15; }
+  .priv-list p { margin-top: .6rem; color: var(--muted); max-width: 36rem; }
+  @media (max-width: 880px) { .priv { grid-template-columns: minmax(0, 1fr); } .priv-pin { position: static; } }
+
+  /* News and releases */
+  .news { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 1rem + 4vw, 5rem); align-items: start; }
+  .col-h { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: .75rem; border-bottom: 1.5px solid var(--text); margin-bottom: 1.25rem; }
+  .col-h h3 { font-size: 1.625rem; }
+  .story { display: block; text-decoration: none; overflow: hidden; }
+  .story .cover { height: 10.5rem; }
+  .story .body { padding: 1.25rem 1.35rem 1.4rem; }
+  .story .meta { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .9rem; font-size: .875rem; color: var(--muted); }
+  .story h4 { font-size: clamp(1.375rem, 1.1rem + .8vw, 1.75rem); line-height: 1.15; margin-top: .6rem; }
+  .story p { margin-top: .6rem; color: var(--muted); }
+  .story:hover h4 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  .news-rows { list-style: none; margin: 1rem 0 0; padding: 0; }
+  .news-rows a { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .25rem 1rem; align-items: center; padding-block: 1rem; min-height: 44px; border-bottom: 1px solid var(--line); text-decoration: none; }
+  .news-rows .t { font-weight: 700; font-size: 1.0625rem; line-height: 1.35; }
+  .news-rows .m { grid-column: 1; color: var(--muted); font-size: .875rem; display: flex; gap: .75rem; flex-wrap: wrap; }
+  .news-rows svg { grid-row: 1 / span 2; grid-column: 2; color: var(--accent); }
+  .news-rows a:hover .t { text-decoration: underline; text-underline-offset: .18em; }
+  .release { padding: 1.5rem 1.5rem 1.25rem; }
+  .release .rh { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .25rem 1rem; }
+  .release h4 { font-size: 1.5rem; }
+  .release time { color: var(--muted); font-size: .9375rem; }
+  .release h5 { margin: 1.35rem 0 .5rem; font: 700 .75rem/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  .release ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .55rem; }
+  .release li { display: grid; grid-template-columns: .75rem minmax(0, 1fr); gap: .5rem; }
+  .release li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); margin-top: .62rem; }
+  .release li b { font-weight: 700; }
+  .release .more { margin-top: 1rem; }
+  @media (max-width: 880px) { .news { grid-template-columns: minmax(0, 1fr); } }
+
+  /* Close band: the app's spruce Topo field in both themes */
+  .close { --text: #E7EADF; --muted: #98A08A; --accent: #A4BC6B; --line: #2E3626; --topo: rgba(164, 188, 107, 0.14);
+    --mark-moss: #7E9A4E; --mark-a: #E8BE72; --mark-b: #C88A45; --mark-knock: #191F15;
+    position: relative; isolation: isolate; overflow: hidden; background: #191F15; color: var(--text); }
+  :root[data-theme="dark"] .close { background: #1F2717; border-block: 1px solid #2E3626; --mark-knock: #1F2717; }
+  .close canvas.rings { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+  .close-in { padding-block: clamp(5rem, 3rem + 8vw, 10rem); display: grid; justify-items: start; }
+  .close svg.markbig { width: 4rem; height: 4rem; }
+  .close h2 { margin-top: 1.5rem; font-size: clamp(2.5rem, 1.4rem + 4vw, 5rem); line-height: 1; max-width: 12ch; }
+  .close p { margin-top: 1.25rem; color: var(--muted); font-size: 1.1875rem; max-width: 34rem; }
+  .close .store { background: rgba(35, 42, 29, .7); margin-top: 2rem; }
+  .close .cta-row { margin-top: 2rem; }
+  .close .cta-row .store { margin-top: 0; }
+
+  /* Footer */
+  .foot { padding-block: 3rem 2.5rem; }
+  .foot-in { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem; align-items: start; }
+  .foot small { display: block; color: var(--muted); font-size: .875rem; margin-top: .5rem; max-width: 28rem; }
+  .foot nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 .25rem; }
+  .foot nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 .75rem; font-weight: 600; text-decoration: none; border-radius: 8px; }
+  .foot nav a:hover { background: var(--hero); }
+  @media (max-width: 880px) { .foot nav ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; } .foot nav a { padding-left: 0; } }
+
+  /* Motion, only when allowed and JavaScript is running */
+  .motion [data-reveal] { opacity: 0; transition: opacity .9s var(--ease), transform 1.1s var(--ease), filter .9s var(--ease), clip-path 1.1s var(--ease); transition-delay: var(--d, 0ms); }
+  .motion [data-reveal="left"] { transform: translate3d(-4.5rem, 0, 0); }
+  .motion [data-reveal="right"] { transform: translate3d(4.5rem, 0, 0); }
+  .motion [data-reveal="below"] { transform: translate3d(0, 3.5rem, 0); }
+  .motion [data-reveal="above"] { transform: translate3d(0, -2.5rem, 0); clip-path: inset(0 0 80% 0 round 12px); }
+  .motion [data-reveal="scale"] { transform: scale(.9); filter: blur(8px); }
+  .motion [data-reveal].in { opacity: 1; transform: none; filter: none; }
+  .motion [data-reveal="above"].in { clip-path: inset(-3rem -3rem -3rem -3rem round 12px); }
+  .motion .dc-bar { transform: scaleY(0); transition: transform 1.2s var(--ease); transition-delay: calc(var(--i) * 90ms + 250ms); }
+  .motion .in .dc-bar { transform: scaleY(1); }
+  .motion .screen { transition: opacity .6s var(--ease), transform .7s var(--ease), visibility 0s linear .6s; transform: translate3d(0, -1.5rem, 0); }
+  .motion .screen.on { transform: none; transition: opacity .6s var(--ease), transform .7s var(--ease), visibility 0s; }
+
+  /* Review annotations: mockup only, never part of the site */
+  .show-anno [data-reveal], .show-anno [data-pin] { outline: 1.5px dashed var(--anno); outline-offset: 6px; }
+  .show-anno [data-reveal]:not(.phone):not(.contour) { position: relative; }
+  .show-anno .anno-tag { display: block; }
+  .anno-tag { display: none; position: absolute; top: -.85rem; left: .75rem; z-index: 25; padding: .15rem .5rem; border-radius: 4px; background: var(--anno); color: #10140D;
+    font: 800 .6875rem/1.2 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .02em; white-space: nowrap; pointer-events: none; }
+  .anno-readout { display: none; position: absolute; right: 1rem; bottom: 1rem; padding: .5rem .7rem; border-radius: 6px; background: var(--anno); color: #10140D;
+    font: 700 .75rem/1.4 ui-monospace, "SF Mono", Menlo, monospace; pointer-events: none; }
+  .show-anno .anno-readout { display: block; }
+  .step-inline [data-reveal] { outline: none; }
+  .contour > .anno-tag { top: .6rem; right: .75rem; left: auto; }
+  .phone > .anno-tag { left: auto; right: .75rem; top: -1.6rem; }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="g-amber" x1="1" y1="0" x2="0" y2="1"><stop offset="0%" style="stop-color:var(--mark-a)"/><stop offset="100%" style="stop-color:var(--mark-b)"/></linearGradient>
+  </defs>
+  <symbol id="mark" viewBox="0 0 64 64">
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 6 L24 18 L18 24 L46 40 L40 46 L52 58" style="stroke:var(--mark-moss)" stroke-width="5.5"/>
+      <path d="M52 6 L40 18 L46 24 L18 40 L24 46 L12 58" style="stroke:var(--mark-knock)" stroke-width="10"/>
+      <path d="M52 6 L40 18 L46 24 L18 40 L24 46 L12 58" stroke="url(#g-amber)" stroke-width="5.5"/>
+    </g>
+  </symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 5l6.5 7H15v7H9v-7H5.5z"/></symbol>
+  <symbol id="i-comment" viewBox="0 0 24 24"><path d="M4 5h16v11H10l-6 4z"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M6.5 4h11v16l-5.5-4-5.5 4z"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol>
+</svg>
+
+<a class="visually-hidden" href="#main">Skip to content</a>
+
+<header class="site-head" id="top">
+  <div class="wrap head-in">
+    <a class="brand" href="#top" aria-label="bxpk home"><svg aria-hidden="true"><use href="#mark"/></svg>bxpk</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#features">Features</a>
+      <a href="#walkthrough">How it works</a>
+      <a href="#releases">Releases</a>
+      <a href="#news">News</a>
+      <a href="#support">Support</a>
+    </nav>
+    <span class="soon-chip"><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg>Coming soon to the App Store</span>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="m-nav" aria-label="Open menu"><svg class="i" aria-hidden="true"><use href="#i-menu"/></svg></button>
+  </div>
+  <nav class="wrap m-nav" id="m-nav" aria-label="Main, mobile" hidden>
+    <a href="#features">Features</a>
+    <a href="#walkthrough">How it works</a>
+    <a href="#releases">Releases</a>
+    <a href="#news">News</a>
+    <a href="#support">Support</a>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-h">
+    <canvas class="field" aria-hidden="true"></canvas>
+    <div class="wrap hero-in">
+      <div class="hero-copy">
+        <h1 id="hero-h">Know what your pack weighs, every day of the trip.</h1>
+        <p class="lead">Backpack Weight Tracker keeps your gear list in grams, then carries it through the whole trip: base weight, food, water and fuel for each day, resupply stops, and the gear your group splits.</p>
+        <div class="cta-row">
+          <div class="store">
+            <svg class="i" aria-hidden="true"><use href="#i-phone"/></svg>
+            <div><strong>Coming soon to the App Store</strong><span>For iPhone, iOS 17 and later</span></div>
+          </div>
+          <a class="text-link" href="#releases">Follow the build in Releases<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="anno-readout" aria-hidden="true">speed 0.00 px/ms · reach 70 px · push 0.60</div>
+  </section>
+
+  <section class="section" id="features" aria-labelledby="feat-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="feat-h">The whole trip, in grams</h2>
+        <p>The spreadsheet you keep before every trip, rebuilt around the way a pack actually changes from the trailhead to the last camp.</p>
+      </div>
+
+      <div class="band">
+        <div class="band-copy" data-reveal="left">
+          <h3>Your gear list, down to the gram</h3>
+          <p>Sort every item by category and mark it packed, worn or consumable. Base weight and skin-out weight update as you type. Group items into systems, save a whole pack, and load it onto a trip in one tap.</p>
+        </div>
+        <div class="panel manifest" data-reveal="right">
+          <div class="mf-top">
+            <span class="lbl">Gear</span>
+            <span class="num grow"><b>62</b> items</span>
+            <span class="num">Base weight <b>4.62 kg</b></span>
+          </div>
+          <div class="cat" style="--c:var(--c-shelter)">
+            <div class="cat-h"><i class="dot"></i>Shelter<span class="num">1,146 g</span></div>
+            <div class="row"><i class="tick"></i><span class="name">Two-person trekking pole tent</span><span class="role">Packed</span><span class="num">862 g</span></div>
+            <div class="row"><i class="tick"></i><span class="name">Polycryo footprint</span><span class="role">Packed</span><span class="num">188 g</span></div>
+            <div class="row"><i class="tick"></i><span class="name">Titanium stakes, 8</span><span class="role">Packed</span><span class="num">96 g</span></div>
+          </div>
+          <div class="cat" style="--c:var(--c-sleep)">
+            <div class="cat-h"><i class="dot"></i>Sleep system<span class="num">1,372 g</span></div>
+            <div class="row"><i class="tick"></i><span class="name">Quilt, rated 20°F</span><span class="role">Packed</span><span class="num">652 g</span></div>
+            <div class="row"><i class="tick"></i><span class="name">Insulated air pad, regular</span><span class="role">Packed</span><span class="num">410 g</span></div>
+            <div class="row"><i class="tick"></i><span class="name">Sleeping bag liner</span><span class="role">Packed</span><span class="num">222 g</span></div>
+          </div>
+          <div class="cat" style="--c:var(--c-clothing)">
+            <div class="cat-h"><i class="dot"></i>Clothing<span class="num">534 g</span></div>
+            <div class="row"><i class="tick"></i><span class="name">Puffy jacket</span><span class="role">Packed</span><span class="num">280 g</span></div>
+            <div class="row"><i class="tick"></i><span class="name">Rain jacket</span><span class="role">Packed</span><span class="num">196 g</span></div>
+            <div class="row"><i class="tick"></i><span class="name">Wind shirt</span><span class="role">Worn</span><span class="num">58 g</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="band flip">
+        <div class="band-copy" data-reveal="right">
+          <h3>Pack weight for every day of the trip</h3>
+          <p>Food and water come off the scale as the days pass and go back on at each resupply. See your heaviest day at the kitchen table, not halfway up the climb.</p>
+          <ul class="facts">
+            <li>One bar per trip day, in kg</li>
+            <li>Resupply stops marked where they land</li>
+          </ul>
+        </div>
+        <div class="daychart" data-reveal="scale">
+          <div class="dc-top">
+            <span class="lbl">Pack weight by day</span>
+            <span class="num">Heaviest: day 5, <b>11.8 kg</b></span>
+          </div>
+          <div class="dc-plot num" role="img" aria-label="Pack weight by day: day 1 11.4 kg, day 2 10.5 kg, day 3 9.6 kg, day 4 8.7 kg, day 5 after resupply 11.8 kg, day 6 10.9 kg, day 7 10.0 kg">
+            <div class="dc-bar" style="--h:95%;--i:0"><span>11.4 kg</span></div>
+            <div class="dc-bar" style="--h:87.5%;--i:1"><span>10.5 kg</span></div>
+            <div class="dc-bar" style="--h:80%;--i:2"><span>9.6 kg</span></div>
+            <div class="dc-bar" style="--h:72.5%;--i:3"><span>8.7 kg</span></div>
+            <div class="dc-bar resupply" style="--h:98.3%;--i:4"><span>11.8 kg</span></div>
+            <div class="dc-bar" style="--h:90.8%;--i:5"><span>10.9 kg</span></div>
+            <div class="dc-bar" style="--h:83.3%;--i:6"><span>10.0 kg</span></div>
+          </div>
+          <div class="dc-axis" aria-hidden="true"><span>Day 1</span><span>Day 2</span><span>Day 3</span><span>Day 4</span><span>Day 5</span><span>Day 6</span><span>Day 7</span></div>
+          <div class="dc-scale num"><span>Gridlines every 4 kg, from 0 kg to 12 kg</span><span><i></i>Resupply, 3.90 kg picked up</span></div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="band-copy" data-reveal="left">
+          <h3>Meals planned to the calorie</h3>
+          <p>Your daily calorie target comes from your pack weight and the miles ahead. Place food into breakfast, lunch, dinner and snacks, and each day shows its kcal, grams of food and the boil water you will need.</p>
+        </div>
+        <div class="contour meal" data-reveal="above">
+          <canvas class="rings" aria-hidden="true"></canvas>
+          <div class="meal-top">
+            <div class="ring">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="var(--line)" stroke-width="10"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="var(--accent)" stroke-width="10"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="var(--amber)" stroke-width="10" stroke-dasharray="26.2 314.2" stroke-linecap="round"/>
+              </svg>
+              <div class="c num"><b>3,250</b><span>of 3,000 kcal</span></div>
+            </div>
+            <div>
+              <span class="lbl">Day 2 of 7</span>
+              <p class="over num" style="margin-top:.35rem">250 kcal over target</p>
+              <div class="macro num"><span>Fat <b>118 g</b></span><span>Carbs <b>402 g</b></span><span>Protein <b>131 g</b></span></div>
+              <div class="macro num"><span>Food <b>812 g</b></span><span>Boil water <b>1,450 mL</b></span></div>
+            </div>
+          </div>
+          <div class="slots num">
+            <div class="slot"><div class="slot-h"><span>Breakfast</span><span>720 kcal</span></div><p>Granola with milk powder, 140 g</p></div>
+            <div class="slot"><div class="slot-h"><span>Lunch</span><span>880 kcal</span></div><p>Tortillas and peanut butter, 190 g</p></div>
+            <div class="slot"><div class="slot-h"><span>Dinner</span><span>1,050 kcal</span></div><p>Freeze-dried chili, 230 g</p></div>
+            <div class="slot"><div class="slot-h"><span>Snacks</span><span>600 kcal</span></div><p>Trail mix and bars, 252 g</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="band flip">
+        <div class="band-copy" data-reveal="right">
+          <h3>Shared gear, split fairly</h3>
+          <p>Put the tent, the stove and the filter into a group pool. Friends claim a seat on each item, and everyone carries their share of the grams instead of guessing at the trailhead.</p>
+        </div>
+        <div>
+          <ul class="pool num">
+            <li data-reveal="below" style="--d:0ms"><span class="it">Two-person trekking pole tent</span><span class="seats" aria-label="2 of 2 seats claimed"><i class="seat on"></i><i class="seat on"></i></span><span class="meta">1,146 g, 2 of 2 seats</span><span class="share">573 g each</span></li>
+            <li data-reveal="below" style="--d:120ms"><span class="it">Stove, pot and 230 g fuel canister</span><span class="seats" aria-label="3 of 3 seats claimed"><i class="seat on"></i><i class="seat on"></i><i class="seat on"></i></span><span class="meta">612 g, 3 of 3 seats</span><span class="share">204 g each</span></li>
+            <li data-reveal="below" style="--d:240ms"><span class="it">Squeeze water filter</span><span class="seats" aria-label="2 of 3 seats claimed"><i class="seat on"></i><i class="seat on"></i><i class="seat"></i></span><span class="meta">85 g, 2 of 3 seats</span><span class="share">43 g each</span></li>
+          </ul>
+          <div class="pool-sum num" data-reveal="below" style="--d:360ms">
+            <div><span class="lbl">You carry</span><b>820 g</b></div>
+            <div><span class="lbl">Saved vs going solo</span><b>1,023 g</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel tag" data-reveal="scale">
+        <h3>Also in the pack</h3>
+        <dl class="spec">
+          <div><dt>Route</dt><dd>Record with GPS, or import and export GPX</dd></div>
+          <div><dt>Weather</dt><dd>NOAA forecast for every trip day, in the US</dd></div>
+          <div><dt>Itinerary</dt><dd>Miles, elevation gain and water per day</dd></div>
+          <div><dt>Readiness</dt><dd>Gear, calorie and weather checks before you go</dd></div>
+          <div><dt>Packs</dt><dd>Saved sets of gear, loaded in one tap</dd></div>
+          <div><dt>Debriefs</dt><dd>Close out a trip and track base weight over seasons</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="walkthrough" aria-labelledby="walk-h" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="walk-h">Plan a trip, start to finish</h2>
+        <p>One sample trip, seven days through the Sierra, from an empty pack to the debrief.</p>
+      </div>
+      <div class="walk">
+        <div class="walk-pin" data-pin>
+          <div class="phone" data-reveal="scale">
+            <div class="glass">
+              <div class="screen on" data-screen="0">
+                <div class="app num">
+                  <div><div class="app-sub">Trips</div><div class="app-title">Evolution Basin</div></div>
+                  <div class="contour">
+                    <canvas class="rings" aria-hidden="true"></canvas>
+                    <span class="lbl">Base weight</span>
+                    <div class="big">4.62 kg</div>
+                    <div class="app-sub" style="margin-top:.3rem">7 days, 12 to 18 September</div>
+                  </div>
+                  <div class="strip"><div><b>1.18 kg</b><span>Worn</span></div><div><b>6.78 kg</b><span>Consumables</span></div><div><b>11.40 kg</b><span>Pack</span></div><div><b>12.58 kg</b><span>Skin-out</span></div></div>
+                  <div class="list">
+                    <div><span><b>Tent</b> <span class="m">Shelter</span></span><b>862 g</b></div>
+                    <div><span><b>Quilt</b> <span class="m">Sleep system</span></span><b>652 g</b></div>
+                    <div><span><b>Air pad</b> <span class="m">Sleep system</span></span><b>410 g</b></div>
+                    <div><span><b>Puffy jacket</b> <span class="m">Clothing</span></span><b>280 g</b></div>
+                  </div>
+                  <p class="app-sub">Sample trip</p>
+                </div>
+              </div>
+              <div class="screen" data-screen="1">
+                <div class="app num">
+                  <div><div class="app-sub">Evolution Basin</div><div class="app-title">Itinerary</div></div>
+                  <div class="strip strip3"><div><b>7 days</b><span>Length</span></div><div><b>61.4 mi</b><span>Distance</span></div><div><b>14,820 ft</b><span>Gain</span></div></div>
+                  <div class="list">
+                    <div><span><b>Day 1</b> <span class="m">7.8 mi, 2,310 ft</span></span><span>2.5 L</span></div>
+                    <div><span><b>Day 2</b> <span class="m">9.6 mi, 2,940 ft</span></span><span>3.0 L</span></div>
+                    <div><span><b>Day 3</b> <span class="m">8.9 mi, 1,880 ft</span></span><span>2.5 L</span></div>
+                    <div><span><b>Day 4</b> <span class="m">10.2 mi, 2,450 ft</span></span><span>3.0 L</span></div>
+                    <div><span><b>Day 5</b> <span class="m">8.1 mi, 1,460 ft</span></span><span>2.0 L</span></div>
+                  </div>
+                  <div class="list">
+                    <div class="wx"><svg class="i" aria-hidden="true"><use href="#i-sun"/></svg><span style="flex:1"><b>Day 1, clear</b><br><span class="m">10% rain, wind W 8 mph</span></span><b>71°F / 39°F</b></div>
+                  </div>
+                  <p class="app-sub">Forecast from the National Weather Service</p>
+                </div>
+              </div>
+              <div class="screen" data-screen="2">
+                <div class="app num">
+                  <div><div class="app-sub">Evolution Basin</div><div class="app-title">Resupply</div></div>
+                  <div class="point">
+                    <div class="ph"><span>Muir Trail Ranch</span><span>Day 5</span></div>
+                    <div class="app-sub" style="margin-top:.2rem">Bucket pickup</div>
+                    <div style="margin-top:.6rem;display:flex;justify-content:space-between"><span>Picked up</span><span class="delta">+3.90 kg</span></div>
+                  </div>
+                  <div class="list">
+                    <div><span><b>Food, 3 days</b></span><b>3.67 kg</b></div>
+                    <div><span><b>Fuel canister</b></span><b>230 g</b></div>
+                  </div>
+                  <div class="list">
+                    <div><span class="m">Leaving day 4</span><b>8.7 kg</b></div>
+                    <div><span class="m">Leaving day 5</span><b>11.8 kg</b></div>
+                  </div>
+                  <p class="app-sub">The heaviest day moves to day 5. Send less food, or plan a lighter day 6.</p>
+                </div>
+              </div>
+              <div class="screen" data-screen="3">
+                <div class="app num">
+                  <div><div class="app-sub">Profile</div><div class="app-title">Base weight</div></div>
+                  <div class="dial">
+                    <svg viewBox="0 0 180 140" aria-hidden="true">
+                      <path d="M29.4 125 A70 70 0 1 1 150.6 125" fill="none" stroke="var(--line)" stroke-width="9" stroke-linecap="round"/>
+                      <path d="M29.4 125 A70 70 0 0 1 93.7 20.1" fill="none" stroke="var(--accent)" stroke-width="9" stroke-linecap="round"/>
+                      <path d="M51.4 44 L42.5 33.4 M128.6 44 L137.5 33.4" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"/>
+                      <circle cx="74.2" cy="21.8" r="5.5" fill="var(--amber)" stroke="var(--ground)" stroke-width="2"/>
+                    </svg>
+                    <div class="c"><b>4.62 kg</b><div class="app-sub">0.62 kg to your 4.00 kg goal</div></div>
+                  </div>
+                  <span class="lbl">Last 5 trips</span>
+                  <div class="trend"><i style="--h:100%"></i><i style="--h:92%"></i><i style="--h:86.7%"></i><i style="--h:82.8%"></i><i style="--h:78.6%"></i></div>
+                  <div class="trend-l"><span>5.88 kg</span><span>5.41 kg</span><span>5.10 kg</span><span>4.87 kg</span><span>4.62 kg</span></div>
+                  <p class="app-sub">Sample profile</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="trail-ticks" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
+        </div>
+        <ol class="steps">
+          <li class="step" data-step="0">
+            <span class="lbl">Step 1 of 4</span>
+            <h3>Load the pack</h3>
+            <p>Pick a saved pack or add items one at a time. Base weight shows up with the first item, and worn, consumable and skin-out weights follow as you go.</p>
+            <div class="step-inline"></div>
+          </li>
+          <li class="step" data-step="1">
+            <span class="lbl">Step 2 of 4</span>
+            <h3>Map the days</h3>
+            <p>Enter miles and elevation gain for each day, or import a GPX track. Water per day comes with it, and a forecast arrives for every trip day.</p>
+            <div class="step-inline"></div>
+          </li>
+          <li class="step" data-step="2">
+            <span class="lbl">Step 3 of 4</span>
+            <h3>Plan the resupply</h3>
+            <p>Add each stop on the day it lands. The trip's pack weight updates, so you see what a heavy box does to the next climb before you mail it.</p>
+            <div class="step-inline"></div>
+          </li>
+          <li class="step" data-step="3">
+            <span class="lbl">Step 4 of 4</span>
+            <h3>Debrief and do better</h3>
+            <p>Back home, finalize the trip. Your base weight joins your profile's trend, next to the goal you set, trip after trip.</p>
+            <div class="step-inline"></div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="comm-h" style="padding-top:0">
+    <div class="wrap comm">
+      <div class="sec-head" data-reveal="left" style="margin-bottom:0">
+        <h2 id="comm-h">A trail community that talks in grams</h2>
+        <p>Post a loadout with its base weight and category breakdown, ask the forums about a shelter, and see what your friends cut before the season starts.</p>
+        <p class="sample" style="margin-top:1.25rem;font-size:.875rem">Sample posts, shown for illustration.</p>
+      </div>
+      <div class="comm-cards num">
+        <article class="panel post" data-reveal="right">
+          <div class="post-h"><span class="avatar" aria-hidden="true">JW</span><div><div class="who">juniper.walks</div><div class="when">2 h ago, posted a loadout</div></div></div>
+          <div class="lead-num"><b>4.21 kg</b><span class="down"><svg class="i" aria-hidden="true"><use href="#i-down"/></svg>0.64 kg lighter since June</span></div>
+          <div class="finger" role="img" aria-label="Category breakdown: shelter 27%, sleep system 31%, pack 16%, clothing 14%, cooking 7%, other 5%"><i style="width:27%;background:var(--c-shelter)"></i><i style="width:31%;background:var(--c-sleep)"></i><i style="width:16%;background:var(--c-pack)"></i><i style="width:14%;background:var(--c-clothing)"></i><i style="width:7%;background:var(--c-cooking)"></i><i style="width:5%;background:var(--c-misc)"></i></div>
+          <p>Swapped the freestanding tent for a trekking pole shelter and finally left the second fleece at home.</p>
+          <div class="acts"><span><svg class="i" aria-hidden="true"><use href="#i-up"/></svg>48</span><span><svg class="i" aria-hidden="true"><use href="#i-comment"/></svg>12</span><span><svg class="i" aria-hidden="true"><use href="#i-save"/></svg>Save</span></div>
+        </article>
+        <article class="panel thread" data-reveal="below" style="--d:150ms">
+          <span class="chip">Shelters forum</span>
+          <h3>Trekking pole tent or freestanding for the Sierra in October?</h3>
+          <div class="meta">ridge.and.fern, 5 h ago. 23 votes, 31 comments</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="priv-h" style="padding-top:0">
+    <div class="wrap priv">
+      <div class="priv-pin" data-pin>
+        <h2 id="priv-h">Your pack is your business</h2>
+        <p>The short version of the privacy policy, in plain words.</p>
+        <a class="text-link" href="#privacy" style="margin-top:1rem">Read the privacy policy<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+      <ul class="priv-list">
+        <li data-reveal="below"><h3>This site tracks nothing.</h3><p>No analytics, no trackers and no cookies, so there is no banner to click through.</p></li>
+        <li data-reveal="below"><h3>We do not sell personal information.</h3><p>Not your gear, not your trips, not your account.</p></li>
+        <li data-reveal="below"><h3>Body measurements stay yours.</h3><p>Height, weight and age are used only to estimate the calories a day on trail burns. They are never shown to anyone else and never used for ads.</p></li>
+        <li data-reveal="below"><h3>Your route stays on your phone.</h3><p>A recorded route leaves your iPhone only if you export or share the GPX file yourself.</p></li>
+        <li data-reveal="below"><h3>Ads never read your pack.</h3><p>The app shows ads, but your gear, trips, posts and measurements are never used to target them.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-label="News and releases" style="padding-top:0">
+    <div class="wrap news">
+      <div id="news" data-reveal="left">
+        <div class="col-h"><h3>News</h3><a class="text-link" href="#news">All news<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+        <a class="panel story" href="#news">
+          <div class="contour cover" style="border-radius:0"><canvas class="rings" aria-hidden="true"></canvas></div>
+          <div class="body">
+            <div class="meta"><span class="chip">Guide</span><time datetime="2026-09-09">9 September 2026</time><span>5 min read</span></div>
+            <h4>Find your heaviest day before you leave</h4>
+            <p>Food and water swing a pack by several kilograms over a week. How the day-by-day chart shows where the weight lands, and what to move when a resupply day runs heavy.</p>
+          </div>
+        </a>
+        <ul class="news-rows">
+          <li><a href="#news"><span class="t">Why the app asks for your height and weight</span><span class="m"><span>Update</span><time datetime="2026-09-13">13 September 2026</time></span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+          <li><a href="#news"><span class="t">Planning resupply boxes for a week in the Sierra</span><span class="m"><span>Link, publication.example</span><time datetime="2026-09-03">3 September 2026</time></span><svg class="i" aria-label="Opens another site"><use href="#i-ext"/></svg></a></li>
+        </ul>
+      </div>
+      <div id="releases" data-reveal="right">
+        <div class="col-h"><h3>Releases</h3><a class="text-link" href="#releases">All releases<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+        <article class="panel release">
+          <div class="rh"><h4>Pre-release build</h4><time datetime="2026-09-13">13 September 2026</time></div>
+          <h5>New</h5>
+          <ul>
+            <li><span><b>Hourly weather.</b> Tap any trip day for its hour-by-hour forecast.</span></li>
+            <li><span><b>GPS interval.</b> Record a point on every fix, or every 15 s, 30 s or 60 s, to save battery.</span></li>
+            <li><span><b>Packs.</b> Save named sets of gear and systems, and load one onto a trip in one tap.</span></li>
+          </ul>
+          <h5>Improved</h5>
+          <ul>
+            <li><span>The resupply chart shows one bar per trip day, falling as food is eaten and jumping at each stop.</span></li>
+            <li><span>Text follows your iPhone's text size, and every screen works with VoiceOver.</span></li>
+          </ul>
+          <h5>Fixed</h5>
+          <ul>
+            <li><span>Email accounts can reset a forgotten password from the sign-in screen.</span></li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="close" aria-labelledby="close-h">
+    <canvas class="rings" aria-hidden="true"></canvas>
+    <div class="wrap close-in" data-reveal="scale">
+      <svg class="markbig" aria-hidden="true"><use href="#mark"/></svg>
+      <h2 id="close-h">Weigh it at home. Carry it with confidence.</h2>
+      <p>Backpack Weight Tracker for iPhone, offered in the United States and Canada.</p>
+      <div class="cta-row">
+        <div class="store">
+          <svg class="i" aria-hidden="true"><use href="#i-phone"/></svg>
+          <div><strong>Coming soon to the App Store</strong><span>iOS 17 and later</span></div>
+        </div>
+        <a class="text-link" href="#releases">See what is shipping<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot" id="support">
+  <div class="wrap foot-in">
+    <div>
+      <a class="brand" href="#top" aria-label="bxpk home"><svg aria-hidden="true"><use href="#mark"/></svg>bxpk</a>
+      <small>Backpack Weight Tracker. Operated by Fisher Bricker. Forecasts from the US National Weather Service.</small>
+    </div>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="#releases">Releases</a></li>
+        <li><a href="#news">News</a></li>
+        <li><a href="#privacy" id="privacy">Privacy</a></li>
+        <li><a href="#terms">Terms</a></li>
+        <li><a href="#support">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches || root.classList.contains('force-rm');
+  if (!reduced) root.classList.add('motion');
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+  /* Header border once scrolled, and the phone menu */
+  const head = document.querySelector('.site-head');
+  addEventListener('scroll', () => head.classList.toggle('scrolled', scrollY > 8), { passive: true });
+  const menuBtn = document.querySelector('.menu-btn');
+  const mNav = document.getElementById('m-nav');
+  menuBtn.addEventListener('click', () => {
+    const open = mNav.hidden;
+    mNav.hidden = !open;
+    menuBtn.setAttribute('aria-expanded', String(open));
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    menuBtn.querySelector('use').setAttribute('href', open ? '#i-close' : '#i-menu');
+  });
+  mNav.addEventListener('click', (e) => { if (e.target.closest('a')) menuBtn.click(); });
+
+  /* Walkthrough: clone each screen next to its step for the phone layout */
+  const screens = [...document.querySelectorAll('.walk-pin .screen')];
+  document.querySelectorAll('.step').forEach((step) => {
+    const i = +step.dataset.step;
+    const phone = document.createElement('div');
+    phone.className = 'phone';
+    phone.innerHTML = '<div class="glass"></div>';
+    const clone = screens[i].cloneNode(true);
+    clone.classList.add('on');
+    phone.firstChild.appendChild(clone);
+    step.querySelector('.step-inline').appendChild(phone);
+  });
+  const ticks = [...document.querySelectorAll('.trail-ticks i')];
+  const stepIO = new IntersectionObserver((entries) => {
+    entries.forEach((en) => {
+      if (!en.isIntersecting) return;
+      const i = +en.target.dataset.step;
+      screens.forEach((s, k) => s.classList.toggle('on', k === i));
+      ticks.forEach((t, k) => t.classList.toggle('on', k <= i));
+    });
+  }, { rootMargin: '-45% 0px -45% 0px' });
+  document.querySelectorAll('.step').forEach((s) => stepIO.observe(s));
+
+  /* Review annotations (mockup only) */
+  const words = { left: 'enters from left', right: 'enters from right', below: 'enters from below', above: 'enters from above', scale: 'scales in' };
+  document.querySelectorAll('[data-reveal], [data-pin]').forEach((el) => {
+    if (el.closest('.step-inline')) return;
+    const tag = document.createElement('span');
+    tag.className = 'anno-tag';
+    tag.setAttribute('aria-hidden', 'true');
+    tag.textContent = el.hasAttribute('data-pin') ? 'pinned while scrolling' : words[el.dataset.reveal];
+    el.appendChild(tag);
+  });
+
+  /* Reveals */
+  if (!reduced) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+    document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+  }
+
+  /* Contour rings, ContourPanel geometry: 1.9:1 ellipses, two off-canvas centers */
+  const RING_SETS = (w, h) => [
+    { cx: w * 0.22, cy: h * 1.45, max: h * 1.3, step: 17 },
+    { cx: w * 0.95, cy: -h * 0.55, max: h * 1.05, step: 21 },
+  ];
+
+  function sizeCanvas(canvas) {
+    const r = canvas.getBoundingClientRect();
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = Math.max(1, Math.round(r.width * dpr));
+    canvas.height = Math.max(1, Math.round(r.height * dpr));
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w: r.width, h: r.height };
+  }
+
+  function drawStaticRings(canvas) {
+    const { ctx, w, h } = sizeCanvas(canvas);
+    ctx.clearRect(0, 0, w, h);
+    ctx.strokeStyle = getComputedStyle(canvas).getPropertyValue('--topo').trim();
+    ctx.lineWidth = 1;
+    for (const s of RING_SETS(w, h)) {
+      for (let r = s.step; r < s.max; r += s.step) {
+        ctx.beginPath();
+        ctx.ellipse(s.cx, s.cy, r * 1.9, r, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+  }
+  const staticCanvases = [...document.querySelectorAll('canvas.rings')];
+  const redrawStatic = () => staticCanvases.forEach((c) => { if (c.getBoundingClientRect().width) drawStaticRings(c); });
+
+  /* Hero field: points on the rings, pushed by the pointer with speed-scaled reach and force, springing home */
+  function topoField(canvas) {
+    const hero = canvas.parentElement;
+    const quietEl = hero.querySelector('.hero-copy');
+    const readout = hero.querySelector('.anno-readout');
+    const SPRING = 0.045, DAMP = 0.86;
+    let ctx, W, H, n = 0, hx, hy, x, y, vx, vy, quiet, runs = [];
+    let colLine, colDot, colLive, running = false, visible = true;
+    const ptr = { x: -9999, y: -9999, vx: 0, vy: 0, t: 0, inside: false, burst: 0 };
+
+    function build() {
+      ({ ctx, w: W, h: H } = sizeCanvas(canvas));
+      colLine = css('--topo'); colDot = css('--topo-dot'); colLive = css('--topo-live');
+      const spacing = W < 600 ? 6.5 : 7.5;
+      const px = [], py = [];
+      runs = [];
+      const pad = 60;
+      for (const s of RING_SETS(W, H)) {
+        for (let r = s.step; r < s.max; r += s.step) {
+          const a = r * 1.9, b = r;
+          let t = 0, runStart = -1;
+          while (t < Math.PI * 2) {
+            const X = s.cx + a * Math.cos(t), Y = s.cy + b * Math.sin(t);
+            const inside = X > -pad && X < W + pad && Y > -pad && Y < H + pad;
+            if (inside) { if (runStart < 0) runStart = px.length; px.push(X); py.push(Y); }
+            else if (runStart >= 0) { if (px.length - runStart > 1) runs.push([runStart, px.length]); runStart = -1; }
+            const speed = Math.hypot(a * Math.sin(t), b * Math.cos(t));
+            t += spacing / Math.max(speed, 1);
+          }
+          if (runStart >= 0 && px.length - runStart > 1) runs.push([runStart, px.length]);
+        }
+      }
+      n = px.length;
+      hx = Float32Array.from(px); hy = Float32Array.from(py);
+      x = Float32Array.from(px); y = Float32Array.from(py);
+      vx = new Float32Array(n); vy = new Float32Array(n);
+      quiet = new Uint8Array(n);
+      const cr = canvas.getBoundingClientRect(), qr = quietEl.getBoundingClientRect();
+      const qx0 = qr.left - cr.left - 24, qx1 = qr.right - cr.left + 24, qy0 = qr.top - cr.top - 24, qy1 = qr.bottom - cr.top + 24;
+      for (let i = 0; i < n; i++) quiet[i] = hx[i] > qx0 && hx[i] < qx1 && hy[i] > qy0 && hy[i] < qy1 ? 1 : 0;
+      canvas.dataset.points = n;
+      draw();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = colLine;
+      ctx.beginPath();
+      for (const [s, e] of runs) {
+        ctx.moveTo(x[s], y[s]);
+        for (let i = s + 1; i < e; i++) ctx.lineTo(x[i], y[i]);
+      }
+      ctx.stroke();
+      const rest = new Path2D(), live = new Path2D();
+      for (let i = 0; i < n; i++) {
+        const d = Math.abs(x[i] - hx[i]) + Math.abs(y[i] - hy[i]);
+        if (d > 5) live.rect(x[i] - 1, y[i] - 1, 2, 2);
+        else if (!quiet[i]) rest.rect(x[i] - .75, y[i] - .75, 1.5, 1.5);
+      }
+      ctx.fillStyle = colDot; ctx.fill(rest);
+      ctx.fillStyle = colLive; ctx.fill(live);
+    }
+
+    function step() {
+      if (!visible) { running = false; return; }
+      const speed = Math.min(Math.hypot(ptr.vx, ptr.vy), 60);
+      const reach = 70 + speed * 4.2;
+      const push = 0.6 + speed * 0.09 + ptr.burst * 9;
+      const reach2 = reach * reach;
+      let energy = 0;
+      for (let i = 0; i < n; i++) {
+        let ax = (hx[i] - x[i]) * SPRING, ay = (hy[i] - y[i]) * SPRING;
+        if (ptr.inside || ptr.burst > 0.01) {
+          const dx = x[i] - ptr.x, dy = y[i] - ptr.y, d2 = dx * dx + dy * dy;
+          if (d2 < reach2 && d2 > 0.01) {
+            const d = Math.sqrt(d2);
+            let f = 1 - d / reach; f *= f;
+            ax += (dx / d) * push * f + ptr.vx * 0.05 * f;
+            ay += (dy / d) * push * f + ptr.vy * 0.05 * f;
+          }
+        }
+        vx[i] = (vx[i] + ax) * DAMP; vy[i] = (vy[i] + ay) * DAMP;
+        x[i] += vx[i]; y[i] += vy[i];
+        energy += Math.abs(vx[i]) + Math.abs(vy[i]);
+      }
+      ptr.vx *= 0.9; ptr.vy *= 0.9; ptr.burst *= 0.8;
+      draw();
+      if (readout) readout.textContent = `speed ${(speed / 16.67).toFixed(2)} px/ms · reach ${Math.round(reach)} px · push ${push.toFixed(2)}`;
+      canvas.dataset.energy = energy.toFixed(1);
+      canvas.dataset.frames = (+canvas.dataset.frames || 0) + 1;
+      if (energy > 0.5 || speed > 0.2 || ptr.burst > 0.01) requestAnimationFrame(step);
+      else running = false;
+    }
+    const wake = () => { if (!running && visible) { running = true; requestAnimationFrame(step); } };
+
+    function locate(e) {
+      const r = canvas.getBoundingClientRect();
+      return [e.clientX - r.left, e.clientY - r.top];
+    }
+    hero.addEventListener('pointermove', (e) => {
+      const [X, Y] = locate(e);
+      const now = e.timeStamp || performance.now();
+      if (ptr.inside) {
+        const dt = Math.max(now - ptr.t, 4);
+        const ivx = (X - ptr.x) / dt * 16.67, ivy = (Y - ptr.y) / dt * 16.67;
+        ptr.vx = ptr.vx * 0.5 + ivx * 0.5; ptr.vy = ptr.vy * 0.5 + ivy * 0.5;
+      }
+      ptr.x = X; ptr.y = Y; ptr.t = now; ptr.inside = true;
+      wake();
+    });
+    hero.addEventListener('pointerdown', (e) => {
+      const [X, Y] = locate(e);
+      ptr.x = X; ptr.y = Y; ptr.t = e.timeStamp; ptr.inside = true;
+      if (e.pointerType !== 'mouse') ptr.burst = 1;
+      wake();
+    });
+    const leave = () => { ptr.inside = false; ptr.vx = 0; ptr.vy = 0; wake(); };
+    hero.addEventListener('pointerleave', leave);
+    hero.addEventListener('pointercancel', leave);
+    new IntersectionObserver(([en]) => { visible = en.isIntersecting; wake(); }).observe(hero);
+    build();
+    return { build };
+  }
+
+  let field = null;
+  const heroCanvas = document.querySelector('canvas.field');
+  const start = () => {
+    redrawStatic();
+    if (reduced) { drawStaticRings(heroCanvas); heroCanvas.dataset.mode = 'static'; }
+    else { field = topoField(heroCanvas); heroCanvas.dataset.mode = 'live'; }
+  };
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(start);
+  let rt;
+  addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { redrawStatic(); if (field) field.build(); else if (reduced) drawStaticRings(heroCanvas); }, 150);
+  });
+  /* Screens in the phone layout become visible later; draw their rings when they arrive */
+  const ringIO = new IntersectionObserver((entries) => entries.forEach((en) => {
+    if (en.isIntersecting) { drawStaticRings(en.target); ringIO.unobserve(en.target); }
+  }));
+  staticCanvases.forEach((c) => ringIO.observe(c));
+})();
+</script>
+</template>
+
+<script>
+(() => {
+  const FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Nunito+Sans:wght@400;600;700;800&display=swap">';
+  const site = document.getElementById('site').innerHTML;
+  const state = { anno: true, rm: false };
+  const docFor = (theme) => `<!doctype html><html lang="en" data-theme="${theme}" class="${state.anno ? 'show-anno' : ''} ${state.rm ? 'force-rm' : ''}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>bxpk</title>${FONTS}</head><body>${site}</body></html>`;
+
+  const frames = [...document.querySelectorAll('.frame')];
+  const load = (f) => { f.querySelector('iframe').srcdoc = docFor(f.dataset.theme); };
+  frames.forEach((f) => {
+    const ifr = f.querySelector('iframe');
+    ifr.style.width = f.dataset.w + 'px';
+    ifr.style.height = f.dataset.h + 'px';
+    load(f);
+  });
+
+  function layout() {
+    document.querySelectorAll('.pair').forEach((pair) => {
+      const [desk, phone] = pair.querySelectorAll('.frame');
+      const avail = pair.parentElement.clientWidth;
+      const gap = 28;
+      let sd, sp;
+      if (avail >= 900) {
+        sd = sp = Math.min(1, (avail - gap) / (1440 + 390));
+        pair.classList.remove('stacked');
+      } else {
+        sd = avail / 1440; sp = Math.min(1, avail / 390);
+        pair.classList.add('stacked');
+      }
+      [[desk, sd], [phone, sp]].forEach(([f, s]) => {
+        const w = +f.dataset.w, h = +f.dataset.h;
+        const vp = f.querySelector('.viewport');
+        vp.style.width = Math.floor(w * s) + 'px';
+        vp.style.height = Math.floor(h * s) + 'px';
+        f.style.width = Math.floor(w * s) + 'px';
+        f.querySelector('iframe').style.transform = `scale(${s})`;
+      });
+    });
+  }
+  layout();
+  new ResizeObserver(layout).observe(document.querySelector('.board'));
+
+  const annoBtn = document.getElementById('t-anno');
+  annoBtn.addEventListener('click', () => {
+    state.anno = !state.anno;
+    annoBtn.setAttribute('aria-pressed', String(state.anno));
+    frames.forEach((f) => { const d = f.querySelector('iframe').contentDocument; if (d) d.documentElement.classList.toggle('show-anno', state.anno); });
+    const d = fullFrame.contentDocument; if (d && d.documentElement) d.documentElement.classList.toggle('show-anno', state.anno);
+  });
+  const rmBtn = document.getElementById('t-rm');
+  rmBtn.addEventListener('click', () => {
+    state.rm = !state.rm;
+    rmBtn.setAttribute('aria-pressed', String(state.rm));
+    frames.forEach(load);
+  });
+
+  const dlg = document.getElementById('full');
+  const fullFrame = dlg.querySelector('iframe');
+  frames.forEach((f) => f.querySelector('.open-full').addEventListener('click', () => {
+    document.getElementById('full-title').textContent = f.dataset.label;
+    dlg.querySelector('.full-body').classList.toggle('phone', f.dataset.w === '390');
+    fullFrame.srcdoc = docFor(f.dataset.theme);
+    dlg.showModal();
+  }));
+  document.getElementById('full-close').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('close', () => { fullFrame.srcdoc = ''; });
+})();
+</script>
