@@ -1,8 +1,8 @@
 /**
  * Adapted from KokonutUI "Smooth Tab" (MIT, kokonutui.com).
  * Kept: the spring-driven indicator that slides under the selected tab and the
- * directional AnimatePresence swap of the panel. Changed: blue, purple and
- * emerald tab colors and the blurred waveform card are gone; the indicator is
+ * directional AnimatePresence swap of the panel. Changed: the per-tab demo
+ * colors and the blurred waveform card are gone; the indicator is
  * moss, the panel holds real content, the toolbar is full width, arrow keys
  * move between tabs as the ARIA tabs pattern expects, and the blur filter is
  * dropped from the transition.

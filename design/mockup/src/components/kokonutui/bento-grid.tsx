@@ -3,7 +3,7 @@
  * Kept: the tile that tilts toward the pointer (rotateX/rotateY from pointer
  * position, lifted in Z) and the idea that every tile carries a small working
  * demonstration instead of an icon. Changed: the AI demo content, partner logos,
- * gradients and glass blur are gone; tilt is capped at 6 degrees on a low-bounce
+ * gradients and translucent blur are gone; tilt is capped at 6 degrees on a low-bounce
  * spring; tiles are Topo panels in an asymmetric 12-column layout; tiles enter
  * from alternating sides; nothing is a link, so no tile pretends to navigate.
  */

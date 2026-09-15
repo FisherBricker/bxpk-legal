@@ -6,7 +6,6 @@ import { Grid } from "@/components/charts/grid";
 import { Line } from "@/components/charts/line";
 import { SeriesBar } from "@/components/charts/series-bar";
 import { XAxis } from "@/components/charts/x-axis";
-import { YAxis } from "@/components/charts/y-axis";
 import { DAYS, dayDate, RESUPPLY } from "@/data/trip";
 
 export const STACK = [
@@ -37,16 +36,45 @@ function UnwalkedDays({ throughDay }: { throughDay: number }) {
   return (
     <motion.rect
       animate={{ x }}
-      fill="var(--ground)"
-      height={innerHeight + 24}
+      fill="var(--card)"
+      height={innerHeight}
       initial={false}
-      opacity={0.78}
+      opacity={0.8}
       transition={{ type: "spring", stiffness: 120, damping: 24 }}
-      width={Math.max(0, innerWidth - x) + 8}
-      y={-12}
+      width={Math.max(0, innerWidth - x) + 32}
+      y={0}
     />
   );
 }
+
+/**
+ * Kilogram ticks set clear of the first bar. bklit's YAxis sits flush against
+ * the plot edge, where a stacked bar centred on day 1 would cover its labels.
+ */
+function KgTicks() {
+  const { yScale, columnWidth } = useChartStable();
+  const x = -Math.min(54, columnWidth * 0.8) / 2 - 10;
+  return (
+    <g>
+      {yScale.ticks(4).map((value) => (
+        <text
+          dominantBaseline="middle"
+          fill="var(--chart-label)"
+          fontSize="12"
+          key={value}
+          textAnchor="end"
+          x={x}
+          y={yScale(value)}
+        >
+          {value} kg
+        </text>
+      ))}
+    </g>
+  );
+}
+
+// Render outside the series reveal clip, like bklit's own axes.
+(KgTicks as unknown as { __isPostOverlay: boolean }).__isPostOverlay = true;
 
 /** The resupply stop, marked on the day it lands. */
 function ResupplyMarker({ visible }: { visible: boolean }) {
@@ -60,18 +88,11 @@ function ResupplyMarker({ visible }: { visible: boolean }) {
         strokeWidth="1.5"
         x1={x}
         x2={x}
-        y1={-8}
+        y1={4}
         y2={innerHeight}
       />
-      <circle cx={x} cy={-8} fill="var(--amber-bright)" r="5" />
-      <text
-        fill="var(--amber-bright)"
-        fontSize="12"
-        fontWeight="700"
-        textAnchor="middle"
-        x={x}
-        y={-18}
-      >
+      <circle cx={x} cy={4} fill="var(--amber-bright)" r="5" />
+      <text fill="var(--amber-bright)" fontSize="12" fontWeight="700" x={x + 10} y={8}>
         +4.73 kg
       </text>
     </motion.g>
@@ -86,15 +107,14 @@ export function ResupplyChart({ throughDay }: { throughDay: number }) {
     >
       <ComposedChart
         animationDuration={1000}
-        aspectRatio="16 / 9"
+        aspectRatio="5 / 4"
         barGap={2}
         data={ROWS}
-        margin={{ top: 46, right: 18, bottom: 34, left: 56 }}
+        margin={{ top: 20, right: 18, bottom: 34, left: 76 }}
         maxBarSize={54}
         stacked
       >
         <Grid numTicksRows={4} />
-        <YAxis formatValue={(value) => `${value} kg`} numTicks={4} />
         {STACK.map((segment) => (
           <SeriesBar dataKey={segment.key} fill={segment.color} key={segment.key} radius={2} />
         ))}
@@ -108,6 +128,7 @@ export function ResupplyChart({ throughDay }: { throughDay: number }) {
           stroke="var(--night-ink)"
           strokeWidth={2}
         />
+        <KgTicks />
         <UnwalkedDays throughDay={throughDay} />
         <ResupplyMarker visible={throughDay >= RESUPPLY.day} />
         <XAxis numTicks={7} />

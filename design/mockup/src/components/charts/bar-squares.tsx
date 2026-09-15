@@ -92,7 +92,7 @@ function isPatternFill(fill: string): boolean {
   return fill.startsWith("url(");
 }
 
-/** Delay between stacked squares within one column (bottom → top). */
+/** Delay between stacked squares within one column (bottom to top). */
 function squareCascadeStepSeconds(
   enterTransition: Transition | undefined,
   animationDurationMs: number,

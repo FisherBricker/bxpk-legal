@@ -21,7 +21,7 @@ export interface UseGridShimmerOptions {
   shimmerSync: boolean;
   /** When false, shimmer animation is paused (e.g. during exit transition). */
   active: boolean;
-  /** Run a single synced sweep (loading → ready handoff). */
+  /** Run a single synced sweep (loading to ready handoff). */
   oneShot?: boolean;
 }
 

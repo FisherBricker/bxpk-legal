@@ -45,7 +45,7 @@ export function useHighlightSegment({
   const xSpring = useSpring(0, highlightSpring);
   const widthSpring = useSpring(0, highlightSpring);
 
-  // Jump on inactive→active so the band appears at the hovered point instead
+  // Jump on inactive to active so the band appears at the hovered point instead
   // of sliding in from x=0; ease on subsequent moves.
   const wasActive = useRef(false);
   if (bounds.isActive && !wasActive.current) {

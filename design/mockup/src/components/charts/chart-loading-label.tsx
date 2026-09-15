@@ -12,7 +12,7 @@ export interface ChartLoadingLabelProps {
   /** Label shown centered over the chart. */
   text?: string;
   className?: string;
-  /** Animate down, fade, and blur during loading → ready handoff. */
+  /** Animate down, fade, and blur during loading to ready handoff. */
   exiting?: boolean;
 }
 

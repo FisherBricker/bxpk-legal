@@ -32,7 +32,7 @@ export function Waypoint({ id }: { id: string }) {
       className="map-label mb-6 text-fg-muted lg:absolute lg:top-1 lg:-left-[136px] lg:mb-0 lg:w-[124px]"
       data-waypoint={id}
     >
-      <span className="text-route">Mile {wp.mile.toFixed(1)}</span>
+      <span className="text-fg">Mile {wp.mile.toFixed(1)}</span>
       <br />
       {wp.name}
       <br />
@@ -257,7 +257,6 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
   const railOpacity = rail.show ? 1 : 0;
   const barScale = useTransform(drawn, (v) => v);
 
-  const routeStroke = "var(--route)";
 
   return (
     <div className="relative" ref={containerRef}>
@@ -300,17 +299,21 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
         </g>
         {m.markers.map((p, i) => {
           const lit = i < reached;
+          const onNightChapter = m.nights.some((n) => p.y > n.y0 && p.y < n.y1);
+          const stroke = onNightChapter ? "var(--amber-bright)" : "var(--amber)";
+          const ground = onNightChapter ? "var(--night)" : "var(--paper)";
+          const trailsEnd = i === WAYPOINTS.length - 1;
           return (
             <g key={WAYPOINTS[i].id}>
-              <circle cx={p.x} cy={p.y} fill="var(--ground)" r="8" stroke={routeStroke} strokeWidth="2.5" />
+              {trailsEnd ? <circle cx={p.x} cy={p.y} fill="none" r="15" stroke={stroke} strokeOpacity="0.45" strokeWidth="1.5" /> : null}
+              <circle cx={p.x} cy={p.y} fill={ground} r={trailsEnd ? 10 : 8} stroke={stroke} strokeWidth="2.5" />
               <motion.circle
                 animate={{ scale: lit ? 1 : 0 }}
                 cx={p.x}
                 cy={p.y}
-                fill={routeStroke}
+                fill={stroke}
                 initial={{ scale: reduced ? 1 : 0 }}
-                r="4.5"
-                style={{ originX: `${p.x}px`, originY: `${p.y}px` }}
+                r={trailsEnd ? 5.5 : 4.5}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
               />
             </g>
@@ -341,7 +344,7 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
               <span className="absolute top-[-1px] right-[16px] block h-px w-[46px] bg-route/60" />
             </motion.div>
             <motion.div className="absolute top-0 right-[62px] w-[70px] text-right" style={{ y: labelY }}>
-              <div className="map-label text-route">Mile {rail.mile.toFixed(1)}</div>
+              <div className="map-label text-fg">Mile {rail.mile.toFixed(1)}</div>
               <div className="map-label text-fg-muted">{fmtInt(rail.ft)} ft</div>
               <div className="mt-1.5 text-[0.8125rem] leading-tight font-bold text-fg tnum">
                 Day {rail.day}

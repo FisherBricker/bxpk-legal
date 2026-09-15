@@ -52,7 +52,7 @@ export function Resupply() {
         <h3 className="font-display text-xl font-medium">Pack weight by day</h3>
         <span className="map-label text-fg-muted">Sample trip, 7 days</span>
       </div>
-      <MountInView className="mt-3" minHeight={280}>
+      <MountInView className="mt-3" minHeight={240}>
         <ResupplyChart throughDay={throughDay} />
       </MountInView>
       <div className="mt-4 border-t border-rule pt-4">

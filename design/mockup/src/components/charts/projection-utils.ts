@@ -2,7 +2,7 @@ export type ProjectionMode = "auto" | "target" | "manual";
 export type ProjectionAutoMethod = "linearRegression" | "lastSegment";
 /** How the projection segment is drawn between anchor and horizon. */
 export type ProjectionCurveKind = "linear" | "bezier";
-/** @deprecated Stepped density removed — projections always anchor → horizon. */
+/** @deprecated Stepped density removed — projections always anchor to horizon. */
 export type ProjectionPathDensity = "stepped" | "endpoints";
 
 export interface ProjectionPoint {

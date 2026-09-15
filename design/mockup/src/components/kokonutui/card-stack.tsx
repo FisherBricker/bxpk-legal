@@ -4,7 +4,7 @@
  * spring that settles them, and the reduced-motion branch that flattens the
  * rotations. Changed: the deck is a real list of gear categories rather than
  * four demo products, one card expands at a time instead of the whole deck
- * fanning, the glass/blur card treatment is replaced with Topo panels, the
+ * fanning, the translucent blur card treatment is replaced with Topo panels, the
  * next/image product art is gone, and each card is a keyboard-operable button
  * that reports hover so the donut beside it can highlight the same category.
  */

@@ -208,6 +208,10 @@
     -webkit-font-smoothing: antialiased;
     font-variant-numeric: tabular-nums;
   }
+  /* Entrances slide in from the side; clip them so a phone never scrolls sideways. */
+  main {
+    overflow-x: clip;
+  }
   h1,
   h2,
   h3,

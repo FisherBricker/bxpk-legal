@@ -92,7 +92,7 @@ export function SignupForm({ tone = "hero", idPrefix, className = "" }: SignupFo
                 aria-invalid={status === "error"}
                 autoComplete="email"
                 className={`min-h-12 w-full flex-1 rounded-xl border px-4 text-base text-fg placeholder:text-fg-muted/70 ${fieldBg} ${
-                  status === "error" ? "border-amber" : "border-rule"
+                  status === "error" ? "border-2 border-fg" : "border-rule"
                 }`}
                 id={emailId}
                 inputMode="email"

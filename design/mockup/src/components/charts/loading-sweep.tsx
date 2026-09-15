@@ -185,8 +185,8 @@ export interface LineLoadingSweepProps {
   curve: CurveFactory;
   /** Fill the silhouette as an area (for `<Area>`); otherwise stroke only. */
   withArea?: boolean;
-  /** Loading phase: `"loop"` (steady), `"exit"` (loading → ready), or `"enter"`
-   * (ready → loading). Exit/enter fade the silhouette and then signal the chart
+  /** Loading phase: `"loop"` (steady), `"exit"` (loading to ready), or `"enter"`
+   * (ready to loading). Exit/enter fade the silhouette and then signal the chart
    * to continue its reveal. Default: `"loop"`. */
   mode?: "loop" | "exit" | "enter";
   /** Fired when an exit/enter transition finishes, to advance the chart phase. */

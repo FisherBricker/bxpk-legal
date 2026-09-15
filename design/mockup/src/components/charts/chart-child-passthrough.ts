@@ -99,7 +99,7 @@ export function isUnderlayComponent(child: ReactElement): boolean {
   return UNDERLAY_COMPONENT_NAMES.has(componentName);
 }
 
-/** Grid and axes stay visible during series clip reveal (e.g. loading → ready). */
+/** Grid and axes stay visible during series clip reveal (e.g. loading to ready). */
 export function isClipExcludedComponent(child: ReactElement): boolean {
   const childType = child.type as { displayName?: string; name?: string };
   const componentName =

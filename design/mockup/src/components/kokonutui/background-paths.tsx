@@ -1,6 +1,6 @@
 /**
  * Adapted from KokonutUI "Background Paths" (MIT, kokonutui.com).
- * The original draws slow-floating gradient waves in purple, pink and blue.
+ * The original draws slow-floating waves stroked with a three-color demo gradient.
  * Here the same path generator is retuned into quadrangle contour hairlines:
  * one token color, no gradients, no endless loops, drawn in once when the band
  * is reached, and fully drawn under reduced motion.

@@ -154,7 +154,7 @@ export interface ChartContextValue extends ChartHoverContextValue {
   chartStatus: ChartStatus;
   /** Centered label while `chartPhase` shows loading chrome. */
   loadingLabel?: string;
-  /** Y-domain tween duration when transitioning loading ↔ ready (ms). */
+  /** Y-domain tween duration when transitioning loading and ready (ms). */
   yDomainTweenDuration: number;
   /** Nice’d y-domains per axis from skeleton data (placeholder). */
   yDomainSkeletonByAxis: Record<string, YDomain>;
@@ -211,7 +211,7 @@ export interface ChartContextValue extends ChartHoverContextValue {
   composedBarGap?: number;
   /** When true, `SeriesBar` segments stack in child order at each x. */
   composedStacked?: boolean;
-  /** Per-row cumulative offsets for stacked `SeriesBar` (data index → dataKey → offset). */
+  /** Per-row cumulative offsets for stacked `SeriesBar` (data index to dataKey to offset). */
   composedStackOffsets?: Map<number, Map<string, number>>;
   /** Vertical gap in px between stacked `SeriesBar` segments. Default: 0 */
   composedStackGap?: number;
