@@ -1,66 +1,56 @@
-"use client";
-
 /**
- * @author: @kokonut-labs
- * @description: Slide Text Button with animated vertical text transition
- * @version: 1.0.0
- * @date: 2025-11-02
- * @license: MIT
- * @website: https://kokonutui.com
- * @github: https://github.com/kokonut-labs/kokonutui
+ * Adapted from KokonutUI "Slide Text Button" (MIT, kokonutui.com).
+ * Kept: the label sliding up out of view while its copy slides in underneath.
+ * Changed: a plain anchor instead of next/link, Topo tokens instead of black and
+ * white, an arrow that walks with the text, and no entrance animation (the
+ * original starts at opacity 0 and 200 px off, which would hide the link if
+ * motion never ran).
  */
 
-import { motion } from "motion/react";
-import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface SlideTextButtonProps
-  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  text?: string;
+interface SlideTextButtonProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  text: string;
   hoverText?: string;
-  href?: string;
+  href: string;
   className?: string;
-  variant?: "default" | "ghost";
+  variant?: "link" | "solid";
 }
 
-export default function SlideTextButton({
-  text = "Browse Components",
+export function SlideTextButton({
+  text,
   hoverText,
-  href = "/docs",
+  href,
   className,
-  variant = "default",
+  variant = "link",
   ...props
 }: SlideTextButtonProps) {
   const slideText = hoverText ?? text;
-  const variantStyles =
-    variant === "ghost"
-      ? "border border-black/10 text-black hover:bg-black/5 dark:border-white/10 dark:text-white dark:hover:bg-white/5"
-      : "bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90";
-
   return (
-    <motion.div
-      animate={{ x: 0, opacity: 1, transition: { duration: 0.2 } }}
-      className="relative"
-      initial={{ x: 200, opacity: 0 }}
+    <a
+      className={cn(
+        "group relative inline-flex min-h-11 items-center overflow-hidden rounded-full font-bold no-underline",
+        variant === "solid" ? "bg-data px-5 text-ground" : "px-1 text-fg",
+        className
+      )}
+      href={href}
+      {...props}
     >
-      <Link
-        className={cn(
-          "group relative inline-flex h-10 items-center justify-center overflow-hidden rounded-lg px-8 font-medium text-md tracking-tighter transition-all duration-300 md:min-w-56",
-          variantStyles,
-          className
-        )}
-        href={href}
-        {...props}
-      >
-        <span className="relative inline-block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">
-          <span className="flex items-center gap-2 opacity-100 transition-opacity duration-300 group-hover:opacity-0">
-            <span className="font-medium">{text}</span>
+      <span className="relative inline-block overflow-hidden py-1">
+        <span className="relative block transition-transform duration-300 ease-[var(--ease-expo)] group-hover:-translate-y-full group-focus-visible:-translate-y-full">
+          <span className="flex items-center gap-2">
+            {text}
+            <ArrowRight aria-hidden="true" className="h-4 w-4 text-data" strokeWidth={1.75} />
           </span>
-          <span className="absolute top-full left-0 flex items-center gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-            <span className="font-medium">{slideText}</span>
+          <span aria-hidden="true" className="absolute top-full left-0 flex items-center gap-2 whitespace-nowrap">
+            {slideText}
+            <ArrowRight className="h-4 w-4 text-data" strokeWidth={1.75} />
           </span>
         </span>
-      </Link>
-    </motion.div>
+      </span>
+    </a>
   );
 }
+
+export default SlideTextButton;

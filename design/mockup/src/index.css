@@ -1,86 +1,302 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
-:root {
-    --chart-1: oklch(0.32 0 none);
-    --chart-2: oklch(0.41 0 none);
-    --chart-3: oklch(0.54 0 none);
-    --chart-4: oklch(0.71 0 none);
-    --chart-5: oklch(0.89 0 none);
-    --chart-background: oklch(1 0 0);
-    --chart-foreground: oklch(0.145 0.004 285);
-    --chart-foreground-muted: oklch(0.55 0.014 260);
-    --chart-line-primary: var(--chart-1);
-    --chart-line-secondary: var(--chart-2);
-    --chart-crosshair: oklch(0.4 0.1828 274.34);
-    --chart-grid: oklch(0.9 0 0);
-    --chart-brush-border: var(--chart-grid);
-    --chart-tooltip-background: oklch(0.21 0.006 285 / 0.8);
-    --chart-tooltip-foreground: oklch(0.985 0 0);
-    --chart-tooltip-muted: oklch(0.65 0.01 260);
-    --chart-marker-background: oklch(0.97 0.005 260);
-    --chart-marker-border: oklch(0.85 0.01 260);
-    --chart-marker-foreground: oklch(0.3 0.01 260);
-    --chart-label: oklch(0.45 0.01 260);
-    --chart-scale-01: oklch(0.98 0.003 106);
-    --chart-scale-02: oklch(0.92 0.008 106);
-    --chart-scale-03: oklch(0.82 0.015 106);
-    --chart-scale-04: oklch(0.68 0.02 106);
-    --chart-scale-05: oklch(0.55 0.025 106);
-    --chart-scale-pattern-color: oklch(0.96 0.005 106);
+/* Fonts: latin subsets only, inlined into the single-file build. */
+@font-face {
+  font-family: "Jost Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("@fontsource-variable/jost/files/jost-latin-wght-normal.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "Nunito Sans Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 1000;
+  src: url("@fontsource-variable/nunito-sans/files/nunito-sans-latin-wght-normal.woff2") format("woff2-variations");
 }
 
-.dark {
-    --chart-1: oklch(1 0 none);
-    --chart-2: oklch(0.73 0 none);
-    --chart-3: oklch(0.51 0 none);
-    --chart-4: oklch(0.39 0 none);
-    --chart-5: oklch(0.32 0 none);
-    --chart-background: oklch(0.145 0 0);
-    --chart-foreground: oklch(0.45 0 0);
-    --chart-foreground-muted: oklch(0.65 0.01 260);
-    --chart-crosshair: oklch(0.45 0 0);
-    --chart-grid: oklch(0.25 0 0);
-    --chart-brush-border: var(--chart-grid);
-    --chart-marker-background: oklch(0.25 0.01 260);
-    --chart-marker-border: oklch(0.4 0.01 260);
-    --chart-marker-foreground: oklch(0.9 0 0);
-    --chart-label: oklch(0.75 0.01 260);
-    --chart-scale-01: oklch(0.28 0.03 270);
-    --chart-scale-02: oklch(0.38 0.04 270);
-    --chart-scale-03: oklch(0.48 0.05 270);
-    --chart-scale-04: oklch(0.58 0.06 270);
-    --chart-scale-05: oklch(0.68 0.07 270);
-    --chart-scale-pattern-color: oklch(0.145 0 0);
+/* ------------------------------------------------------------------ */
+/* Topo quadrangle tokens                                               */
+/* ------------------------------------------------------------------ */
+:root {
+  /* Light map grounds */
+  --map: #edefe2;
+  --paper: #f7f6f0;
+  --surface: #ffffff;
+  /* Ink */
+  --ink: #1c2e1e;
+  --ink-muted: #5f665a;
+  --line: #e2e0d6;
+  /* Night chapters */
+  --night: #191f15;
+  --night-2: #232a1d;
+  --night-ink: #e7eadf;
+  --night-muted: #98a08a;
+  --night-line: #2e3626;
+  /* Data */
+  --moss: #5f7040;
+  --moss-bright: #a4bc6b;
+  /* Route only */
+  --amber: #b0763b;
+  --amber-bright: #d2a25e;
+  /* Contours */
+  --contour: rgba(95, 112, 64, 0.22);
+  --contour-night: rgba(164, 188, 107, 0.1);
+  /* Gear categories */
+  --cat-shelter: #4c6444;
+  --cat-sleep: #6b5b8f;
+  --cat-pack: #8f6e5b;
+  --cat-clothing: #7b8f5a;
+  --cat-water: #3a5e8c;
+  --cat-cooking: #c05b3a;
+  --cat-electronics: #c9a227;
+  --cat-misc: #8a8f87;
+
+  /* Contextual roles (flip inside .night) */
+  --ground: var(--paper);
+  --fg: var(--ink);
+  --fg-muted: var(--ink-muted);
+  --rule: var(--line);
+  --card: var(--surface);
+  --data: var(--moss);
+  --route: var(--amber);
+  --topo: var(--contour);
+
+  /* shadcn / bklit base variables */
+  --background: var(--ground);
+  --foreground: var(--fg);
+  --muted-foreground: var(--fg-muted);
+  --border: var(--rule);
+
+  /* bklit chart theme mapped to the tokens */
+  --chart-background: var(--card);
+  --chart-foreground: var(--fg);
+  --chart-foreground-muted: var(--fg-muted);
+  --chart-label: var(--fg-muted);
+  --chart-1: var(--moss);
+  --chart-2: #7b8f5a;
+  --chart-3: #4c6444;
+  --chart-4: #98a08a;
+  --chart-5: #c9cfbb;
+  --chart-line-primary: var(--data);
+  --chart-line-secondary: #7b8f5a;
+  --chart-crosshair: var(--fg-muted);
+  --chart-grid: rgba(28, 46, 30, 0.1);
+  --chart-brush-border: var(--chart-grid);
+  --chart-indicator-color: var(--data);
+  --chart-indicator-secondary-color: var(--fg-muted);
+  --chart-tooltip-background: rgba(28, 46, 30, 0.94);
+  --chart-tooltip-foreground: #f7f6f0;
+  --chart-tooltip-muted: #c9cfbb;
+  --chart-marker-background: var(--paper);
+  --chart-marker-border: var(--line);
+  --chart-marker-foreground: var(--ink);
+  --chart-marker-badge-background: var(--ink);
+  --chart-marker-badge-foreground: var(--paper);
+  --chart-segment-background: rgba(95, 112, 64, 0.08);
+  --chart-segment-line: var(--moss);
+  --chart-scale-01: #f2f4ea;
+  --chart-scale-02: #dfe5cc;
+  --chart-scale-03: #b9c69a;
+  --chart-scale-04: #8a9d62;
+  --chart-scale-05: #5f7040;
+  --chart-scale-pattern-color: var(--paper);
+
+  color-scheme: light;
+  scrollbar-color: #b9bfae var(--paper);
+}
+
+.night {
+  --ground: var(--night);
+  --fg: var(--night-ink);
+  --fg-muted: var(--night-muted);
+  --rule: var(--night-line);
+  --card: var(--night-2);
+  --data: var(--moss-bright);
+  --route: var(--amber-bright);
+  --topo: var(--contour-night);
+  --background: var(--ground);
+  --foreground: var(--fg);
+  --muted-foreground: var(--fg-muted);
+  --border: var(--rule);
+
+  --chart-background: var(--card);
+  --chart-foreground: var(--fg);
+  --chart-foreground-muted: var(--fg-muted);
+  --chart-label: var(--fg-muted);
+  --chart-1: var(--moss-bright);
+  --chart-2: #c9d6a6;
+  --chart-3: #7b8f5a;
+  --chart-4: #98a08a;
+  --chart-5: #5e6b4e;
+  --chart-line-primary: var(--data);
+  --chart-line-secondary: #c9d6a6;
+  --chart-crosshair: var(--fg-muted);
+  --chart-indicator-color: var(--data);
+  --chart-grid: rgba(231, 234, 223, 0.09);
+  --chart-tooltip-background: rgba(231, 234, 223, 0.96);
+  --chart-tooltip-foreground: #191f15;
+  --chart-tooltip-muted: #5f665a;
+  --chart-marker-background: var(--night-2);
+  --chart-marker-border: var(--night-line);
+  --chart-marker-foreground: var(--night-ink);
+  --chart-marker-badge-background: var(--night-ink);
+  --chart-marker-badge-foreground: var(--night);
+  --chart-segment-background: rgba(164, 188, 107, 0.08);
+  --chart-segment-line: var(--moss-bright);
+  --chart-scale-pattern-color: var(--night);
+  color-scheme: dark;
+  background-color: var(--night);
+  color: var(--night-ink);
 }
 
 @theme inline {
-    --color-chart-1: var(----chart-1);
-    --color-chart-2: var(----chart-2);
-    --color-chart-3: var(----chart-3);
-    --color-chart-4: var(----chart-4);
-    --color-chart-5: var(----chart-5);
-    --color-chart-background: var(----chart-background);
-    --color-chart-foreground: var(----chart-foreground);
-    --color-chart-foreground-muted: var(----chart-foreground-muted);
-    --chart-line-primary: var(----chart-line-primary);
-    --chart-line-secondary: var(----chart-line-secondary);
-    --color-chart-crosshair: var(----chart-crosshair);
-    --color-chart-grid: var(----chart-grid);
-    --chart-brush-border: var(----chart-brush-border);
-    --color-chart-tooltip-background: var(----chart-tooltip-background);
-    --color-chart-tooltip-foreground: var(----chart-tooltip-foreground);
-    --color-chart-tooltip-muted: var(----chart-tooltip-muted);
-    --color-chart-marker-background: var(----chart-marker-background);
-    --color-chart-marker-border: var(----chart-marker-border);
-    --color-chart-marker-foreground: var(----chart-marker-foreground);
-    --color-chart-label: var(----chart-label);
-    --color-chart-scale-01: var(----chart-scale-01);
-    --color-chart-scale-02: var(----chart-scale-02);
-    --color-chart-scale-03: var(----chart-scale-03);
-    --color-chart-scale-04: var(----chart-scale-04);
-    --color-chart-scale-05: var(----chart-scale-05);
-    --color-chart-scale-pattern-color: var(----chart-scale-pattern-color);
+  --color-map: var(--map);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-night: var(--night);
+  --color-night-2: var(--night-2);
+  --color-night-ink: var(--night-ink);
+  --color-night-muted: var(--night-muted);
+  --color-night-line: var(--night-line);
+  --color-moss: var(--moss);
+  --color-moss-bright: var(--moss-bright);
+  --color-amber: var(--amber);
+  --color-amber-bright: var(--amber-bright);
+
+  --color-ground: var(--ground);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-rule: var(--rule);
+  --color-card: var(--card);
+  --color-data: var(--data);
+  --color-route: var(--route);
+
+  --color-cat-shelter: var(--cat-shelter);
+  --color-cat-sleep: var(--cat-sleep);
+  --color-cat-pack: var(--cat-pack);
+  --color-cat-clothing: var(--cat-clothing);
+  --color-cat-water: var(--cat-water);
+  --color-cat-cooking: var(--cat-cooking);
+  --color-cat-electronics: var(--cat-electronics);
+  --color-cat-misc: var(--cat-misc);
+
+  --font-display: "Jost Variable", "Futura", "Avenir Next", ui-sans-serif, sans-serif;
+  --font-sans: "Nunito Sans Variable", "Avenir Next", ui-sans-serif, system-ui, sans-serif;
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                 */
+/* ------------------------------------------------------------------ */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 96px;
+  }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    font-variant-numeric: tabular-nums;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: var(--moss);
+    color: var(--paper);
+  }
+  .night ::selection {
+    background: var(--moss-bright);
+    color: var(--night);
+  }
+  a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--data);
+    outline-offset: 3px;
+  }
+  button {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  .display-1 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(3rem, 1.2rem + 5.4vw, 6rem);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .display-2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.25rem, 1.35rem + 2.9vw, 4.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.018em;
+    text-wrap: balance;
+  }
+  .lead {
+    font-size: clamp(1.125rem, 1rem + 0.35vw, 1.3125rem);
+    line-height: 1.55;
+    color: var(--fg-muted);
+    max-width: 62ch;
+  }
+  .body-copy {
+    color: var(--fg-muted);
+    max-width: 68ch;
+  }
+  /* Map annotation: set like a label on a quadrangle, used only on the route */
+  .map-label {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.8125rem;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    box-shadow:
+      0 1px 0 rgba(28, 46, 30, 0.04),
+      0 18px 40px -28px rgba(28, 46, 30, 0.35);
+  }
+  .night .panel {
+    box-shadow: 0 24px 48px -30px rgba(0, 0, 0, 0.6);
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }

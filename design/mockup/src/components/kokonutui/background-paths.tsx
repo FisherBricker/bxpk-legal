@@ -1,290 +1,133 @@
-"use client";
-
 /**
- * @author: @dorianbaffier
- * @description: Background Paths
- * @version: 1.0.0
- * @date: 2025-06-26
- * @license: MIT
- * @website: https://kokonutui.com
- * @github: https://github.com/kokonut-labs/kokonutui
+ * Adapted from KokonutUI "Background Paths" (MIT, kokonutui.com).
+ * The original draws slow-floating gradient waves in purple, pink and blue.
+ * Here the same path generator is retuned into quadrangle contour hairlines:
+ * one token color, no gradients, no endless loops, drawn in once when the band
+ * is reached, and fully drawn under reduced motion.
  */
 
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { memo, useMemo } from "react";
+import { mulberry32 } from "@/lib/topo/contours";
 
-interface Point {
-  x: number;
-  y: number;
+interface ContourPathsProps {
+  /** Distinct seed per band so no two sections carry the same contour. */
+  seed?: number;
+  /** Number of hairlines. */
+  count?: number;
+  className?: string;
+  /** Stroke color. Defaults to the section's contour token. */
+  stroke?: string;
+  /** Draw the lines in on entry instead of showing them at once. */
+  drawIn?: boolean;
+  /** "contour" wanders across the band, "ridge" rises to a summit. */
+  shape?: "contour" | "ridge";
 }
 
-interface PathData {
-  id: string;
-  d: string;
-  opacity: number;
-  width: number;
-  duration: number;
-  delay: number;
-}
-
-// Path generation function
-function generateAestheticPath(
-  index: number,
-  position: number,
-  type: "primary" | "secondary" | "accent"
-): string {
-  const baseAmplitude =
-    type === "primary" ? 150 : type === "secondary" ? 100 : 60;
-  const phase = index * 0.2;
-  const points: Point[] = [];
-  const segments = type === "primary" ? 10 : type === "secondary" ? 8 : 6;
-
-  const startX = 2400;
-  const startY = 800;
-  const endX = -2400;
-  const endY = -800 + index * 25;
-
+function buildPath(index: number, rand: () => number, shape: "contour" | "ridge"): string {
+  const segments = 8;
+  const amplitude = shape === "ridge" ? 90 + index * 6 : 46 + index * 3;
+  const phase = rand() * Math.PI * 2;
+  const drift = shape === "ridge" ? index * 26 : index * 34;
+  const points: Array<[number, number]> = [];
   for (let i = 0; i <= segments; i++) {
-    const progress = i / segments;
-    const eased = 1 - (1 - progress) ** 2;
-
-    const baseX = startX + (endX - startX) * eased;
-    const baseY = startY + (endY - startY) * eased;
-
-    const amplitudeFactor = 1 - eased * 0.3;
-    const wave1 =
-      Math.sin(progress * Math.PI * 3 + phase) *
-      (baseAmplitude * 0.7 * amplitudeFactor);
-    const wave2 =
-      Math.cos(progress * Math.PI * 4 + phase) *
-      (baseAmplitude * 0.3 * amplitudeFactor);
-    const wave3 =
-      Math.sin(progress * Math.PI * 2 + phase) *
-      (baseAmplitude * 0.2 * amplitudeFactor);
-
-    points.push({
-      x: baseX * position,
-      y: baseY + wave1 + wave2 + wave3,
-    });
+    const t = i / segments;
+    const x = -100 + t * 1400;
+    const crest = shape === "ridge" ? Math.sin(t * Math.PI) * amplitude : 0;
+    const wave =
+      Math.sin(t * Math.PI * 2.1 + phase) * amplitude * 0.5 +
+      Math.cos(t * Math.PI * 3.4 + phase) * amplitude * 0.22;
+    points.push([x, 340 + drift - crest + wave]);
   }
-
-  const pathCommands = points.map((point: Point, i: number) => {
-    if (i === 0) return `M ${point.x} ${point.y}`;
-    const prevPoint = points[i - 1];
-    const tension = 0.4;
-    const cp1x = prevPoint.x + (point.x - prevPoint.x) * tension;
-    const cp1y = prevPoint.y;
-    const cp2x = prevPoint.x + (point.x - prevPoint.x) * (1 - tension);
-    const cp2y = point.y;
-    return `C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${point.x} ${point.y}`;
-  });
-
-  return pathCommands.join(" ");
+  return points
+    .map(([x, y], i) => {
+      if (i === 0) return `M ${x.toFixed(1)} ${y.toFixed(1)}`;
+      const [px, py] = points[i - 1];
+      const cx1 = px + (x - px) * 0.4;
+      const cx2 = px + (x - px) * 0.6;
+      return `C ${cx1.toFixed(1)} ${py.toFixed(1)}, ${cx2.toFixed(1)} ${y.toFixed(1)}, ${x.toFixed(1)} ${y.toFixed(1)}`;
+    })
+    .join(" ");
 }
 
-const generateUniqueId = (prefix: string): string =>
-  `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
-
-// Memoized FloatingPaths component
-const FloatingPaths = memo(function FloatingPaths({
-  position,
-}: {
-  position: number;
-}) {
-  // Increased number of paths while maintaining optimization
-  const primaryPaths: PathData[] = useMemo(
-    () =>
-      Array.from({ length: 12 }, (_, i) => ({
-        id: generateUniqueId("primary"),
-        d: generateAestheticPath(i, position, "primary"),
-        opacity: 0.15 + i * 0.02,
-        width: 4 + i * 0.3,
-        duration: 25,
-        delay: 0,
-      })),
-    [position]
-  );
-
-  const secondaryPaths: PathData[] = useMemo(
-    () =>
-      Array.from({ length: 15 }, (_, i) => ({
-        id: generateUniqueId("secondary"),
-        d: generateAestheticPath(i, position, "secondary"),
-        opacity: 0.12 + i * 0.015,
-        width: 3 + i * 0.25,
-        duration: 20,
-        delay: 0,
-      })),
-    [position]
-  );
-
-  const accentPaths: PathData[] = useMemo(
-    () =>
-      Array.from({ length: 10 }, (_, i) => ({
-        id: generateUniqueId("accent"),
-        d: generateAestheticPath(i, position, "accent"),
-        opacity: 0.08 + i * 0.12,
-        width: 2 + i * 0.2,
-        duration: 15,
-        delay: 0,
-      })),
-    [position]
-  );
-
-  // Shared animation configuration
-  const sharedAnimationProps = {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      opacity: { duration: 1 },
-      scale: { duration: 1 },
-    },
-  };
+export const ContourPaths = memo(function ContourPaths({
+  seed = 7,
+  count = 9,
+  className = "",
+  stroke = "var(--topo)",
+  drawIn = false,
+  shape = "contour",
+}: ContourPathsProps) {
+  const reduced = useReducedMotion() ?? false;
+  const paths = useMemo(() => {
+    const rand = mulberry32(seed);
+    return Array.from({ length: count }, (_, i) => buildPath(i, rand, shape));
+  }, [count, seed, shape]);
 
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <svg
-        className="h-full w-full text-slate-950/40 dark:text-white/40"
-        fill="none"
-        preserveAspectRatio="xMidYMid slice"
-        viewBox="-2400 -800 4800 1600"
-      >
-        <title>Background Paths</title>
-        <defs>
-          <linearGradient id="sharedGradient" x1="0%" x2="100%" y1="0%" y2="0%">
-            <stop offset="0%" stopColor="rgba(147, 51, 234, 0.5)" />
-            <stop offset="50%" stopColor="rgba(236, 72, 153, 0.5)" />
-            <stop offset="100%" stopColor="rgba(59, 130, 246, 0.5)" />
-          </linearGradient>
-        </defs>
-
-        <g className="primary-waves">
-          {primaryPaths.map((path) => (
-            <motion.path
-              animate={{
-                ...sharedAnimationProps,
-                y: [0, -15, 0],
-              }}
-              d={path.d}
-              initial={{ opacity: 0, scale: 0.8 }}
-              key={path.id}
-              stroke="url(#sharedGradient)"
-              strokeLinecap="round"
-              strokeWidth={path.width}
-              style={{ opacity: path.opacity }}
-              transition={{
-                ...sharedAnimationProps.transition,
-                y: {
-                  duration: 8,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "easeInOut",
-                  repeatType: "reverse",
-                },
-              }}
-            />
-          ))}
-        </g>
-
-        <g className="secondary-waves" style={{ opacity: 0.8 }}>
-          {secondaryPaths.map((path) => (
-            <motion.path
-              animate={{
-                ...sharedAnimationProps,
-                y: [0, -10, 0],
-              }}
-              d={path.d}
-              initial={{ opacity: 0, scale: 0.9 }}
-              key={path.id}
-              stroke="url(#sharedGradient)"
-              strokeLinecap="round"
-              strokeWidth={path.width}
-              style={{ opacity: path.opacity }}
-              transition={{
-                ...sharedAnimationProps.transition,
-                y: {
-                  duration: 6,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "easeInOut",
-                  repeatType: "reverse",
-                },
-              }}
-            />
-          ))}
-        </g>
-
-        <g className="accent-waves" style={{ opacity: 0.6 }}>
-          {accentPaths.map((path) => (
-            <motion.path
-              animate={{
-                ...sharedAnimationProps,
-                y: [0, -5, 0],
-              }}
-              d={path.d}
-              initial={{ opacity: 0, scale: 0.95 }}
-              key={path.id}
-              stroke="url(#sharedGradient)"
-              strokeLinecap="round"
-              strokeWidth={path.width}
-              style={{ opacity: path.opacity }}
-              transition={{
-                ...sharedAnimationProps.transition,
-                y: {
-                  duration: 4,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "easeInOut",
-                  repeatType: "reverse",
-                },
-              }}
-            />
-          ))}
-        </g>
-      </svg>
-    </div>
-  );
-});
-
-// Memoized AnimatedTitle component
-const AnimatedTitle = memo(function AnimatedTitle({
-  title,
-}: {
-  title: string;
-}) {
-  return (
-    <motion.h1
-      animate={{ opacity: 1, y: 0 }}
-      className="mb-8 bg-gradient-to-r from-neutral-800/90 to-neutral-600/90 bg-clip-text font-bold text-3xl text-transparent tracking-tighter sm:text-5xl md:text-5xl dark:from-white/90 dark:to-white/70"
-      initial={{ opacity: 0, y: 20 }}
-      transition={{
-        duration: 1.2,
-        ease: [0.2, 0.65, 0.3, 0.9],
-      }}
+    <svg
+      aria-hidden="true"
+      className={`pointer-events-none absolute inset-0 h-full w-full ${className}`}
+      fill="none"
+      preserveAspectRatio="xMidYMid slice"
+      viewBox="0 0 1200 700"
     >
-      {title}
-    </motion.h1>
+      {paths.map((d, index) =>
+        drawIn && !reduced ? (
+          <motion.path
+            d={d}
+            initial={{ pathLength: 0 }}
+            key={d}
+            stroke={stroke}
+            strokeLinecap="round"
+            strokeWidth={1}
+            transition={{ duration: 1.5, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.2 }}
+            whileInView={{ pathLength: 1 }}
+          />
+        ) : (
+          <path d={d} key={d} stroke={stroke} strokeLinecap="round" strokeWidth={1} />
+        )
+      )}
+    </svg>
   );
 });
 
-export default memo(function BackgroundPaths({
-  title = "Background Paths",
+/** Nested contour rings, the app's ContourPanel geometry, used as a quiet texture. */
+export const ContourRings = memo(function ContourRings({
+  seed = 3,
+  className = "",
+  stroke = "var(--topo)",
+  rings = 9,
 }: {
-  title?: string;
+  seed?: number;
+  className?: string;
+  stroke?: string;
+  rings?: number;
 }) {
+  const geometry = useMemo(() => {
+    const r = mulberry32(seed);
+    return { cx: 60 + r() * 240, cy: 250 + r() * 140, step: 15 + r() * 9 };
+  }, [seed]);
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-white dark:bg-neutral-950">
-      <div className="absolute inset-0">
-        <FloatingPaths position={1} />
-      </div>
-
-      <div className="container relative z-10 mx-auto px-4 text-center md:px-6">
-        <motion.div
-          animate={{ opacity: 1 }}
-          className="mx-auto max-w-4xl"
-          initial={{ opacity: 0 }}
-          transition={{ duration: 2 }}
-        >
-          <AnimatedTitle title={title} />
-        </motion.div>
-      </div>
-    </div>
+    <svg
+      aria-hidden="true"
+      className={`pointer-events-none absolute inset-0 h-full w-full ${className}`}
+      fill="none"
+      preserveAspectRatio="xMidYMid slice"
+      viewBox="0 0 400 400"
+    >
+      {Array.from({ length: rings }, (_, i) => (
+        <ellipse
+          cx={geometry.cx}
+          cy={geometry.cy}
+          key={i}
+          rx={(i + 1) * geometry.step * 1.9}
+          ry={(i + 1) * geometry.step}
+          stroke={stroke}
+          strokeWidth={1}
+        />
+      ))}
+    </svg>
   );
 });
