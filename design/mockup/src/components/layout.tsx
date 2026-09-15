@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ContourPaths } from "@/components/kokonutui/background-paths";
 import { cn } from "@/lib/utils";
 
 const GROUNDS = {
@@ -33,6 +34,8 @@ export function RouteSection({
       data-night={ground === "night" ? "" : undefined}
       id={id}
     >
+      {/* Faint contour hairlines behind the route, a different sheet of the quadrangle per waypoint */}
+      <ContourPaths className="-z-10" count={8} seed={(labelledBy ?? "route").length * 7 + 3} />
       {children}
     </section>
   );

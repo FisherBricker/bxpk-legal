@@ -1,8 +1,12 @@
 import { Navbar } from "@/components/kokonutui/morphic-navbar";
 import { RouteLine } from "@/components/route";
 import { AlsoInPack } from "@/sections/also-in-pack";
+import { Close, Footer } from "@/sections/close";
+import { Community } from "@/sections/community";
 import { GearList } from "@/sections/gear-list";
 import { Meals } from "@/sections/meals";
+import { News } from "@/sections/news";
+import { Privacy } from "@/sections/privacy";
 import { Resupply } from "@/sections/resupply";
 import { Seasons } from "@/sections/seasons";
 import { SharedGear } from "@/sections/shared-gear";
@@ -30,8 +34,12 @@ export default function App() {
           <AlsoInPack />
           <Seasons />
         </RouteLine>
-        <div className="h-screen bg-paper" />
+        <Community />
+        <Privacy />
+        <News />
+        <Close />
       </main>
+      <Footer />
     </>
   );
 }

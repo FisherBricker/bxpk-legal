@@ -81,12 +81,13 @@ export const ContourPaths = memo(function ContourPaths({
             stroke={stroke}
             strokeLinecap="round"
             strokeWidth={1}
+            vectorEffect="non-scaling-stroke"
             transition={{ duration: 1.5, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
             viewport={{ once: true, amount: 0.2 }}
             whileInView={{ pathLength: 1 }}
           />
         ) : (
-          <path d={d} key={d} stroke={stroke} strokeLinecap="round" strokeWidth={1} />
+          <path d={d} key={d} stroke={stroke} strokeLinecap="round" strokeWidth={1} vectorEffect="non-scaling-stroke" />
         )
       )}
     </svg>
@@ -126,6 +127,7 @@ export const ContourRings = memo(function ContourRings({
           ry={(i + 1) * geometry.step}
           stroke={stroke}
           strokeWidth={1}
+          vectorEffect="non-scaling-stroke"
         />
       ))}
     </svg>
