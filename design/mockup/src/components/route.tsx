@@ -255,7 +255,7 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
     <div className="relative" ref={containerRef}>
       <svg
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 h-full w-full overflow-visible"
+        className="pointer-events-none absolute inset-0 z-20 h-full w-full overflow-visible"
         height={m.height || 0}
         width={m.width || 0}
       >
