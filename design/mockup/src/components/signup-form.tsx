@@ -91,9 +91,9 @@ export function SignupForm({ tone = "hero", idPrefix, className = "" }: SignupFo
                 aria-describedby={status === "error" ? errorId : undefined}
                 aria-invalid={status === "error"}
                 autoComplete="email"
-                className={`min-h-12 w-full flex-1 rounded-xl border px-4 text-base text-fg outline-none placeholder:text-fg-muted/70 ${fieldBg} ${
+                className={`min-h-12 w-full flex-1 rounded-xl border px-4 text-base text-fg placeholder:text-fg-muted/70 ${fieldBg} ${
                   status === "error" ? "border-amber" : "border-rule"
-                } focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-data`}
+                }`}
                 id={emailId}
                 inputMode="email"
                 name="email"

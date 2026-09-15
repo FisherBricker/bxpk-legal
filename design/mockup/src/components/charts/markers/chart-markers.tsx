@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowUpRight } from "lucide-react";
 import { useCallback, useMemo } from "react";
 import { chartCssVars, useChart, useChartHover } from "../chart-context";
 import { type ChartMarker, MarkerGroup } from "./marker-group";
@@ -57,10 +58,9 @@ export function MarkerTooltipContent({ markers }: MarkerTooltipContentProps) {
                 <>
                   <div className="flex items-center gap-1.5 truncate font-medium text-chart-tooltip-foreground text-sm">
                     {marker.title}
+                    {/* bxpk: a lucide outline icon instead of the arrow glyph */}
                     {isClickable && (
-                      <span className="text-[10px] text-chart-tooltip-muted">
-                        ↗
-                      </span>
+                      <ArrowUpRight aria-hidden="true" className="h-3 w-3 text-chart-tooltip-muted" strokeWidth={1.75} />
                     )}
                   </div>
                   {marker.description && (

@@ -100,7 +100,7 @@ export function Navbar() {
           onClick={() => setMenuOpen(false)}
         >
           <Mark className="h-7 w-7" knockout="var(--map)" />
-          <Wordmark />
+          <Wordmark className="hidden sm:inline" />
           <span className="sr-only">Backpack Weight Tracker home</span>
         </a>
 
@@ -116,7 +116,7 @@ export function Navbar() {
                       <a
                         aria-current={isActive(item.id) ? "true" : undefined}
                         className={cn(
-                          "flex min-h-10 items-center px-4 text-[0.9375rem] font-semibold no-underline transition-colors duration-300",
+                          "flex min-h-11 items-center px-4 text-[0.9375rem] font-semibold no-underline transition-colors duration-300",
                           isActive(item.id)
                             ? "mx-1 rounded-full bg-moss text-paper"
                             : cn(

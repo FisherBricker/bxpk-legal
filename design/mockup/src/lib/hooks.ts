@@ -32,9 +32,16 @@ export function useReduced(): boolean {
   return useReducedMotion() ?? false;
 }
 
+/**
+ * Review captures load the page with ?capture so a full-page screenshot shows
+ * every pinned chapter laid out flat and the route fully walked, instead of
+ * empty sticky runway.
+ */
+export const CAPTURE = typeof window !== "undefined" && new URLSearchParams(window.location.search).has("capture");
+
 /** Desktop, full motion: the only mode where the page pins sections. */
 export function usePinned(): boolean {
-  return useIsDesktop() && !useReduced();
+  return useIsDesktop() && !useReduced() && !CAPTURE;
 }
 
 export const EASE_EXPO = [0.16, 1, 0.3, 1] as const;

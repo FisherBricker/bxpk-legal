@@ -593,14 +593,9 @@ const XAxisInner = memo(function XAxisInner({
       });
     }
 
-    // No brush: evenly spaced ticks across the full domain (data + projection).
-    if (projectionExtendsScale && xDomain == null) {
-      return buildDomainTicks({
-        marginLeft: margin.left,
-        numTicks,
-        xScale,
-      });
-    }
+    // bxpk: the registry switched to evenly spaced domain ticks when a projection
+    // extends the scale. Data rows here carry the real labels (seasons, trip
+    // days), so a projection keeps the data-aligned ticks.
 
     const dataTicks = buildDataAlignedTicks({
       data,

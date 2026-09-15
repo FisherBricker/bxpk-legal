@@ -5,7 +5,7 @@ import { RouteColumn, RouteSection } from "@/components/layout";
 import { Phone } from "@/components/phone";
 import { PhonePreview, PhoneScreen, SCREEN_LABEL, type ScreenId } from "@/components/phone-screens";
 import { Waypoint } from "@/components/route";
-import { EASE_EXPO, useIsDesktop, useReduced } from "@/lib/hooks";
+import { EASE_EXPO, useIsDesktop, usePinned } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 
 interface Chapter {
@@ -242,10 +242,10 @@ function TabbedWalkthrough() {
 
 export function Walkthrough() {
   const isDesktop = useIsDesktop();
-  const reduced = useReduced();
+  const pinned = usePinned();
   return (
     <RouteSection ground="night" id="guide" labelledBy="guide-heading" nav="guide">
-      {!isDesktop ? <TabbedWalkthrough /> : reduced ? <StaticWalkthrough /> : <PinnedWalkthrough />}
+      {!isDesktop ? <TabbedWalkthrough /> : pinned ? <PinnedWalkthrough /> : <StaticWalkthrough />}
     </RouteSection>
   );
 }

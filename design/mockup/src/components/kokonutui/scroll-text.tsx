@@ -11,6 +11,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { CAPTURE } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 
 export interface ScrollStatement {
@@ -21,7 +22,7 @@ export interface ScrollStatement {
 export function ScrollStatements({ items, className }: { items: ScrollStatement[]; className?: string }) {
   const [active, setActive] = useState(0);
   const refs = useRef<(HTMLLIElement | null)[]>([]);
-  const reduced = useReducedMotion() ?? false;
+  const reduced = (useReducedMotion() ?? false) || CAPTURE;
 
   useEffect(() => {
     if (reduced) return;

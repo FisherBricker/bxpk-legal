@@ -116,7 +116,7 @@ function ReadinessTile() {
 const PACKS = [
   { name: "Sierra summer", kg: "4.62 kg" },
   { name: "Desert spring", kg: "5.10 kg" },
-  { name: "Shoulder season", kg: "5.88 kg" },
+  { name: "Late season", kg: "5.88 kg" },
 ];
 
 function PacksTile() {

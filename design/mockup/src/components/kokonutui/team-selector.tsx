@@ -60,7 +60,7 @@ export function SeatPicker({ claimed, seats, itemLabel, onToggle }: SeatPickerPr
                   : `Claim seat ${index + 1} on the ${itemLabel}`
             }
             aria-pressed={isClaimed}
-            className="flex h-11 w-9 items-center justify-center first:w-11"
+            className="flex h-11 w-11 items-center justify-center"
             key={index}
             onClick={() => handle(index)}
             type="button"

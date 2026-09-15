@@ -1,7 +1,7 @@
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { dayAt, elevationAt, fmtInt, PROFILE } from "@/data/trip";
-import { useIsDesktop, useReduced } from "@/lib/hooks";
+import { CAPTURE, useIsDesktop, useReduced } from "@/lib/hooks";
 
 export interface WaypointDef {
   id: string;
@@ -102,12 +102,13 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
   const pathRef = useRef<SVGPathElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
-  const reduced = useReduced();
+  // Reduced motion (and review captures) get the route fully walked and every marker lit.
+  const reduced = useReduced() || CAPTURE;
   const [m, setM] = useState<Measured>(EMPTY);
   const [reached, setReached] = useState(reduced ? WAYPOINTS.length : 0);
   const [railH, setRailH] = useState(0);
   const [onNight, setOnNight] = useState(false);
-  const [rail, setRail] = useState({ mile: 0, ft: 9360, day: 1, pack: 9.22, show: false });
+  const [rail, setRail] = useState({ mile: 0, ft: 9360, day: 1, pack: 9.22, show: false, inRoute: false });
   const drawn = useMotionValue(reduced ? 1 : 0);
   const mileMV = useMotionValue(0);
   const smoothMile = useSpring(mileMV, { stiffness: 140, damping: 26, mass: 0.6 });
@@ -217,10 +218,15 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
       }
       mileMV.set(mile);
       const day = dayAt(mile);
-      const show = headY > -window.innerHeight * 0.2 && headY < m.height + 120;
+      // Visible from the trailhead (the hero) until the trail ends.
+      const show = headY < m.height + 120;
+      // The mobile progress line and pill only appear once the visitor is on the route itself.
+      const inRoute = headY > (m.ys[0] ?? 0) && show;
       setRail((prev) => {
-        const next = { mile, ft: elevationAt(mile), day: day.day, pack: day.pack, show };
-        return Math.abs(next.mile - prev.mile) < 0.05 && next.show === prev.show ? prev : next;
+        const next = { mile, ft: elevationAt(mile), day: day.day, pack: day.pack, show, inRoute };
+        return Math.abs(next.mile - prev.mile) < 0.05 && next.show === prev.show && next.inRoute === prev.inRoute
+          ? prev
+          : next;
       });
       if (!reduced) {
         let count = 0;
@@ -246,6 +252,8 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
   }, [isDesktop]);
 
   const dotY = useTransform(smoothMile, (mile) => (mile / END_MILE) * railH);
+  // The readout follows the dot but stays inside the rail, clear of the scale labels.
+  const labelY = useTransform(dotY, (y) => Math.min(Math.max(y - 30, 24), Math.max(24, railH - 96)));
   const railOpacity = rail.show ? 1 : 0;
   const barScale = useTransform(drawn, (v) => v);
 
@@ -329,18 +337,16 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
               </svg>
             </div>
             <motion.div className="absolute top-0 right-0 left-0" style={{ y: dotY }}>
-              <div className="relative">
-                <span className="absolute top-[-5px] right-[6px] block h-2.5 w-2.5 rounded-full bg-route ring-3 ring-[var(--ground)]" />
-                <span className="absolute top-[-1px] right-[16px] block h-px w-[46px] bg-route/60" />
-                <div className="absolute top-[-30px] right-[62px] w-[70px] text-right">
-                  <div className="map-label text-route">Mile {rail.mile.toFixed(1)}</div>
-                  <div className="map-label text-fg-muted">{fmtInt(rail.ft)} ft</div>
-                  <div className="mt-1.5 text-[0.8125rem] leading-tight font-bold text-fg tnum">
-                    Day {rail.day}
-                    <br />
-                    {rail.pack.toFixed(2)} kg
-                  </div>
-                </div>
+              <span className="absolute top-[-5px] right-[6px] block h-2.5 w-2.5 rounded-full bg-route ring-3 ring-[var(--ground)]" />
+              <span className="absolute top-[-1px] right-[16px] block h-px w-[46px] bg-route/60" />
+            </motion.div>
+            <motion.div className="absolute top-0 right-[62px] w-[70px] text-right" style={{ y: labelY }}>
+              <div className="map-label text-route">Mile {rail.mile.toFixed(1)}</div>
+              <div className="map-label text-fg-muted">{fmtInt(rail.ft)} ft</div>
+              <div className="mt-1.5 text-[0.8125rem] leading-tight font-bold text-fg tnum">
+                Day {rail.day}
+                <br />
+                {rail.pack.toFixed(2)} kg
               </div>
             </motion.div>
             <span className="map-label absolute top-0 right-[6px] text-fg-muted">0 mi</span>
@@ -352,9 +358,9 @@ export function RouteLine({ children }: { children: React.ReactNode }) {
       {/* Mobile: a slim progress line under the nav and a compact pill */}
       {!isDesktop ? (
         <motion.div
-          animate={{ opacity: rail.show ? 1 : 0 }}
+          animate={{ opacity: rail.inRoute ? 1 : 0 }}
           aria-hidden="true"
-          className="fixed top-[72px] right-0 left-0 z-20 lg:hidden"
+          className="pointer-events-none fixed top-[72px] right-0 left-0 z-20 lg:hidden"
           initial={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >

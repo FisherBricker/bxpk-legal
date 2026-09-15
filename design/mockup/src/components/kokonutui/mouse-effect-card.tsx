@@ -55,7 +55,7 @@ export function ContourDotBand({ children, className }: { children: ReactNode; c
         if (d < RADIUS * 1.2) near.rect(x - 1.1, y - 1.1, 2.2, 2.2);
         else rest.rect(x - 0.8, y - 0.8, 1.6, 1.6);
       }
-      ctx.fillStyle = "rgba(164,188,107,0.34)";
+      ctx.fillStyle = "rgba(164,188,107,0.42)";
       ctx.fill(rest);
       ctx.fillStyle = "rgba(164,188,107,0.9)";
       ctx.fill(near);

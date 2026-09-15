@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { buildContours, type ContourLayout } from "@/lib/topo/contours";
-import { createState, type ParticleState, step } from "@/lib/topo/physics";
+import { createState, type ParticleState, PHYSICS, step } from "@/lib/topo/physics";
 import { createPointerTracker } from "@/lib/topo/pointer";
 import { useReduced } from "@/lib/hooks";
 
@@ -41,6 +41,9 @@ export function TopoField({ quietRef, className = "", seed = 20260915 }: TopoFie
     let running = false;
     let visible = true;
     let maxDisplacement = 0;
+    let peakReach = 0;
+    let peakPush = 0;
+    let peakLive = 0;
     const tracker = createPointerTracker();
 
     function measure() {
@@ -87,12 +90,16 @@ export function TopoField({ quietRef, className = "", seed = 20260915 }: TopoFie
       const rest = new Path2D();
       const live = new Path2D();
       let peak = 0;
+      let liveCount = 0;
       for (let i = 0; i < layout.count; i++) {
         const dx = state.x[i] - layout.homeX[i];
         const dy = state.y[i] - layout.homeY[i];
         const d = Math.abs(dx) + Math.abs(dy);
         if (d > peak) peak = d;
-        if (d > 4) live.rect(state.x[i] - 1.1, state.y[i] - 1.1, 2.2, 2.2);
+        if (d > 4) {
+          live.rect(state.x[i] - 1.1, state.y[i] - 1.1, 2.2, 2.2);
+          liveCount++;
+        }
         else if (!quiet[i]) rest.rect(state.x[i] - 0.75, state.y[i] - 0.75, 1.5, 1.5);
       }
       ctx!.fillStyle = DOT_REST;
@@ -102,6 +109,9 @@ export function TopoField({ quietRef, className = "", seed = 20260915 }: TopoFie
       if (peak > maxDisplacement) maxDisplacement = peak;
       canvas!.dataset.displacement = peak.toFixed(2);
       canvas!.dataset.peakDisplacement = maxDisplacement.toFixed(2);
+      // How much of the field is bent at once: particles pushed more than 4 px off their contour.
+      if (liveCount > peakLive) peakLive = liveCount;
+      canvas!.dataset.peakBent = String(peakLive);
     }
 
     function frame(time: number) {
@@ -115,6 +125,15 @@ export function TopoField({ quietRef, className = "", seed = 20260915 }: TopoFie
       tracker.tick(dt);
       const pointer = tracker.read();
       canvas!.dataset.speed = pointer.speed.toFixed(1);
+      // Expose the speed-scaled reach and push the physics used this frame (and their peaks), for review.
+      if (pointer.active) {
+        const reach = Math.min(PHYSICS.maxRadius, PHYSICS.radius + pointer.speed * PHYSICS.radiusPerSpeed);
+        const push = PHYSICS.push * (1 + Math.min(PHYSICS.maxBoost, pointer.speed * PHYSICS.speedBoost));
+        peakReach = Math.max(peakReach, reach);
+        peakPush = Math.max(peakPush, push);
+        canvas!.dataset.peakReach = peakReach.toFixed(0);
+        canvas!.dataset.peakPush = peakPush.toFixed(0);
+      }
       step(state, layout, pointer, dt);
       draw();
       let energy = 0;

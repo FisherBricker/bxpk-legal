@@ -78,18 +78,18 @@ function ResupplyMarker({ visible }: { visible: boolean }) {
   );
 }
 
-export function ResupplyChart({ throughDay, animate = true }: { throughDay: number; animate?: boolean }) {
+export function ResupplyChart({ throughDay }: { throughDay: number }) {
   return (
     <div
       aria-label="Pack weight for each day of the sample trip: day 1 9.22 kg, day 2 8.76 kg, day 3 12.03 kg after a 4.73 kg resupply at Muir Trail Ranch, day 4 11.57 kg, day 5 9.61 kg, day 6 9.15 kg, day 7 7.69 kg. Each bar stacks base weight 4.62 kg with that day's food, water and fuel, and the line is skin-out weight."
       role="img"
     >
       <ComposedChart
-        animationDuration={animate ? 1000 : 0}
+        animationDuration={1000}
         aspectRatio="16 / 9"
         barGap={2}
         data={ROWS}
-        margin={{ top: 46, right: 18, bottom: 34, left: 44 }}
+        margin={{ top: 46, right: 18, bottom: 34, left: 56 }}
         maxBarSize={54}
         stacked
       >

@@ -52,7 +52,7 @@ export function Meals() {
           </Enter>
 
           <motion.div
-            className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
+            className="grid items-start gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
             initial={{ opacity: 0.2, y: -34 }}
             transition={{ duration: 1, ease: EASE_EXPO }}
             viewport={{ once: true, amount: 0.15 }}

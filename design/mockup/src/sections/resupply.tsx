@@ -47,13 +47,13 @@ export function Resupply() {
   );
 
   const chart = (
-    <div className="panel px-4 py-5 sm:px-6">
+    <div className="panel px-4 py-5 sm:px-6 xl:pr-16">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <h3 className="font-display text-xl font-medium">Pack weight by day</h3>
         <span className="map-label text-fg-muted">Sample trip, 7 days</span>
       </div>
       <MountInView className="mt-3" minHeight={280}>
-        <ResupplyChart animate={!pinned ? true : true} throughDay={throughDay} />
+        <ResupplyChart throughDay={throughDay} />
       </MountInView>
       <div className="mt-4 border-t border-rule pt-4">
         <StackLegend />
@@ -64,17 +64,20 @@ export function Resupply() {
   return (
     <RouteSection ground="night" labelledBy="resupply-heading" nav="route">
       <div className="relative" ref={sectionRef} style={pinned ? { height: "300vh" } : undefined}>
-        <RouteColumn className="absolute top-24 right-0 left-0">
-          <Waypoint id="resupply" />
-        </RouteColumn>
+        {pinned ? (
+          <RouteColumn className="absolute top-24 right-0 left-0">
+            <Waypoint id="resupply" />
+          </RouteColumn>
+        ) : null}
         <div className={pinned ? "sticky top-0 flex h-screen items-center" : ""}>
           <RouteColumn className={pinned ? "w-full py-10" : "w-full py-24"}>
-            <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14">
+            {pinned ? null : <Waypoint id="resupply" />}
+            <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12">
               {pinned ? <div>{copy}</div> : <Enter from="left">{copy}</Enter>}
-              <div className="relative lg:pr-[150px]">
-                {pinned ? chart : <Enter from="right">{chart}</Enter>}
-                <div className="mt-8 flex justify-center lg:absolute lg:right-0 lg:bottom-[-80px] lg:mt-0 lg:justify-end">
-                  <PhonePreview id="resupply" width={210} />
+              <div className="flex flex-col items-center gap-8 xl:flex-row xl:items-start xl:gap-0">
+                <div className="w-full min-w-0 flex-1 xl:pr-6">{pinned ? chart : <Enter from="right">{chart}</Enter>}</div>
+                <div className="shrink-0 xl:-ml-14 xl:pt-24">
+                  <PhonePreview id="resupply" width={176} />
                 </div>
               </div>
             </div>

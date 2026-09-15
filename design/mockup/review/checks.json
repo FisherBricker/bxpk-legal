@@ -1,0 +1,36 @@
+{
+  "console": [],
+  "checks": {
+    "form": {
+      "errorText": "Enter an email like name@example.com",
+      "describedBy": "hero-error",
+      "loading": "Sending",
+      "success": true
+    },
+    "heroField": {
+      "slow": {
+        "peakBent": 91,
+        "peakDisplacement": 72.13,
+        "peakReach": 101,
+        "peakPush": 3343,
+        "particles": 5757
+      },
+      "fast": {
+        "peakBent": 1068,
+        "peakDisplacement": 66.96,
+        "peakReach": 210,
+        "peakPush": 10391,
+        "particles": 5757
+      },
+      "fastBeatsSlow": true
+    },
+    "keyboard": {
+      "reached": 138,
+      "unique": 45,
+      "withoutRing": [],
+      "under44": [
+        "Skip to content 1x1"
+      ]
+    }
+  }
+}
