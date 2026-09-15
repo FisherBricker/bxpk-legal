@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { withBase } from './paths';
+import { canonicalPath, withBase } from './paths';
 import { appStoreUrl } from '../site.config';
 
 describe('withBase', () => {
@@ -25,6 +25,29 @@ describe('withBase', () => {
     expect(withBase('https://apps.apple.com/app/id1', '/bxpk-legal')).toBe('https://apps.apple.com/app/id1');
     expect(withBase('mailto:hi@example.com', '/bxpk-legal')).toBe('mailto:hi@example.com');
     expect(withBase('#features', '/bxpk-legal')).toBe('#features');
+  });
+});
+
+describe('canonicalPath', () => {
+  it('turns index.html into a trailing slash, only as a whole path segment', () => {
+    expect(canonicalPath('/bxpk-legal/index.html')).toBe('/bxpk-legal/');
+    expect(canonicalPath('/index.html')).toBe('/');
+    expect(canonicalPath('/news/index.html')).toBe('/news/');
+  });
+
+  it('strips a trailing .html from any other page', () => {
+    expect(canonicalPath('/bxpk-legal/privacy.html')).toBe('/bxpk-legal/privacy');
+    expect(canonicalPath('/news/html-tips.html')).toBe('/news/html-tips');
+    expect(canonicalPath('/news/indexing-your-gear.html')).toBe('/news/indexing-your-gear');
+  });
+
+  it('does not shorten a page name that merely ends in "index"', () => {
+    expect(canonicalPath('/blog/how-to-reindex.html')).toBe('/blog/how-to-reindex');
+  });
+
+  it('leaves a path without .html unchanged', () => {
+    expect(canonicalPath('/bxpk-legal/privacy')).toBe('/bxpk-legal/privacy');
+    expect(canonicalPath('/')).toBe('/');
   });
 });
 
