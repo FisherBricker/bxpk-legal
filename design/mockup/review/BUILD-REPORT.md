@@ -226,3 +226,19 @@ Project: `design/mockup/` on `design/site-direction`. Build: `npm run build` (Ty
   - the worst slope change is 1,034 ft/mi between 1/8 mi samples
 - **Real screenshots:** `Phone` accepts an optional `src` for a real screenshot per screen (through `SCREEN_IMAGES` in `phone-screens.tsx`) and falls back to the skeleton. No images are set yet.
 - **Verification:** `npm run build` passes with TypeScript clean. `desktop-first-viewport.png`, `mobile-first-viewport.png`, `desktop-resupply-mid.png` and `desktop.png` were recaptured and opened: the profiles undulate, each label sits on its point, and the rail dot sits on the curve (mile 36.5, 11,400 ft).
+
+## Mountain terrain
+- **New field:** the two-gaussian oval field is replaced by alpine terrain in `src/lib/topo/isolines.ts`. It is built from:
+  - hand-written 32-bit gradient noise, domain-warped
+  - a ridged multifractal that forms the crests
+  - a second ridged network, subtracted, that carves drainages
+  - a broad fBm for valleys and benches, with more ruggedness at elevation
+  - the two ContourPanel summits kept for composition
+
+  Feature size is absolute (560 px per noise unit), so bigger panels show more terrain.
+- **Lines:** the level interval follows mean slope, so lines bunch on steep faces and open up on benches. Marching squares run on a 6 px grid. Loops under 70 px and open lines under 24 px are pruned, and one Chaikin pass smooths every line.
+- **Crossings:** `node scripts/check-isolines.ts` reports 0 crossings for both the smoothed lines and the particle layout at 1440 × 900, 390 × 844 and 1440 × 1100. It also prints the golden vectors.
+- **Where it applies:** the hero particle field, section sheets, the close band's night field, the news cover, the footer ridge and the phone textures. Pointer physics are unchanged.
+- **Legibility:** behind the hero copy and the close copy, line segments now draw at a lower alpha (0.10, or 0.07 at night), on top of the existing quiet rest dots.
+- **Portable spec:** `TERRAIN-SPEC.md` gives every step, constant, the case table, the saddle rule, joining order, pruning, smoothing, the site settings and the golden vectors.
+- **Verification:** `npm run build` passes with TypeScript clean. `desktop-first-viewport.png`, `mobile-first-viewport.png` and `desktop.png` were recaptured, plus crops `review/terrain-hero-crop.png` and `review/terrain-paper-crop.png`. They read as a quadrangle: a long ridge with a bunched face across the hero, spurs and saddles, and open benches on the paper sheet.

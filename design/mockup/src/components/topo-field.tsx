@@ -15,8 +15,8 @@ interface TopoFieldProps {
 }
 
 const TONES = {
-  map: { line: "rgba(95,112,64,0.22)", rest: "rgba(95,112,64,0.45)", live: "rgba(95,112,64,0.95)" },
-  night: { line: "rgba(164,188,107,0.16)", rest: "rgba(164,188,107,0.34)", live: "rgba(164,188,107,0.9)" },
+  map: { line: "rgba(95,112,64,0.22)", quietLine: "rgba(95,112,64,0.1)", rest: "rgba(95,112,64,0.45)", live: "rgba(95,112,64,0.95)" },
+  night: { line: "rgba(164,188,107,0.16)", quietLine: "rgba(164,188,107,0.07)", rest: "rgba(164,188,107,0.34)", live: "rgba(164,188,107,0.9)" },
 };
 
 /**
@@ -59,7 +59,7 @@ export function TopoField({ quietRefs, className = "", seed = 20260915, tone = "
       canvas!.height = Math.round(height * dpr);
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
       // Isolines of one height field: the lines nest and never cross.
-      layout = buildIsolineLayout({ width, height, seed, spacing: width < 600 ? 6.5 : 7.5, ringStep: 18, cell: 9, maxParticles: 6000 });
+      layout = buildIsolineLayout({ width, height, seed, spacing: width < 600 ? 6.5 : 7.5, ringStep: 15, cell: 6, maxParticles: 9000 });
       state = createState(layout);
       quiet = new Uint8Array(layout.count);
       const hostRect = host!.getBoundingClientRect();
@@ -85,13 +85,19 @@ export function TopoField({ quietRefs, className = "", seed = 20260915, tone = "
       if (!layout || !state) return;
       ctx!.clearRect(0, 0, width, height);
       ctx!.lineWidth = 1;
-      ctx!.strokeStyle = TONES[tone].line;
-      ctx!.beginPath();
-      for (let i = 0; i < layout.count; i++) {
-        if (layout.linked[i]) ctx!.lineTo(state.x[i], state.y[i]);
-        else ctx!.moveTo(state.x[i], state.y[i]);
+      // Rugged terrain is busy; behind the copy the lines drop to a quieter alpha so text stays easy to read.
+      const open = new Path2D();
+      const hushed = new Path2D();
+      for (let i = 1; i < layout.count; i++) {
+        if (!layout.linked[i]) continue;
+        const target = quiet[i] || quiet[i - 1] ? hushed : open;
+        target.moveTo(state.x[i - 1], state.y[i - 1]);
+        target.lineTo(state.x[i], state.y[i]);
       }
-      ctx!.stroke();
+      ctx!.strokeStyle = TONES[tone].line;
+      ctx!.stroke(open);
+      ctx!.strokeStyle = TONES[tone].quietLine;
+      ctx!.stroke(hushed);
 
       const rest = new Path2D();
       const live = new Path2D();
