@@ -39,10 +39,16 @@ separately from your profile, they are never shown to other people, and they are
 for advertising.
 
 **Who you are connected to.** Your friends, the people you follow and who follow you, the trips you
-share, and the gear you have claimed a share of.
+share, the gear you have claimed a share of, and the friends you tag on a post as having been there.
 
 **Your weight and trip history.** Your profile keeps a history of your base weight, a short summary
 of recently finished trips (name, date, distance and climb), and the achievements you have earned.
+
+**Notifications.** If you allow notifications, your phone is given a push token by Firebase Cloud
+Messaging, which we store with your account so notifications reach that phone; it is removed when
+you sign out. We store which kinds of notification you have switched on or off in Settings, a
+record of which notifications were sent to you so none is sent twice, and your Activity list: the
+title and text of each notification and what it is about, so you can find it again in the app.
 
 **Device checks.** We use Apple's App Attest to confirm requests come from a genuine copy of the
 app, and Apple's DeviceCheck to recognise a device that has previously been banned. Neither
@@ -108,6 +114,9 @@ advertising.
 
 - To run the app: sign-in, syncing your data between devices, planning routes, preparing offline
   maps, trips you share, friends, posts and forums.
+- To send you notifications: likes, comments, replies, mentions and tags, friend requests and
+  follows, forum activity, and trip reminders and changes. Every kind can be switched off in
+  Settings → Notifications, all at once or one by one, and iOS Settings can turn them off entirely.
 - To suggest gear changes, as described below.
 - To keep people safe: filtering slurs from posts and comments, reviewing reports, removing content
   that breaks the [Terms of Service](https://fisherbricker.github.io/bxpk-legal/terms), limiting how
@@ -138,6 +147,9 @@ search. We may earn a commission from qualifying purchases made through those li
 
 - **Google Firebase and Google Cloud** store and sync your data, handle sign-in, run our servers,
   work out planned routes, prepare offline maps, and receive crash reports. They act on our behalf.
+- **Firebase Cloud Messaging and Apple Push Notification service** receive the text of a
+  notification and your push token so the notification can be delivered to your phone. They act on
+  our behalf.
 - **Google Gemini** receives your gear list when the app makes gear suggestions, as described above.
   It acts on our behalf.
 - **Google AdMob** serves ads. Where you have allowed tracking, it may use your advertising
@@ -183,7 +195,12 @@ as protective as this one.
   People on a trip can see its gear, weights, itinerary and planned route. The names and weights of
   gear shared on a trip, and the names of its resupply points, can be read by other signed-in
   accounts that know the trip.
-- **Your body measurements and settings are never visible to anyone else.**
+- **Tags and mentions.** A friend who tags you on a post as having been there puts your name and
+  handle on it, visible to everyone who can see the post, and only friends can tag you. Writing your
+  @handle in a post or comment notifies you, if you can see that post. You can turn off being told
+  about either in Settings → Notifications.
+- **Your body measurements, settings, notification choices and Activity list are never visible to
+  anyone else.**
 
 ## Where it is stored
 
@@ -202,6 +219,7 @@ exceptions are these:
 - **Photos attached to trips and forum discussions** are deleted automatically one year after they
   were uploaded.
 - **Crash reports** are kept for up to 90 days.
+- **Your Activity list and the record of notifications sent to you** are kept for 90 days.
 - **Prepared offline map downloads** are kept for up to 60 days.
 - **Content taken down after a report**, described next.
 
@@ -225,7 +243,8 @@ people's posts, the sounds you added to posts, and the photos you attached to tr
 discussions.
 
 It also removes the photos and videos attached to your posts and gear showcases, your achievement
-share images, your saved items, your entry in other people's follower and following lists, and the
+share images, your saved items, your push tokens, notification settings, Activity list and
+notification history, your entry in other people's follower and following lists, and the
 records we keep about your gear suggestions and upload limits.
 
 A few things deliberately survive, and none of them identifies you:
