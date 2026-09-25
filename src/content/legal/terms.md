@@ -46,6 +46,17 @@ licence to store, copy, display and distribute it, only as needed to run the app
 people you chose to show it to. That licence ends when you delete the content or your account,
 except as described in the Privacy Policy for content under review and comments with replies.
 
+**Routes you share.** When you share a route on a post, people who can see the post may save a copy
+of it for their own use in the app, including planning their own trip from it. You give each of them
+a non-exclusive, royalty-free licence to keep and use that copy for that purpose. A saved copy is
+theirs to keep, even after you delete the post or your account; your name is removed from it when
+you delete your account.
+
+**Sound.** You can add a sound to a post only from your own recording, from your own video, or from
+the bxpk library. Tracks in the bxpk library are licensed for use in posts in the app only; do not
+copy them out of it. Do not record or post music or other audio you do not have the right to use,
+including music playing in the background of a recording or video.
+
 You are responsible for having the right to post what you post, and for it not breaking any law or
 anyone else's rights.
 
@@ -61,6 +72,7 @@ improve the app without owing you anything for it. You are never obliged to send
 - Content that is illegal, or that encourages something illegal
 - Impersonating someone else
 - Spam, scams, or bulk unsolicited promotion
+- Music, sound or other material you do not have the right to share
 - Posting someone else's private information
 - Scraping, reverse engineering, overloading, or attacking the service
 - Creating an account to get around a ban
@@ -75,6 +87,13 @@ takes content down from view immediately, but it is then reviewed by a person, u
 hours, and restored if the report turns out to be wrong. See the
 [Privacy Policy](https://fisherbricker.github.io/bxpk-legal/privacy) for how long removed content is
 kept.
+
+Other people's votes matter too. A post with ten or more dislikes than likes leaves feeds and forums
+but stays on your profile, and a comment like that is folded away behind a tap. That is not a
+removal and is not reviewed; it changes back if the votes do.
+
+You control the comments on your own posts: you can turn them off and delete any comment on your
+post. On a forum discussion you can lock replies, but you cannot delete other people's answers.
 
 You can block anyone: you stop seeing each other's posts, comments and profiles, any friendship
 between you ends, and you are removed from each other's trips.

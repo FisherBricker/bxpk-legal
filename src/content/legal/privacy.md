@@ -26,7 +26,11 @@ Terms of Service you accepted, and when.
 trips, packs, meal plans, food, fuel, resupply points, itineraries, trip notes, and the location you
 choose for a trip. Routes you plan, meaning the points you place on the map and the path between
 them. Posts, forum discussions, comments and reactions, and the photos and videos you attach to
-them. Your display name and profile photo. Items you save for later.
+them. What you link to a post: a copy of one of your trips (the details you choose to show, such as
+its numbers, its gear list and its route) and of the gear you spotlight. A post's sound, if you add
+one: a recording you make in the app, or the sound taken from one of your own videos. Your display
+name and profile photo. Items you save for later, including routes you save from other people's
+posts.
 
 **Body measurements, if you enter them.** Height, body weight, birthdate and biological sex. These
 are used for one thing: estimating how many calories a day of walking with a given pack weight is
@@ -56,6 +60,9 @@ AdMob may use your device's advertising identifier to personalise ads. If you de
 same number of ads, chosen without it. See [how Google uses
 information](https://policies.google.com/technologies/partner-sites).
 
+**Your microphone** is used only while you record a sound for a post, and only after iOS asks
+your permission. Nothing is recorded at any other time.
+
 We do not use your contacts, your camera, Apple Health or motion data. Photos and videos are chosen
 with the iOS picker, which gives the app only the items you pick.
 
@@ -63,11 +70,19 @@ with the iOS picker, which gives the app only the items you pick.
 
 **Your device's location** is used to show where you are on a map, and to record a route while you
 are recording one, including in the background if you allow it. A recorded route stays on your
-phone. It leaves only if you export or share the GPX file yourself.
+phone. It leaves only if you export or share the GPX file yourself, or share the route on a post.
 
 **Routes you plan** are sent to our servers so the path between your points can be worked out along
 trails and roads, and so its height and climb can be measured. A planned route is saved with its
 trip, synced to your other devices, and visible to the people on that trip.
+
+**Routes you share on a post.** When you link a trip to a post, you choose whether to share its
+planned route or its recorded route, or neither. A shared route is copied into the post and can be
+seen by everyone who can see the post. By default the first and last 500 metres are cut off the
+shared copy, along with any points and markers there, so it does not show where you started, for
+example your home; you can turn that off for a trailhead. Anyone who can see the post can save a copy
+of the route to their own private list and plan a trip from it. They are not told who else saved it,
+and you are not told who saved yours.
 
 **A trip's location** is the place you pick in the app's location search. It is stored with the
 trip, and it is sent to the US National Weather Service to fetch that trip's forecast and alerts.
@@ -77,10 +92,14 @@ Location search itself is provided by Apple Maps.
 so the download can be cut to size. The prepared download is kept for up to 60 days so it can be
 fetched again.
 
+**Sounds you post.** A recording, or the sound taken from one of your videos, is stripped of the
+details stored inside the file, including any location, before it is uploaded, and our servers strip
+it again after upload.
+
 **Photos and videos you post.** Photos are re-saved by the app before upload, which removes any
-location or camera details stored inside them. Videos are uploaded as they are, so a video may
-still carry the place it was recorded if your camera stored one. You can stop the Camera app from
-storing it in iOS Settings → Privacy & Security → Location Services → Camera.
+location or camera details stored inside them. Videos have the details stored inside the file,
+including the place they were recorded, removed by the app before upload and again by our servers
+after upload. Videos posted before this was in place have been cleaned the same way.
 
 We do not track your location in the background for any other purpose, and we do not use it for
 advertising.
@@ -140,8 +159,17 @@ as protective as this one.
   people follow you. That is how search and friend requests work. Your privacy setting in Settings
   decides where the app displays your weights and trips, but it does not stop another signed-in
   account from reading them.
-- **Your posts and comments** are visible according to the audience you choose when posting.
-  Comments and reactions can be seen by anyone who can see the post. The photo and video files
+- **Your posts and comments** are visible according to the audience you choose when posting. Forum
+  discussions are always public, and so is anything linked to one. Comments can be seen by anyone
+  who can see the post. You can turn comments on your post off, and delete comments on it.
+- **Reactions.** Like and dislike counts are visible to anyone who can see the post. Who liked
+  something is visible too. Who disliked something is not: only the person who disliked it can see
+  their own dislike, and the post's author cannot. A post with ten or more dislikes than likes is
+  taken out of feeds and forums but stays on its author's profile; a comment like that is folded
+  away behind a tap.
+- **What you link to a post** (a copy of a trip, its route, your gear) is visible to everyone who can
+  see the post. It is a copy made when you post: changing or deleting the trip or the gear afterwards
+  does not change the post, and editing the post makes a fresh copy. The photo and video files
   attached to a post are stored behind links, and anyone who has one of those links can open the
   file.
 - **Auto-Share** posts a highlight when you finalize a trip or earn an achievement. It is on by
@@ -151,6 +179,7 @@ as protective as this one.
 - **Your gear closet**, meaning your gear, gear systems, packs and pantry, can be viewed by your
   friends.
 - **Your trips** are visible only to you, unless you share a trip with someone or post about it.
+  A post shows only the copy you chose to link, never the trip itself.
   People on a trip can see its gear, weights, itinerary and planned route. The names and weights of
   gear shared on a trip, and the names of its resupply points, can be read by other signed-in
   accounts that know the trip.
@@ -191,19 +220,20 @@ immediately. It is held for review so a mistaken report can be corrected. While 
 
 **Settings → Delete Account.** It is immediate and cannot be undone. It removes your account,
 profile, handle, photo, gear, trips, planned routes, meal plans, itineraries, friendships,
-invitations, your posts and comments, and the photos you attached to trips and forum discussions.
+invitations, your posts and comments and the routes shared on them, the routes you saved from other
+people's posts, the sounds you added to posts, and the photos you attached to trips and forum
+discussions.
 
-During the beta, a few things are not yet removed automatically when an account is deleted: photos
-and videos attached to feed posts and gear showcases, achievement share images, saved items, your
-entry in other people's follower lists, and the records we keep about your gear suggestions and
-upload limits. We are fixing this. Until then, ask us through the
-[support page](https://fisherbricker.github.io/bxpk-legal/support) after deleting your account and
-we will remove them by hand.
+It also removes the photos and videos attached to your posts and gear showcases, your achievement
+share images, your saved items, your entry in other people's follower and following lists, and the
+records we keep about your gear suggestions and upload limits.
 
 A few things deliberately survive, and none of them identifies you:
 
 - **A comment of yours that other people replied to** stays as "Deleted user" with the text removed,
   so the conversation underneath still makes sense to the people who took part in it.
+- **A route someone else saved from one of your posts** stays in their private list, because they
+  chose to keep it. Your name, handle and account are removed from it and it reads "Deleted user".
 - **Gear you shared on someone else's trip** keeps its weight but loses its name and your identity,
   so their pack calculations do not silently change.
 - **A post or comment of yours taken down after a report** stays exactly as described above, under
