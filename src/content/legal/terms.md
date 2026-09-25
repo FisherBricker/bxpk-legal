@@ -4,12 +4,13 @@ title: Terms of Service
 
 # Terms of Service
 
-**Effective: 13 September 2026**
+**Effective: 25 September 2026**
 
 ## The short version
 
-Be decent to other people. Do not post things you have no right to post. The weight, calorie and
-weather numbers are estimates, not advice. We can remove content and accounts that break these rules.
+Be decent to other people. Do not post things you have no right to post. The weights, calories,
+routes, maps and weather in the app are estimates, not advice, and you are responsible for your own
+safety outside. We can remove content and accounts that break these rules.
 
 ## Agreeing to these terms
 
@@ -23,6 +24,14 @@ the app.
 You must be 13 or older. If you are under the age of majority where you live, you need a parent or
 guardian's permission, and they agree to these terms on your behalf. You need an account. Keep your
 sign-in details to yourself; what happens under your account is your responsibility.
+
+## The beta
+
+Before the app is on the App Store, it is offered as a free beta through Apple's TestFlight. Beta
+builds are unfinished. Features may change, break or disappear, and your data may need to be reset
+between builds, so keep your own record of anything you cannot afford to lose. Your use of TestFlight
+is also subject to Apple's TestFlight terms. When the beta ends, a beta build may stop working, and
+these terms continue to apply to the version on the App Store.
 
 ## Your licence to use the app
 
@@ -39,6 +48,11 @@ except as described in the Privacy Policy for content under review and comments 
 
 You are responsible for having the right to post what you post, and for it not breaking any law or
 anyone else's rights.
+
+## Feedback
+
+If you send us feedback, ideas or bug reports, through TestFlight or otherwise, we may use them to
+improve the app without owing you anything for it. You are never obliged to send any.
 
 ## What is not allowed
 
@@ -67,30 +81,66 @@ between you ends, and you are removed from each other's trips.
 
 ## Estimates are estimates
 
-**Nothing in this app is health, medical, or safety advice.**
+**Nothing in this app is health, medical, navigation or safety advice.**
 
-- **Calorie figures** are estimated from your height, weight, and a day's distance and climb. Real
-  needs vary enormously between people.
-- **Pack weights and fuel plans** are only as accurate as what you enter.
+- **Calorie, food, water and fuel figures** are estimated from your height, weight, a day's distance
+  and climb, and general assumptions. Real needs vary enormously between people, conditions and
+  stoves.
+- **Pack weights, resupply plans and day-by-day schedules** are only as accurate as what you enter.
+- **Hiking times** are rough estimates from distance and climb, not a prediction of your pace.
+- **Planned routes** follow trail and road data from OpenStreetMap, which is written by volunteers.
+  It can be incomplete or wrong, and it does not know about closures, washouts, snow, fires,
+  permits, private land or whether a path is safe. Where no path can be found, the app draws a
+  straight line, which is not a route anyone can walk.
+- **Elevation, climb and steepness** are measured from public elevation models that are coarse at
+  the scale of a single trail. They can miss cliffs, and steepness shading is not an avalanche or
+  terrain hazard assessment.
+- **Maps** cover only some areas. Outside them the map shows bare ground. An offline map is only as
+  current as the day it was built.
+- **Gear suggestions** are generated automatically, including by AI services, and can be wrong about
+  what an item is, what it weighs, or whether it is safe to leave behind.
 - **Weather forecasts and alerts** come from the US National Weather Service. They can be wrong, out
   of date, or unavailable, especially in the backcountry.
-- **Recorded routes** depend on your phone's GPS, which can be inaccurate or lose signal.
+- **Recorded routes and your position on the map** depend on your phone's GPS, which can be
+  inaccurate or lose signal, and a phone's battery can run out.
 
-Do not rely on the app where being wrong is dangerous. Backcountry travel carries real risk. Check
-official sources, carry proper navigation and emergency equipment, and plan your food, water and gear
+Do not rely on the app where being wrong is dangerous, and do not rely on a phone as your only means
+of navigation. Backcountry travel carries real risk, including serious injury and death. You choose
+where you go and what you carry, and you accept those risks. Check official sources and current
+conditions, carry proper navigation and emergency equipment, and plan your food, water and gear
 yourself.
 
 ## Other services
 
-The app relies on services we do not control, including Apple, Google Firebase, Google AdMob, the
-US National Weather Service and Apple Maps. If you add your own Anthropic or OpenAI API key, requests
-go directly from your phone to that provider under your account with them: you are responsible for
-any charges and for following their terms. We are not responsible for services we do not operate.
+The app relies on services we do not control, including Apple, Google Firebase and Google Cloud,
+Google Gemini, Google AdMob, the US National Weather Service, Apple Maps and Amazon. If you add your
+own Anthropic or OpenAI API key, requests go directly from your phone to that provider under your
+account with them: you are responsible for any charges and for following their terms. We are not
+responsible for services we do not operate, or for products you buy from other sellers.
 
-## Ads
+## Map data
+
+Maps and routes in the app are built from data published by others, used under their licences and
+credited in the app's map screens: map and trail data © OpenStreetMap contributors, available under
+the [Open Database License](https://opendatacommons.org/licenses/odbl/); elevation from the US
+Geological Survey 3D Elevation Program and NASA SRTM; land cover from ESA WorldCover, under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); and Natural Earth. Those licences, not
+these terms, govern the underlying data.
+
+## Ads and links
 
 The app shows ads. See the [Privacy Policy](https://fisherbricker.github.io/bxpk-legal/privacy) for
-what that means for your data.
+what that means for your data. Some gear links go to Amazon, and we may earn a commission from
+qualifying purchases made through them. That never changes which gear the app suggests to you.
+
+## Copyright complaints
+
+If you believe something in the app infringes your copyright, contact us through the
+[support page](https://fisherbricker.github.io/bxpk-legal/support) with: the work you own, where the
+content is in the app, your contact details, a statement that you believe in good faith the use is
+not authorised, and a statement, under penalty of perjury, that your notice is accurate and that you
+are the owner or authorised to act for them. We remove content that infringes and end the accounts
+of repeat infringers.
 
 ## Availability
 
@@ -124,9 +174,9 @@ you agree to cover the reasonable costs of that claim, to the extent the law all
 ## Disputes
 
 Contact us first. Most problems can be sorted out informally, and we will try within 30 days.
-These terms are governed by the laws of the State of [State], United States, without regard to
+These terms are governed by the laws of the State of Oregon, United States, without regard to
 conflict-of-law rules. Any dispute that is not resolved informally will be heard in the state or
-federal courts located in [State], unless the law where you live gives you the right to bring it
+federal courts located in Oregon, unless the law where you live gives you the right to bring it
 where you live. Nothing here limits consumer rights you cannot waive.
 
 ## Apple

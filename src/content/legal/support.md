@@ -11,6 +11,14 @@ title: Support
 We aim to respond within 2 business days, and to act on reports of objectionable content within 24
 hours.
 
+## Beta testers
+
+If you are testing the app through TestFlight, the quickest way to reach us is TestFlight itself:
+take a screenshot in the app and choose **Share Beta Feedback**, or open the TestFlight app, pick
+Backpack Weight Tracker and tap **Send Beta Feedback**. Crashes in a beta build are reported to us
+automatically. Beta builds can change between versions, and your data may occasionally need to be
+reset.
+
 ## Common questions
 
 **I can't sign in.** Check you are using the same method you signed up with: email, Apple or Google.
@@ -24,8 +32,19 @@ device and sent as soon as it reconnects.
 **The weather card is empty.** Forecasts need a trip location set from the location search, and
 come from the US National Weather Service, which covers the United States only.
 
+**The map is blank where I am planning.** Maps currently cover only part of the United States.
+Outside that area the map shows bare ground with your route drawn over it. Coverage is growing.
+
+**My planned route is a straight line.** The app could not find a trail or road between those two
+points, so it drew a straight line instead. Move a point onto a trail, or add one in between. A
+straight line is not a route anyone can walk.
+
 **Route recording stopped with the screen off.** Allow location access "Always" for the app in iOS
 Settings → Privacy & Security → Location Services.
+
+**Where do gear suggestions come from?** By default, from our servers using Google's Gemini, which
+sees your gear names, categories, weights and prices. You can use your own Anthropic or OpenAI key
+instead in Settings. Suggestions can be wrong, so check before leaving anything at home.
 
 **The app crashed.** Crash reports reach us automatically. If it keeps happening, email us what you
 were doing, your device model and your iOS version.
