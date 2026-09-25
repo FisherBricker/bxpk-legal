@@ -97,9 +97,9 @@ details stored inside the file, including any location, before it is uploaded, a
 it again after upload.
 
 **Photos and videos you post.** Photos are re-saved by the app before upload, which removes any
-location or camera details stored inside them. Videos are uploaded as they are, so a video may
-still carry the place it was recorded if your camera stored one. You can stop the Camera app from
-storing it in iOS Settings → Privacy & Security → Location Services → Camera.
+location or camera details stored inside them. Videos have the details stored inside the file,
+including the place they were recorded, removed by the app before upload and again by our servers
+after upload. Videos posted before this was in place have been cleaned the same way.
 
 We do not track your location in the background for any other purpose, and we do not use it for
 advertising.
@@ -224,12 +224,9 @@ invitations, your posts and comments and the routes shared on them, the routes y
 people's posts, the sounds you added to posts, and the photos you attached to trips and forum
 discussions.
 
-During the beta, a few things are not yet removed automatically when an account is deleted: photos
-and videos attached to feed posts and gear showcases, achievement share images, saved items, your
-entry in other people's follower lists, and the records we keep about your gear suggestions and
-upload limits. We are fixing this. Until then, ask us through the
-[support page](https://fisherbricker.github.io/bxpk-legal/support) after deleting your account and
-we will remove them by hand.
+It also removes the photos and videos attached to your posts and gear showcases, your achievement
+share images, your saved items, your entry in other people's follower and following lists, and the
+records we keep about your gear suggestions and upload limits.
 
 A few things deliberately survive, and none of them identifies you:
 
