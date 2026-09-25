@@ -4,7 +4,7 @@ title: Privacy Policy
 
 # Privacy Policy
 
-**Effective: [date this version is published]**
+**Effective: 25 September 2026**
 
 This policy explains what Backpack Weight Tracker collects, why, who it is shared with, and what
 you can do about it. It is written to be read, not to be survived.
@@ -190,9 +190,15 @@ immediately. It is held for review so a mistaken report can be corrected. While 
 ## Deleting your account
 
 **Settings → Delete Account.** It is immediate and cannot be undone. It removes your account,
-profile, handle, photo, gear, trips, planned routes, meal plans, itineraries, saved items,
-friendships, follows, invitations, your posts and comments, the photos and videos you uploaded, and
-the records we keep about your gear suggestions and upload limits.
+profile, handle, photo, gear, trips, planned routes, meal plans, itineraries, friendships,
+invitations, your posts and comments, and the photos you attached to trips and forum discussions.
+
+During the beta, a few things are not yet removed automatically when an account is deleted: photos
+and videos attached to feed posts and gear showcases, achievement share images, saved items, your
+entry in other people's follower lists, and the records we keep about your gear suggestions and
+upload limits. We are fixing this. Until then, ask us through the
+[support page](https://fisherbricker.github.io/bxpk-legal/support) after deleting your account and
+we will remove them by hand.
 
 A few things deliberately survive, and none of them identifies you:
 

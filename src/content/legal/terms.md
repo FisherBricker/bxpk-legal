@@ -4,7 +4,7 @@ title: Terms of Service
 
 # Terms of Service
 
-**Effective: [date this version is published]**
+**Effective: 25 September 2026**
 
 ## The short version
 
